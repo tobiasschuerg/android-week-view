@@ -8,7 +8,7 @@
     tools:context="de.tobiasschuerg.weekview.SampleActivity">
 
     <ScrollView
-        android:id="@+id/layout"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

@@ -35,7 +35,7 @@ class EventView(
 
     private val subjectName: String by lazy {
         if (config.useShortNames) {
-            event.fullName
+            event.shortName
         } else {
             event.fullName
         }

@@ -79,7 +79,6 @@ class WeekView(
     }
 
     override fun setOnCreateContextMenuListener(contextMenuListener: OnCreateContextMenuListener?) {
-        super.setOnCreateContextMenuListener(contextMenuListener)
         for (childIndex in 0 until childCount) {
             val view: View = getChildAt(childIndex)
             if (view is EventView) {
