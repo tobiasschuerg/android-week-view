@@ -78,6 +78,16 @@ class TimetableView(
         }
     }
 
+    override fun setOnCreateContextMenuListener(contextMenuListener: OnCreateContextMenuListener?) {
+        super.setOnCreateContextMenuListener(contextMenuListener)
+        for (childIndex in 0 until childCount) {
+            val view: View = getChildAt(childIndex)
+            if (view is LessonView) {
+                view.setOnCreateContextMenuListener(contextMenuListener)
+            }
+        }
+    }
+
     private fun addLessonsToTimetable(lessons: List<TimetableItem.Regular>) {
         Log.d(TAG, "Adding ${lessons.size} lessons to timetable")
         val time: LocalTime = LocalTime.now()
