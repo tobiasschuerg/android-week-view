@@ -2,15 +2,15 @@ package de.tobiasschuerg.weekview.data
 
 import org.threeten.bp.LocalTime
 
-class TimetableData {
+class WeekData {
 
-    private val lessons: MutableList<Event.Single> = mutableListOf()
+    private val singleEvents: MutableList<Event.Single> = mutableListOf()
 
-    fun getLesssons(): List<Event.Single> = lessons.toList()
+    fun getSingleEvents(): List<Event.Single> = singleEvents.toList()
 
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
 
-    fun getHolidays(): List<Event.AllDay> = allDays.toList()
+    fun getAllDayEvents(): List<Event.AllDay> = allDays.toList()
 
     var earliestStart: LocalTime = LocalTime.MAX
     var latestEnd: LocalTime = LocalTime.MIN
@@ -20,7 +20,7 @@ class TimetableData {
     }
 
     fun add(item: Event.Single) {
-        lessons.add(item)
+        singleEvents.add(item)
 
         if (item.startTime.isBefore(earliestStart)) {
             earliestStart = item.startTime
@@ -31,5 +31,5 @@ class TimetableData {
         }
     }
 
-    fun isEmpty() = lessons.isEmpty() && allDays.isEmpty()
+    fun isEmpty() = singleEvents.isEmpty() && allDays.isEmpty()
 }

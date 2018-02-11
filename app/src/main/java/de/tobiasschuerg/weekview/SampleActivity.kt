@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import de.tobiasschuerg.weekview.data.Event
-import de.tobiasschuerg.weekview.data.TimeTableConfig
-import de.tobiasschuerg.weekview.data.TimetableData
-import de.tobiasschuerg.weekview.view.TimetableView
+import de.tobiasschuerg.weekview.data.WeekViewConfig
+import de.tobiasschuerg.weekview.data.WeekData
+import de.tobiasschuerg.weekview.view.WeekView
 import kotlinx.android.synthetic.main.activity_sample.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -27,12 +27,12 @@ class SampleActivity : AppCompatActivity() {
 
         layout.removeAllViews()
         val data = createSampleData()
-        layout.addView(TimetableView(applicationContext, TimeTableConfig(), data))
+        layout.addView(WeekView(applicationContext, WeekViewConfig(), data))
 
     }
 
-    private fun createSampleData(): TimetableData {
-        val data = TimetableData()
+    private fun createSampleData(): WeekData {
+        val data = WeekData()
         for (i in 0..20) {
             data.add(createSampleEntry())
         }

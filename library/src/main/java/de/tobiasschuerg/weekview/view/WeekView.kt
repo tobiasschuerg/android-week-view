@@ -8,8 +8,8 @@ import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import de.tobiasschuerg.weekview.data.Event
-import de.tobiasschuerg.weekview.data.TimeTableConfig
-import de.tobiasschuerg.weekview.data.TimetableData
+import de.tobiasschuerg.weekview.data.WeekData
+import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
 import de.tobiasschuerg.weekview.util.ViewHelper
@@ -18,20 +18,20 @@ import org.threeten.bp.LocalTime
 import java.util.*
 import java.util.Calendar.*
 
-class TimetableView(
+class WeekView(
         context: Context,
-        private val config: TimeTableConfig,
-        private val data: TimetableData
+        private val config: WeekViewConfig,
+        private val data: WeekData
 ) : RelativeLayout(context) {
 
     /** for android tools **/
-    constructor(context: Context, attributeSet: AttributeSet) : this(context, TimeTableConfig(), TimetableData())
+    constructor(context: Context, attributeSet: AttributeSet) : this(context, WeekViewConfig(), WeekData())
 
 
     private val TAG = javaClass.simpleName
 
-    private val backgroundView: TimetableBackgroundView
-    private val overlapsWith = ArrayList<LessonView>()
+    private val backgroundView: WeekSkeletonView
+    private val overlapsWith = ArrayList<EventView>()
 
     private var isInScreenshotMode = false
     private var layoutCount = 0
@@ -48,29 +48,29 @@ class TimetableView(
             }
         }
         if (data.isEmpty()) {
-            backgroundView = TimetableBackgroundView(context)
+            backgroundView = WeekSkeletonView(context)
         } else {
-            backgroundView = TimetableBackgroundView(context, config, data.earliestStart, data.latestEnd, days)
+            backgroundView = WeekSkeletonView(context, config, data.earliestStart, data.latestEnd, days)
         }
         // FIXME backgroundView.setHolidays(holidays);
         addView(backgroundView)
-        addLessonsToTimetable(data.getLesssons())
+        addLessonsToTimetable(data.getSingleEvents())
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setLessonTransitionName(transitionName: String) {
         for (childId in 0 until childCount) {
             val child: View = getChildAt(childId)
-            if (child is LessonView) {
+            if (child is EventView) {
                 child.setTransitionName(transitionName)
             }
         }
     }
 
-    fun setLessonClickListener(clickListener: (view: LessonView) -> Unit) {
+    fun setLessonClickListener(clickListener: (view: EventView) -> Unit) {
         for (childIndex in 0 until childCount) {
             val view: View = getChildAt(childIndex)
-            if (view is LessonView) {
+            if (view is EventView) {
                 view.setOnClickListener {
                     clickListener.invoke(view)
                 }
@@ -82,7 +82,7 @@ class TimetableView(
         super.setOnCreateContextMenuListener(contextMenuListener)
         for (childIndex in 0 until childCount) {
             val view: View = getChildAt(childIndex)
-            if (view is LessonView) {
+            if (view is EventView) {
                 view.setOnCreateContextMenuListener(contextMenuListener)
             }
         }
@@ -105,7 +105,7 @@ class TimetableView(
                 }
             }
 
-            val lv = LessonView(context, config, lesson)
+            val lv = EventView(context, config, lesson)
 
             // mark active event
             if (Calendar.getInstance().get(DAY_OF_WEEK) == lesson.day && // this day
@@ -136,20 +136,20 @@ class TimetableView(
         val childCount = childCount
         var childView: View
         for (childIndex in 0 until childCount) {
-            val lessonView: LessonView
+            val eventView: EventView
             childView = getChildAt(childIndex)
-            if (childView is LessonView) {
-                lessonView = childView
+            if (childView is EventView) {
+                eventView = childView
             } else {
                 continue
             }
 
             // FIXME   lessonView.setShortNameEnabled(isShortNameEnabled);
 
-            val column: Int = mapDayToColumn(lessonView.event.day)
+            val column: Int = mapDayToColumn(eventView.event.day)
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
-                Log.v(TAG, "Removing view for event $lessonView")
+                Log.v(TAG, "Removing view for event $eventView")
                 childView.setVisibility(View.GONE)
                 removeView(childView)
                 continue
@@ -161,11 +161,11 @@ class TimetableView(
             for (j in 0 until childIndex) {
                 val v2 = getChildAt(j)
                 // get next LessonView
-                if (v2 is LessonView) {
+                if (v2 is EventView) {
 // check for overlap
-                    if (v2.event.day != lessonView.event.day) {
+                    if (v2.event.day != eventView.event.day) {
                         continue // days differ, overlap not possible
-                    } else if (overlaps(lessonView, v2)) {
+                    } else if (overlaps(eventView, v2)) {
                         overlapsWith.add(v2)
                     }
                 }
@@ -184,14 +184,14 @@ class TimetableView(
             }
 
             val startTime = backgroundView.startTime
-            val lessonStart = lessonView.event.startTime
+            val lessonStart = eventView.event.startTime
             val offset = Duration.between(startTime, lessonStart)
 
             val yOffset = offset.toMinutes() * config.stretchingFactor
             val top: Int = (ViewHelper.dp2px(yOffset, context) + backgroundView.topOffset).toInt()
 
-            val bottom = top + lessonView.measuredHeight
-            lessonView.layout(left, top, right, bottom)
+            val bottom = top + eventView.measuredHeight
+            eventView.layout(left, top, right, bottom)
         }
     }
 
@@ -242,7 +242,7 @@ class TimetableView(
         isInScreenshotMode = enabled
     }
 
-    private fun overlaps(left: LessonView, right: LessonView): Boolean {
+    private fun overlaps(left: EventView, right: EventView): Boolean {
         val rightStartsAfterLeftStarts = right.event.startTime >= left.event.startTime
         val rightStartsBeforeLeftEnds = right.event.startTime < left.event.endTime
         val lessonStartsWithing = rightStartsAfterLeftStarts && rightStartsBeforeLeftEnds

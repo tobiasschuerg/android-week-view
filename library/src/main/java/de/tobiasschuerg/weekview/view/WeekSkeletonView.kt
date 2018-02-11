@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
 import android.view.View
-import de.tobiasschuerg.weekview.data.TimeTableConfig
+import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.dipToPixeel
 import de.tobiasschuerg.weekview.util.toLocalString
 import org.threeten.bp.Duration
@@ -18,16 +18,16 @@ import java.text.DateFormatSymbols
 import java.util.*
 import kotlin.math.roundToInt
 
-class TimetableBackgroundView(
+class WeekSkeletonView(
         context: Context,
-        private val config: TimeTableConfig,
+        private val config: WeekViewConfig,
         earliest: LocalTime,
         private val endTime: LocalTime,
         private val days: List<Int> = emptyList()
 ) : View(context) {
 
     /** Default constructor just for android system. Not used. */
-    constructor(context: Context) : this(context, TimeTableConfig(), LocalTime.of(9, 0), LocalTime.of(14, 0)) {}
+    constructor(context: Context) : this(context, WeekViewConfig(), LocalTime.of(9, 0), LocalTime.of(14, 0)) {}
 
     val TAG: String = javaClass.simpleName
 

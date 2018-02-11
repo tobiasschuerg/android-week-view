@@ -1,6 +1,5 @@
 package de.tobiasschuerg.weekview.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -12,17 +11,16 @@ import android.view.ContextMenu.ContextMenuInfo
 import android.view.View
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
-import de.tobiasschuerg.weekview.data.TimeTableConfig
+import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TextHelper
 import de.tobiasschuerg.weekview.util.ViewHelper
 import de.tobiasschuerg.weekview.util.dipToPixeel
 import de.tobiasschuerg.weekview.util.toLocalString
 import kotlin.math.roundToInt
 
-@SuppressLint("ViewConstructor")
-class LessonView(
+class EventView(
         context: Context,
-        private val config: TimeTableConfig,
+        private val config: WeekViewConfig,
         val event: Event.Single
 ) : View(context) {
 

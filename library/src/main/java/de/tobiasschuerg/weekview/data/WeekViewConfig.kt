@@ -1,6 +1,6 @@
 package de.tobiasschuerg.weekview.data
 
-data class TimeTableConfig(
+data class WeekViewConfig(
 
         val stretchingFactor: Float = 1f,
 

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <de.tobiasschuerg.weekview.view.TimetableView
+        <de.tobiasschuerg.weekview.view.WeekView
             android:id="@+id/week_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
