@@ -4,32 +4,32 @@ import org.threeten.bp.LocalTime
 
 class TimetableData {
 
-    private val lessons: MutableList<TimetableItem.Regular> = mutableListOf()
+    private val lessons: MutableList<Event.Single> = mutableListOf()
 
-    fun getLesssons(): List<TimetableItem.Regular> = lessons.toList()
+    fun getLesssons(): List<Event.Single> = lessons.toList()
 
-    private val holidays: MutableList<TimetableItem.Holiday> = mutableListOf()
+    private val allDays: MutableList<Event.AllDay> = mutableListOf()
 
-    fun getHolidays(): List<TimetableItem.Holiday> = holidays.toList()
+    fun getHolidays(): List<Event.AllDay> = allDays.toList()
 
     var earliestStart: LocalTime = LocalTime.MAX
     var latestEnd: LocalTime = LocalTime.MIN
 
-    fun add(item: TimetableItem.Holiday) {
-        holidays.add(item)
+    fun add(item: Event.AllDay) {
+        allDays.add(item)
     }
 
-    fun add(item: TimetableItem.Regular) {
+    fun add(item: Event.Single) {
         lessons.add(item)
 
-        if (item.lesson.startTime.isBefore(earliestStart)) {
-            earliestStart = item.lesson.startTime
+        if (item.startTime.isBefore(earliestStart)) {
+            earliestStart = item.startTime
         }
 
-        if (item.lesson.endTime.isAfter(latestEnd)) {
-            latestEnd = item.lesson.endTime
+        if (item.endTime.isAfter(latestEnd)) {
+            latestEnd = item.endTime
         }
     }
 
-    fun isEmpty() = lessons.isEmpty() && holidays.isEmpty()
+    fun isEmpty() = lessons.isEmpty() && allDays.isEmpty()
 }

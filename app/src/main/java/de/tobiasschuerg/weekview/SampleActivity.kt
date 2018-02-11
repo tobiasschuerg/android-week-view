@@ -4,10 +4,9 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
-import de.tobiasschuerg.weekview.data.Lesson
+import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.TimeTableConfig
 import de.tobiasschuerg.weekview.data.TimetableData
-import de.tobiasschuerg.weekview.data.TimetableItem
 import de.tobiasschuerg.weekview.view.TimetableView
 import kotlinx.android.synthetic.main.activity_sample.*
 import org.threeten.bp.LocalDate
@@ -40,10 +39,11 @@ class SampleActivity : AppCompatActivity() {
         return data
     }
 
-    private fun createSampleEntry(): TimetableItem.Regular {
+    private fun createSampleEntry(): Event.Single {
         val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
-        return TimetableItem.Regular(LocalDate.now(), Lesson(
+        return Event.Single(
                 random.nextLong().absoluteValue,
+                LocalDate.now(),
                 "Hello World",
                 name[random.nextInt(name.size)],
                 random.nextInt(7) + 1,
@@ -54,7 +54,7 @@ class SampleActivity : AppCompatActivity() {
                 null,
                 Color.WHITE,
                 randomColor()
-        ))
+        )
     }
 
     private fun randomColor(): Int {

@@ -11,7 +11,7 @@ import android.util.Log
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.View
 import de.tobiasschuerg.weekview.BuildConfig
-import de.tobiasschuerg.weekview.data.Lesson
+import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.TimeTableConfig
 import de.tobiasschuerg.weekview.util.TextHelper
 import de.tobiasschuerg.weekview.util.ViewHelper
@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 class LessonView(
         context: Context,
         private val config: TimeTableConfig,
-        val lesson: Lesson
+        val event: Event.Single
 ) : View(context) {
 
     private val TAG = javaClass.simpleName
@@ -37,9 +37,9 @@ class LessonView(
 
     private val subjectName: String by lazy {
         if (config.useShortNames) {
-            lesson.shortName
+            event.fullName
         } else {
-            lesson.fullName
+            event.fullName
         }
     }
 
@@ -59,7 +59,7 @@ class LessonView(
         setPadding(pad, pad, pad, pad)
 
         background = PaintDrawable().apply {
-            paint.color = lesson.backgroundColor
+            paint.color = event.backgroundColor
             setCornerRadius(CORNER_RADIUS)
         }
 
@@ -98,13 +98,13 @@ class LessonView(
 
         weightSum = fromweight + typeWeight + teacherweight + locationWeight + toWeight + lessonWeight
 
-        val textColor = lesson.textColor
+        val textColor = event.textColor
         textPaint.color = textColor
     }
 
     // TODO: clean up
     override fun onDraw(canvas: Canvas) {
-        Log.d(TAG, "Drawing ${lesson.fullName}")
+        Log.d(TAG, "Drawing ${event.fullName}")
 
         // only for debugging
         if (Debug.isDebuggerConnected()) {
@@ -131,37 +131,37 @@ class LessonView(
 
         // start time
         if (config.showTimeStart) {
-            val startText = lesson.startTime.toLocalString(context)
+            val startText = event.startTime.toLocalString(context)
             textPaint.getTextBounds(startText, 0, startText.length, textBounds)
             canvas.drawText(startText, (textBounds.left + paddingLeft).toFloat(), (textBounds.height() + paddingTop).toFloat(), textPaint)
         }
 
         // end time
         if (config.showTimeEnd) {
-            val endText = lesson.endTime.toLocalString(context)
+            val endText = event.endTime.toLocalString(context)
             textPaint.getTextBounds(endText, 0, endText.length, textBounds)
             canvas.drawText(endText, (width - (textBounds.right + paddingRight)).toFloat(), (height - paddingBottom).toFloat(), textPaint)
         }
 
         // type
-        if (config.showType && lesson.type != null) {
-            textPaint.getTextBounds(lesson.type, 0, lesson.type.length, textBounds)
+        if (config.showType && event.type != null) {
+            textPaint.getTextBounds(event.type, 0, event.type.length, textBounds)
             val typeY = getY(position = fromweight, bounds = textBounds)
-            canvas.drawText(lesson.type, (width / 2 - textBounds.centerX()).toFloat(), typeY.toFloat(), textPaint)
+            canvas.drawText(event.type, (width / 2 - textBounds.centerX()).toFloat(), typeY.toFloat(), textPaint)
         }
 
         // teacher
-        if (config.showTeacher && lesson.teacher != null) {
-            textPaint.getTextBounds(lesson.teacher, 0, lesson.teacher.length, textBounds)
+        if (config.showTeacher && event.teacher != null) {
+            textPaint.getTextBounds(event.teacher, 0, event.teacher.length, textBounds)
             val teacherY = getY(position = fromweight + typeWeight + lessonWeight, bounds = textBounds)
-            canvas.drawText(lesson.teacher, (width / 2 - textBounds.centerX()).toFloat(), teacherY.toFloat(), textPaint)
+            canvas.drawText(event.teacher, (width / 2 - textBounds.centerX()).toFloat(), teacherY.toFloat(), textPaint)
         }
 
         // location
-        if (config.showLocation && lesson.location != null) {
-            textPaint.getTextBounds(lesson.location, 0, lesson.location.length, textBounds)
+        if (config.showLocation && event.location != null) {
+            textPaint.getTextBounds(event.location, 0, event.location.length, textBounds)
             val locationY = getY(position = fromweight + typeWeight + lessonWeight + teacherweight, bounds = textBounds)
-            canvas.drawText(lesson.location, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)
+            canvas.drawText(event.location, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)
         }
 
     }
@@ -174,14 +174,14 @@ class LessonView(
 
     var measureCount = 0
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        Log.v(TAG, "Measuring ${lesson.fullName} ${measureCount++}")
+        Log.v(TAG, "Measuring ${event.fullName} ${measureCount++}")
         if (BuildConfig.DEBUG) {
             val debugWidth = ViewHelper.debugMeasureSpec(widthMeasureSpec)
             val debugHeight = ViewHelper.debugMeasureSpec(heightMeasureSpec)
             Log.v(TAG, "-> width: $debugWidth\n-> height: $debugHeight")
         }
 
-        val desiredHeightDp = lesson.duration.toMinutes() * config.stretchingFactor
+        val desiredHeightDp = event.duration.toMinutes() * config.stretchingFactor
         val desiredHeightPx = context.dipToPixeel(desiredHeightDp).roundToInt()
         val resolvedHeight = resolveSize(desiredHeightPx, heightMeasureSpec)
 
@@ -189,14 +189,14 @@ class LessonView(
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        Log.d(TAG, "Laying out ${lesson.fullName}: changed[$changed] ($left, $top),($right, $bottom)")
+        Log.d(TAG, "Laying out ${event.fullName}: changed[$changed] ($left, $top),($right, $bottom)")
         super.onLayout(changed, left, top, right, bottom)
     }
 
     override fun getContextMenuInfo(): ContextMenuInfo {
-        return LessonViewContextInfo(lesson)
+        return LessonViewContextInfo(event)
     }
 
-    data class LessonViewContextInfo(var lesson: Lesson) : ContextMenuInfo
+    data class LessonViewContextInfo(var event: Event.Single) : ContextMenuInfo
 
 }

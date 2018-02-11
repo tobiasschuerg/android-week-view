@@ -7,9 +7,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
+import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.TimeTableConfig
 import de.tobiasschuerg.weekview.data.TimetableData
-import de.tobiasschuerg.weekview.data.TimetableItem
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
 import de.tobiasschuerg.weekview.util.ViewHelper
@@ -88,11 +88,11 @@ class TimetableView(
         }
     }
 
-    private fun addLessonsToTimetable(lessons: List<TimetableItem.Regular>) {
-        Log.d(TAG, "Adding ${lessons.size} lessons to timetable")
+    private fun addLessonsToTimetable(events: List<Event.Single>) {
+        Log.d(TAG, "Adding ${events.size} events to timetable")
         val time: LocalTime = LocalTime.now()
-        for (lesson in lessons.map(TimetableItem.Regular::lesson)) {
-            // don't add lessons for days which are not enabled
+        for (lesson in events) {
+            // don't add events for days which are not enabled
             if (lesson.day == SATURDAY) {
                 if (!config.saturdayEnabled) {
                     Log.w(TAG, "Skipping ${lesson.fullName} as saturday is disabled")
@@ -107,13 +107,13 @@ class TimetableView(
 
             val lv = LessonView(context, config, lesson)
 
-            // mark active lesson
+            // mark active event
             if (Calendar.getInstance().get(DAY_OF_WEEK) == lesson.day && // this day
                     lesson.startTime < time && lesson.endTime > time) {
                 lv.animation = Animation.createBlinkAnimation()
             }
 
-            // fragment.registerForContextMenu(lv)
+            // TODO: check if working: fragment.registerForContextMenu(lv)
             addView(lv)
         }
     }
@@ -146,10 +146,10 @@ class TimetableView(
 
             // FIXME   lessonView.setShortNameEnabled(isShortNameEnabled);
 
-            val column: Int = mapDayToColumn(lessonView.lesson.day)
+            val column: Int = mapDayToColumn(lessonView.event.day)
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
-                Log.v(TAG, "Removing view for lesson $lessonView")
+                Log.v(TAG, "Removing view for event $lessonView")
                 childView.setVisibility(View.GONE)
                 removeView(childView)
                 continue
@@ -163,7 +163,7 @@ class TimetableView(
                 // get next LessonView
                 if (v2 is LessonView) {
 // check for overlap
-                    if (v2.lesson.day != lessonView.lesson.day) {
+                    if (v2.event.day != lessonView.event.day) {
                         continue // days differ, overlap not possible
                     } else if (overlaps(lessonView, v2)) {
                         overlapsWith.add(v2)
@@ -184,7 +184,7 @@ class TimetableView(
             }
 
             val startTime = backgroundView.startTime
-            val lessonStart = lessonView.lesson.startTime
+            val lessonStart = lessonView.event.startTime
             val offset = Duration.between(startTime, lessonStart)
 
             val yOffset = offset.toMinutes() * config.stretchingFactor
@@ -243,16 +243,16 @@ class TimetableView(
     }
 
     private fun overlaps(left: LessonView, right: LessonView): Boolean {
-        val rightStartsAfterLeftStarts = right.lesson.startTime >= left.lesson.startTime
-        val rightStartsBeforeLeftEnds = right.lesson.startTime < left.lesson.endTime
+        val rightStartsAfterLeftStarts = right.event.startTime >= left.event.startTime
+        val rightStartsBeforeLeftEnds = right.event.startTime < left.event.endTime
         val lessonStartsWithing = rightStartsAfterLeftStarts && rightStartsBeforeLeftEnds
 
-        val leftStartsBeforeRightEnds = left.lesson.startTime < right.lesson.endTime
-        val rightEndsBeforeOrWithLeftEnds = right.lesson.endTime <= left.lesson.endTime
+        val leftStartsBeforeRightEnds = left.event.startTime < right.event.endTime
+        val rightEndsBeforeOrWithLeftEnds = right.event.endTime <= left.event.endTime
         val lessonEndsWithing = leftStartsBeforeRightEnds && rightEndsBeforeOrWithLeftEnds
 
-        val leftStartsAfterRightStarts = left.lesson.startTime > right.lesson.startTime
-        val rightEndsAfterLeftEnds = right.lesson.endTime > left.lesson.endTime
+        val leftStartsAfterRightStarts = left.event.startTime > right.event.startTime
+        val rightEndsAfterLeftEnds = right.event.endTime > left.event.endTime
         val lessonWithin = leftStartsAfterRightStarts && rightEndsAfterLeftEnds
 
         return lessonStartsWithing || lessonEndsWithing || lessonWithin
