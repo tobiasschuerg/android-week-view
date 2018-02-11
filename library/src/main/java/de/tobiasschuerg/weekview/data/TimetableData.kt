@@ -30,4 +30,6 @@ class TimetableData {
             latestEnd = item.lesson.endTime
         }
     }
+
+    fun isEmpty() = lessons.isEmpty() && holidays.isEmpty()
 }

@@ -1,9 +1,9 @@
 package de.tobiasschuerg.weekview.view
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.support.v4.app.Fragment
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
@@ -18,12 +18,15 @@ import org.threeten.bp.LocalTime
 import java.util.*
 import java.util.Calendar.*
 
-@SuppressLint("ViewConstructor")
 class TimetableView(
-        private val fragment: Fragment,
+        context: Context,
         private val config: TimeTableConfig,
         private val data: TimetableData
-) : RelativeLayout(fragment.activity) {
+) : RelativeLayout(context) {
+
+    /** for android tools **/
+    constructor(context: Context, attributeSet: AttributeSet) : this(context, TimeTableConfig(), TimetableData())
+
 
     private val TAG = javaClass.simpleName
 
@@ -44,8 +47,11 @@ class TimetableView(
                 iterator.remove()
             }
         }
-
-        backgroundView = TimetableBackgroundView(context, config, data.earliestStart, data.latestEnd, days)
+        if (data.isEmpty()) {
+            backgroundView = TimetableBackgroundView(context)
+        } else {
+            backgroundView = TimetableBackgroundView(context, config, data.earliestStart, data.latestEnd, days)
+        }
         // FIXME backgroundView.setHolidays(holidays);
         addView(backgroundView)
         addLessonsToTimetable(data.getLesssons())
@@ -97,7 +103,7 @@ class TimetableView(
                 lv.animation = Animation.createBlinkAnimation()
             }
 
-            fragment.registerForContextMenu(lv)
+            // fragment.registerForContextMenu(lv)
             addView(lv)
         }
     }
@@ -196,7 +202,7 @@ class TimetableView(
 
         when (firstDayOfTheWeek) {
 
-            Calendar.MONDAY -> {
+            Calendar.MONDAY   -> {
                 var column = (calendarDay + 5) % 7 // mo: 0, fr:4, su:6
                 if (!config.saturdayEnabled && column == 6) {
                     column--
@@ -211,13 +217,13 @@ class TimetableView(
                 return col
             }
 
-            Calendar.SUNDAY -> return if (config.sundayEnabled) {
+            Calendar.SUNDAY   -> return if (config.sundayEnabled) {
                 calendarDay - 1 // su: 0, mo: 1 fr: 5, sa: 6
             } else {
                 calendarDay - 2 // mo: 0 fr: 4, sa: 5, su: -1
             }
 
-            else -> throw IllegalStateException(firstDayOfTheWeek.toString() + " das is not supported as start day")
+            else              -> throw IllegalStateException(firstDayOfTheWeek.toString() + " das is not supported as start day")
         }
     }
 

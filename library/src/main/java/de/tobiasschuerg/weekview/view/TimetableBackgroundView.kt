@@ -26,6 +26,9 @@ class TimetableBackgroundView(
         private val days: List<Int> = emptyList()
 ) : View(context) {
 
+    /** Default constructor just for android system. Not used. */
+    constructor(context: Context) : this(context, TimeTableConfig(), LocalTime.of(9, 0), LocalTime.of(14, 0)) {}
+
     val TAG: String = javaClass.simpleName
 
     private val paintDivider: Paint by lazy {
@@ -55,15 +58,12 @@ class TimetableBackgroundView(
     private var yBottom: Float = 0f
 
 
-    /** Default constructor just for android system. Not used. */
-    private constructor(context: Context) : this(context, TimeTableConfig(), LocalTime.of(9, 0), LocalTime.of(14, 0)) {}
-
     init {
         Log.v(TAG, "Initial start $earliest, end $endTime")
         Log.v(TAG, "Adjusted start $startTime, end $endTime")
 
         if (!earliest.isBefore(endTime)) {
-            throw IllegalStateException("Earliest must not be after latest! $earliest + $endTime")
+            throw IllegalStateException("Earliest must not be after latest! $earliest <-> $endTime")
         }
 
         setPadding(5, 5, 5, 5)
