@@ -7,7 +7,6 @@ import android.view.ContextMenu
 import android.view.View
 import android.widget.Toast
 import com.jakewharton.threetenabp.AndroidThreeTen
-import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
