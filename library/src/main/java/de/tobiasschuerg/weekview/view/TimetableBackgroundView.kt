@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.view
+package de.tobiasschuerg.weekview.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,9 +6,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
 import android.view.View
-import de.tobiasschuerg.timetableview.data.TimeTableConfig
-import de.tobiasschuerg.timetableview.util.dipToPixeel
-import de.tobiasschuerg.timetableview.util.toLocalString
+import de.tobiasschuerg.weekview.data.TimeTableConfig
+import de.tobiasschuerg.weekview.util.dipToPixeel
+import de.tobiasschuerg.weekview.util.toLocalString
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime

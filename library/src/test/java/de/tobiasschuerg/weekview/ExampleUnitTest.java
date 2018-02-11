@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview;
+package de.tobiasschuerg.weekview;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.data
+package de.tobiasschuerg.weekview.data
 
 import org.threeten.bp.LocalTime
 

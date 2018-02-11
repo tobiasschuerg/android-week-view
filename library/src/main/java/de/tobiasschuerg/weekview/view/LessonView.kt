@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.view
+package de.tobiasschuerg.weekview.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,13 +10,13 @@ import android.os.Debug
 import android.util.Log
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.View
-import de.tobiasschuerg.timetableview.BuildConfig
-import de.tobiasschuerg.timetableview.data.Lesson
-import de.tobiasschuerg.timetableview.data.TimeTableConfig
-import de.tobiasschuerg.timetableview.util.TextHelper
-import de.tobiasschuerg.timetableview.util.ViewHelper
-import de.tobiasschuerg.timetableview.util.dipToPixeel
-import de.tobiasschuerg.timetableview.util.toLocalString
+import de.tobiasschuerg.weekview.BuildConfig
+import de.tobiasschuerg.weekview.data.Lesson
+import de.tobiasschuerg.weekview.data.TimeTableConfig
+import de.tobiasschuerg.weekview.util.TextHelper
+import de.tobiasschuerg.weekview.util.ViewHelper
+import de.tobiasschuerg.weekview.util.dipToPixeel
+import de.tobiasschuerg.weekview.util.toLocalString
 import kotlin.math.roundToInt
 
 @SuppressLint("ViewConstructor")

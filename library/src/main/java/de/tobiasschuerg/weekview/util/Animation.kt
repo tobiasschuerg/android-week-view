@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.util
+package de.tobiasschuerg.weekview.util
 
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation

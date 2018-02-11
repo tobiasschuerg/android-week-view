@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.util
+package de.tobiasschuerg.weekview.util
 
 import java.text.DateFormatSymbols
 import java.util.*

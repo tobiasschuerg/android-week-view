@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.util
+package de.tobiasschuerg.weekview.util
 
 import android.content.Context
 import android.text.format.DateFormat.getTimeFormat

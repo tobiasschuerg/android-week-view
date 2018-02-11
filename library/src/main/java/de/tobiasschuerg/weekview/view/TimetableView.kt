@@ -1,4 +1,4 @@
-package de.tobiasschuerg.timetableview.view
+package de.tobiasschuerg.weekview.view
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -7,12 +7,12 @@ import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
-import de.tobiasschuerg.timetableview.data.TimeTableConfig
-import de.tobiasschuerg.timetableview.data.TimetableData
-import de.tobiasschuerg.timetableview.data.TimetableItem
-import de.tobiasschuerg.timetableview.util.Animation
-import de.tobiasschuerg.timetableview.util.DayHelper.createListStartingOn
-import de.tobiasschuerg.timetableview.util.ViewHelper
+import de.tobiasschuerg.weekview.data.TimeTableConfig
+import de.tobiasschuerg.weekview.data.TimetableData
+import de.tobiasschuerg.weekview.data.TimetableItem
+import de.tobiasschuerg.weekview.util.Animation
+import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
+import de.tobiasschuerg.weekview.util.ViewHelper
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import java.util.*
