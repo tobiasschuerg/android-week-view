@@ -13,8 +13,12 @@ import kotlinx.android.synthetic.main.activity_sample.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import java.util.*
+import kotlin.math.absoluteValue
 
 class SampleActivity : AppCompatActivity() {
+
+    private val random = Random()
+    private val name = listOf("Foo", "Bar", "Android")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidThreeTen.init(this)
@@ -23,24 +27,38 @@ class SampleActivity : AppCompatActivity() {
 
 
         layout.removeAllViews()
-        val data = TimetableData()
+        val data = createSampleData()
+        layout.addView(TimetableView(applicationContext, TimeTableConfig(), data))
 
-        data.add(TimetableItem.Regular(LocalDate.now(), Lesson(
-                1,
+    }
+
+    private fun createSampleData(): TimetableData {
+        val data = TimetableData()
+        for (i in 0..20) {
+            data.add(createSampleEntry())
+        }
+        return data
+    }
+
+    private fun createSampleEntry(): TimetableItem.Regular {
+        val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
+        return TimetableItem.Regular(LocalDate.now(), Lesson(
+                random.nextLong().absoluteValue,
                 "Hello World",
-                "Hi",
-                Calendar.TUESDAY,
-                LocalTime.NOON,
-                LocalTime.NOON.plusMinutes(90),
+                name[random.nextInt(name.size)],
+                random.nextInt(7) + 1,
+                startTime,
+                startTime.plusMinutes(20 + random.nextInt(60).toLong()),
                 null,
                 null,
                 null,
                 Color.WHITE,
-                Color.BLUE
-        )))
+                randomColor()
+        ))
+    }
 
-        layout.addView(TimetableView(applicationContext, TimeTableConfig(), data))
-
+    private fun randomColor(): Int {
+        return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
 }

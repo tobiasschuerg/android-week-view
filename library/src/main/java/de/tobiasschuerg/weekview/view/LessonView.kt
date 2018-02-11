@@ -27,7 +27,7 @@ class LessonView(
 ) : View(context) {
 
     private val TAG = javaClass.simpleName
-    private val CORNER_RADIUS = context.dipToPixeel(4f)
+    private val CORNER_RADIUS = context.dipToPixeel(2f)
 
     private val textPaint: Paint by lazy {
         Paint().apply {
