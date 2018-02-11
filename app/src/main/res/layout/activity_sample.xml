@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.tobiasschuerg.weekview.SampleActivity">
+    tools:context=".SampleActivity">
 
     <ScrollView
         android:id="@+id/scroll_view"

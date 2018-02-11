@@ -1,4 +1,4 @@
-package de.tobiasschuerg.weekview
+package de.tobiasschuerg.weekview.sample
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.ContextMenu
 import android.view.View
 import android.widget.Toast
 import com.jakewharton.threetenabp.AndroidThreeTen
+import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
