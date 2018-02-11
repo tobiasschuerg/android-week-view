@@ -1,4 +1,4 @@
-package de.tobiasschuerg.weekview;
+package de.tobiasschuerg.timetableview;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("de.tobiasschuerg.weekview.test", appContext.getPackageName());
+        assertEquals("de.tobiasschuerg.timetableview.test", appContext.getPackageName());
     }
 }
