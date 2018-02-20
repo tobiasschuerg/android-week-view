@@ -16,7 +16,7 @@ import org.threeten.bp.temporal.ChronoUnit
 import java.text.DateFormatSymbols
 import kotlin.math.roundToInt
 
-internal class WeekSkeletonView(
+internal class WeekBackgroundView(
         context: Context,
         private val config: WeekViewConfig,
         earliest: LocalTime,
@@ -27,7 +27,7 @@ internal class WeekSkeletonView(
     /** Default constructor just for android system. Not used. */
     constructor(context: Context) : this(context, WeekViewConfig(), LocalTime.of(8, 0), LocalTime.of(15, 0)) {}
 
-    val TAG: String = javaClass.simpleName
+    private val TAG: String = javaClass.simpleName
 
     private val paintDivider: Paint by lazy {
         Paint().apply {
@@ -45,17 +45,17 @@ internal class WeekSkeletonView(
         }
     }
 
-    val startTime: LocalTime = earliest.truncatedTo(ChronoUnit.HOURS)
-    private val durationMinutes: Long by lazy(Duration.between(startTime, endTime)::toMinutes)
 
     private var isInScreenshotMode = false
 
-    private val topOffsetPx: Float
+    val topOffsetPx: Float
     private val leftOffset: Float
 
     private var drawCount = 0
-    private var yBottom: Float = 0f
+    private var bottom: Float = 0f
 
+    val startTime: LocalTime = earliest.truncatedTo(ChronoUnit.HOURS)
+    private val durationMinutes: Long by lazy(Duration.between(startTime, endTime)::toMinutes)
 
     init {
         Log.v(TAG, "Initial start $earliest, end $endTime")
@@ -67,6 +67,7 @@ internal class WeekSkeletonView(
 
         topOffsetPx = context.dipToPixeel(32f)
         leftOffset = context.dipToPixeel(48f)
+        bottom = topOffsetPx + context.dipToPixeel(durationMinutes * config.stretchingFactor / 60 + 1) * 60
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -102,7 +103,7 @@ internal class WeekSkeletonView(
         for ((column, dayId) in days.withIndex()) {
             // draw the divider
             val xValue: Float = getColumnStart(column, false)
-            drawLine(xValue, 0f, xValue, yBottom, paintDivider)
+            drawLine(xValue, 0f, xValue, bottom, paintDivider)
 
             // draw name
             val shortName = DateFormatSymbols().shortWeekdays[dayId]
@@ -131,8 +132,7 @@ internal class WeekSkeletonView(
         }
         val offset = Duration.between(startTime, localTime)
         Log.v(TAG, "Offset + $offset")
-        yBottom = topOffsetPx + context.dipToPixeel(offset.toMinutes() * config.stretchingFactor)
-        canvas.drawLine(0f, yBottom, canvas.width.toFloat(), yBottom, paintDivider)
+        canvas.drawLine(0f, bottom, canvas.width.toFloat(), bottom, paintDivider)
     }
 
     private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {

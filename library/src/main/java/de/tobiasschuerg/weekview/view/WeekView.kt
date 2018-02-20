@@ -11,11 +11,12 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
-import de.tobiasschuerg.weekview.util.ViewHelper
+import de.tobiasschuerg.weekview.util.dipToPixeel
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import java.util.*
 import java.util.Calendar.*
+import kotlin.math.roundToInt
 
 class WeekView(
         context: Context,
@@ -27,7 +28,7 @@ class WeekView(
 
     private val TAG = javaClass.simpleName
 
-    private val backgroundView: WeekSkeletonView
+    private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
 
     private var isInScreenshotMode = false
@@ -45,7 +46,7 @@ class WeekView(
             }
         }
 
-        backgroundView = WeekSkeletonView(context)
+        backgroundView = WeekBackgroundView(context)
         addView(backgroundView)
         // addLessonsToTimetable(data.getSingleEvents())
     }
@@ -180,10 +181,10 @@ class WeekView(
             val offset = Duration.between(startTime, lessonStart)
 
             val yOffset = offset.toMinutes() * config.stretchingFactor
-            val top: Int = (ViewHelper.dp2px(yOffset, context) + backgroundView.paddingTop).toInt()
+            val top = context.dipToPixeel(yOffset) + backgroundView.topOffsetPx
 
             val bottom = top + eventView.measuredHeight
-            eventView.layout(left, top, right, bottom)
+            eventView.layout(left, top.roundToInt(), right, bottom.roundToInt())
         }
     }
 

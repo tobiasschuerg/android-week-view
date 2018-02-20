@@ -7,7 +7,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 
 fun LocalTime.toLocalString(context: Context): String {
-    val sdf = getTimeFormat(context) as SimpleDateFormat
-    val format = DateTimeFormatter.ofPattern(sdf.toPattern())
+    val sdf: SimpleDateFormat = getTimeFormat(context) as SimpleDateFormat
+    val format: DateTimeFormatter = DateTimeFormatter.ofPattern(sdf.toPattern())
     return format.format(this)
 }
