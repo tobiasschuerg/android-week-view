@@ -9,6 +9,8 @@ import android.os.Debug
 import android.util.Log
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -17,6 +19,7 @@ import de.tobiasschuerg.weekview.util.ViewHelper
 import de.tobiasschuerg.weekview.util.dipToPixeel
 import de.tobiasschuerg.weekview.util.toLocalString
 import kotlin.math.roundToInt
+
 
 class EventView(
         context: Context,
@@ -189,6 +192,18 @@ class EventView(
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         Log.d(TAG, "Laying out ${event.fullName}: changed[$changed] ($left, $top),($right, $bottom)")
         super.onLayout(changed, left, top, right, bottom)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        val anim = ScaleAnimation(
+                0f, 1f, // Start and end values for the X axis scaling
+                0f, 1f, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 0.5f) // Pivot point of Y scaling
+        anim.fillAfter = true // Needed to keep the result of the animation
+        anim.duration = 1000
+        this.startAnimation(anim)
     }
 
     override fun getContextMenuInfo(): ContextMenuInfo {
