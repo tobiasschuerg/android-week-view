@@ -42,8 +42,7 @@ internal class WeekBackgroundView(
             textAlign = Paint.Align.CENTER
         }
     }
-
-
+    
     private var isInScreenshotMode = false
 
     val topOffsetPx: Float

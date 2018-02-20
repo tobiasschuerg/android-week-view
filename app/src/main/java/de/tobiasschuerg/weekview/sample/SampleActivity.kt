@@ -12,7 +12,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.view.EventView
-import de.tobiasschuerg.weekview.view.WeekView
 import kotlinx.android.synthetic.main.activity_sample.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -24,33 +23,28 @@ class SampleActivity : AppCompatActivity() {
     private val random = Random()
     private val name = listOf("Foo", "Bar", "Android")
 
+    private val data: MutableList<Event.Single> by lazy {
+        WeekData().apply {
+            (0..10).map { data.add(createSampleEntry()) }
+        }.getSingleEvents().toMutableList()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidThreeTen.init(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
 
-        // create and fill a week data object
-        val data: List<Event.Single> = createSampleData().getSingleEvents()
         // set up the WeekView with the data
-        findViewById<WeekView>(R.id.week_view_foo).addLessonsToTimetable(data)
+        week_view_foo.addLessonsToTimetable(data)
         // optional: add an onClickListener for each event
         week_view_foo.setLessonClickListener { Toast.makeText(applicationContext, it.event.fullName, Toast.LENGTH_SHORT).show() }
         // optional: register a context menu to each event
         registerForContextMenu(week_view_foo)
     }
 
-    /**
-     * Creates a week data object with random events.
-     */
-    private fun createSampleData(): WeekData {
-        val data = WeekData()
-        (0..10).map { data.add(createSampleEntry(it)) }
-        return data
-    }
-
-    private fun createSampleEntry(it: Int): Event.Single {
+    private fun createSampleEntry(): Event.Single {
         val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
-        val name = name[random.nextInt(name.size)] + it
+        val name = name[random.nextInt(name.size)]
         return Event.Single(
                 random.nextLong().absoluteValue,
                 LocalDate.now(),
@@ -86,7 +80,9 @@ class SampleActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        week_view_foo.addLessonsToTimetable(listOf(createSampleEntry(0)))
+        val newEvents = listOf(createSampleEntry())
+        data.addAll(newEvents)
+        week_view_foo.addLessonsToTimetable(newEvents)
         registerForContextMenu(week_view_foo)
         return true
     }

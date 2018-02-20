@@ -31,6 +31,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
     private var clickListener: ((view: EventView) -> Unit)? = null
     private var contextMenuListener: OnCreateContextMenuListener? = null
+    private var eventTransitionName: String? = null
 
     init {
 
@@ -49,8 +50,10 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         // addLessonsToTimetable(data.getSingleEvents())
     }
 
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun setLessonTransitionName(transitionName: String) {
+    fun setEventTransitionName(transitionName: String) {
+        this.eventTransitionName = transitionName
         for (childId in 0 until childCount) {
             val child: View = getChildAt(childId)
             if (child is EventView) {
@@ -110,6 +113,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             lv.setOnClickListener { clickListener?.invoke(lv) }
             lv.setOnCreateContextMenuListener(contextMenuListener)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                lv.transitionName = eventTransitionName
+            }
 
             addView(lv)
         }
