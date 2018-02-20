@@ -1,4 +1,5 @@
 [![](https://jitpack.io/v/tobiasschuerg/android-week-view.svg)](https://jitpack.io/#tobiasschuerg/android-week-view)
+[![Build Status](https://www.bitrise.io/app/6ba47c24369dd52a/status.svg?token=XyF0AXasZwgKuoub_tJUYA&branch=master)](https://www.bitrise.io/app/6ba47c24369dd52a)
 
 # Android Week View
 Android library for displaying an overview of events for a week like in a schedule(us) or timetable(uk). 
