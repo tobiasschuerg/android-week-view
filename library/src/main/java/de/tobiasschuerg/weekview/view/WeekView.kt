@@ -18,21 +18,19 @@ import java.util.*
 import java.util.Calendar.*
 import kotlin.math.roundToInt
 
-class WeekView(
-        context: Context,
-        private val config: WeekViewConfig
-) : RelativeLayout(context) {
-
-    /** for android tools **/
-    constructor(context: Context, attributeSet: AttributeSet) : this(context, WeekViewConfig())
+class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
 
     private val TAG = javaClass.simpleName
+    private val config = WeekViewConfig() // TODO: add dynamically
 
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
 
     private var isInScreenshotMode = false
     private var layoutCount = 0
+
+    private var clickListener: ((view: EventView) -> Unit)? = null
+    private var contextMenuListener: OnCreateContextMenuListener? = null
 
     init {
 
@@ -61,7 +59,9 @@ class WeekView(
         }
     }
 
+
     fun setLessonClickListener(clickListener: (view: EventView) -> Unit) {
+        this.clickListener = clickListener
         for (childIndex in 0 until childCount) {
             val view: View = getChildAt(childIndex)
             if (view is EventView) {
@@ -73,6 +73,7 @@ class WeekView(
     }
 
     override fun setOnCreateContextMenuListener(contextMenuListener: OnCreateContextMenuListener?) {
+        this.contextMenuListener = contextMenuListener
         for (childIndex in 0 until childCount) {
             val view: View = getChildAt(childIndex)
             if (view is EventView) {
@@ -106,6 +107,9 @@ class WeekView(
                     event.startTime < time && event.endTime > time) {
                 lv.animation = Animation.createBlinkAnimation()
             }
+
+            lv.setOnClickListener { clickListener?.invoke(lv) }
+            lv.setOnCreateContextMenuListener(contextMenuListener)
 
             addView(lv)
         }

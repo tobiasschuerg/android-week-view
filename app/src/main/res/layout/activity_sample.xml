@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <de.tobiasschuerg.weekview.view.WeekView
-            android:id="@+id/week_view"
+            android:id="@+id/week_view_foo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

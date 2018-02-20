@@ -4,12 +4,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.jakewharton.threetenabp.AndroidThreeTen
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekData
-import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.view.EventView
 import de.tobiasschuerg.weekview.view.WeekView
 import kotlinx.android.synthetic.main.activity_sample.*
@@ -28,20 +29,14 @@ class SampleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
 
-        scroll_view.removeAllViews()
-
         // create and fill a week data object
-        val data: WeekData = createSampleData()
+        val data: List<Event.Single> = createSampleData().getSingleEvents()
         // set up the WeekView with the data
-        val weekView = WeekView(applicationContext, WeekViewConfig())
-        weekView.addLessonsToTimetable(data.getSingleEvents())
+        findViewById<WeekView>(R.id.week_view_foo).addLessonsToTimetable(data)
         // optional: add an onClickListener for each event
-        weekView.setLessonClickListener { Toast.makeText(applicationContext, it.event.fullName, Toast.LENGTH_SHORT).show() }
+        week_view_foo.setLessonClickListener { Toast.makeText(applicationContext, it.event.fullName, Toast.LENGTH_SHORT).show() }
         // optional: register a context menu to each event
-        registerForContextMenu(weekView)
-
-        // add the view to a layout
-        scroll_view.addView(weekView)
+        registerForContextMenu(week_view_foo)
     }
 
     /**
@@ -49,7 +44,7 @@ class SampleActivity : AppCompatActivity() {
      */
     private fun createSampleData(): WeekData {
         val data = WeekData()
-        (0..20).map { data.add(createSampleEntry(it)) }
+        (0..10).map { data.add(createSampleEntry(it)) }
         return data
     }
 
@@ -73,7 +68,7 @@ class SampleActivity : AppCompatActivity() {
     }
 
     private fun randomColor(): Int {
-        return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256))
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
@@ -83,6 +78,17 @@ class SampleActivity : AppCompatActivity() {
         menu.add("Second Option")
         menu.add("Third Option")
         super.onCreateContextMenu(menu, v, menuInfo)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menu.add("Add").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        week_view_foo.addLessonsToTimetable(listOf(createSampleEntry(0)))
+        registerForContextMenu(week_view_foo)
+        return true
     }
 
 }
