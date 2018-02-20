@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import de.tobiasschuerg.weekview.data.Event
-import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
@@ -20,13 +19,11 @@ import java.util.Calendar.*
 
 class WeekView(
         context: Context,
-        private val config: WeekViewConfig,
-        private val data: WeekData
+        private val config: WeekViewConfig
 ) : RelativeLayout(context) {
 
     /** for android tools **/
-    constructor(context: Context, attributeSet: AttributeSet) : this(context, WeekViewConfig(), WeekData())
-
+    constructor(context: Context, attributeSet: AttributeSet) : this(context, WeekViewConfig())
 
     private val TAG = javaClass.simpleName
 
@@ -47,14 +44,10 @@ class WeekView(
                 iterator.remove()
             }
         }
-        if (data.isEmpty()) {
-            backgroundView = WeekSkeletonView(context)
-        } else {
-            backgroundView = WeekSkeletonView(context, config, data.earliestStart, data.latestEnd, days)
-        }
-        // FIXME backgroundView.setHolidays(holidays);
+
+        backgroundView = WeekSkeletonView(context)
         addView(backgroundView)
-        addLessonsToTimetable(data.getSingleEvents())
+        // addLessonsToTimetable(data.getSingleEvents())
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -87,7 +80,7 @@ class WeekView(
         }
     }
 
-    private fun addLessonsToTimetable(events: List<Event.Single>) {
+    fun addLessonsToTimetable(events: List<Event.Single>) {
         Log.d(TAG, "Adding ${events.size} events to timetable")
         val time: LocalTime = LocalTime.now()
         for (lesson in events) {
@@ -153,8 +146,8 @@ class WeekView(
                 removeView(childView)
                 continue
             }
-            var left: Int = backgroundView.getLeftOffset(column, true)
-            val right: Int = backgroundView.getRightOffset(column, true)
+            var left: Int = backgroundView.getColumnStart(column, true).toInt()
+            val right: Int = backgroundView.getColumnEnd(column, true).toInt()
 
             overlapsWith.clear()
             for (j in 0 until childIndex) {
@@ -187,7 +180,7 @@ class WeekView(
             val offset = Duration.between(startTime, lessonStart)
 
             val yOffset = offset.toMinutes() * config.stretchingFactor
-            val top: Int = (ViewHelper.dp2px(yOffset, context) + backgroundView.topOffset).toInt()
+            val top: Int = (ViewHelper.dp2px(yOffset, context) + backgroundView.paddingTop).toInt()
 
             val bottom = top + eventView.measuredHeight
             eventView.layout(left, top, right, bottom)

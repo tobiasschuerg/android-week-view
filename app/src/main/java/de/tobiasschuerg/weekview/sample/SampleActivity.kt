@@ -33,7 +33,8 @@ class SampleActivity : AppCompatActivity() {
         // create and fill a week data object
         val data: WeekData = createSampleData()
         // set up the WeekView with the data
-        val weekView = WeekView(applicationContext, WeekViewConfig(), data)
+        val weekView = WeekView(applicationContext, WeekViewConfig())
+        weekView.addLessonsToTimetable(data.getSingleEvents())
         // optional: add an onClickListener for each event
         weekView.setLessonClickListener { Toast.makeText(applicationContext, it.event.fullName, Toast.LENGTH_SHORT).show() }
         // optional: register a context menu to each event
