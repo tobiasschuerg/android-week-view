@@ -84,31 +84,32 @@ class WeekView(
     fun addLessonsToTimetable(events: List<Event.Single>) {
         Log.d(TAG, "Adding ${events.size} events to timetable")
         val time: LocalTime = LocalTime.now()
-        for (lesson in events) {
+        for (event in events) {
             // don't add events for days which are not enabled
-            if (lesson.day == SATURDAY) {
+            if (event.day == SATURDAY) {
                 if (!config.saturdayEnabled) {
-                    Log.w(TAG, "Skipping ${lesson.fullName} as saturday is disabled")
+                    Log.w(TAG, "Skipping ${event.fullName} as saturday is disabled")
                     continue
                 }
-            } else if (lesson.day == SUNDAY) {
+            } else if (event.day == SUNDAY) {
                 if (!config.sundayEnabled) {
-                    Log.w(TAG, "Skipping ${lesson.fullName} as sunday is disabled")
+                    Log.w(TAG, "Skipping ${event.fullName} as sunday is disabled")
                     continue
                 }
             }
 
-            val lv = EventView(context, config, lesson)
+            val lv = EventView(context, config, event)
+            backgroundView.updateTimes(event.startTime, event.endTime)
 
             // mark active event
-            if (Calendar.getInstance().get(DAY_OF_WEEK) == lesson.day && // this day
-                    lesson.startTime < time && lesson.endTime > time) {
+            if (Calendar.getInstance().get(DAY_OF_WEEK) == event.day && // this day
+                    event.startTime < time && event.endTime > time) {
                 lv.animation = Animation.createBlinkAnimation()
             }
 
-            // TODO: check if working: fragment.registerForContextMenu(lv)
             addView(lv)
         }
+        Log.d(TAG, " - Done adding events to timetable")
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

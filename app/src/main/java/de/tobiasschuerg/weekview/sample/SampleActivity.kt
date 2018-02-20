@@ -49,13 +49,13 @@ class SampleActivity : AppCompatActivity() {
      */
     private fun createSampleData(): WeekData {
         val data = WeekData()
-        (0..20).map { data.add(createSampleEntry()) }
+        (0..20).map { data.add(createSampleEntry(it)) }
         return data
     }
 
-    private fun createSampleEntry(): Event.Single {
+    private fun createSampleEntry(it: Int): Event.Single {
         val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
-        val name = name[random.nextInt(name.size)]
+        val name = name[random.nextInt(name.size)] + it
         return Event.Single(
                 random.nextLong().absoluteValue,
                 LocalDate.now(),

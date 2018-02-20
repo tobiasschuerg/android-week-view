@@ -19,13 +19,11 @@ import kotlin.math.roundToInt
 internal class WeekBackgroundView(
         context: Context,
         private val config: WeekViewConfig,
-        earliest: LocalTime,
-        private val endTime: LocalTime,
         private val days: List<Int> = DayHelper.createListStartingOn()
 ) : View(context) {
 
     /** Default constructor just for android system. Not used. */
-    constructor(context: Context) : this(context, WeekViewConfig(), LocalTime.of(8, 0), LocalTime.of(15, 0)) {}
+    constructor(context: Context) : this(context, WeekViewConfig()) {}
 
     private val TAG: String = javaClass.simpleName
 
@@ -52,22 +50,14 @@ internal class WeekBackgroundView(
     private val leftOffset: Float
 
     private var drawCount = 0
-    private var bottom: Float = 0f
 
-    val startTime: LocalTime = earliest.truncatedTo(ChronoUnit.HOURS)
-    private val durationMinutes: Long by lazy(Duration.between(startTime, endTime)::toMinutes)
+    var startTime: LocalTime = LocalTime.of(10, 0)
+        private set
+    private var endTime: LocalTime = LocalTime.of(13, 0)
 
     init {
-        Log.v(TAG, "Initial start $earliest, end $endTime")
-        Log.v(TAG, "Adjusted start $startTime, end $endTime")
-
-        if (!earliest.isBefore(endTime)) {
-            throw IllegalStateException("Earliest must not be after latest! $earliest <-> $endTime")
-        }
-
         topOffsetPx = context.dipToPixeel(32f)
         leftOffset = context.dipToPixeel(48f)
-        bottom = topOffsetPx + context.dipToPixeel(durationMinutes * config.stretchingFactor / 60 + 1) * 60
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -103,7 +93,8 @@ internal class WeekBackgroundView(
         for ((column, dayId) in days.withIndex()) {
             // draw the divider
             val xValue: Float = getColumnStart(column, false)
-            drawLine(xValue, 0f, xValue, bottom, paintDivider)
+            left
+            drawLine(xValue, 0f, xValue, bottom.toFloat(), paintDivider)
 
             // draw name
             val shortName = DateFormatSymbols().shortWeekdays[dayId]
@@ -132,7 +123,7 @@ internal class WeekBackgroundView(
         }
         val offset = Duration.between(startTime, localTime)
         Log.v(TAG, "Offset + $offset")
-        canvas.drawLine(0f, bottom, canvas.width.toFloat(), bottom, paintDivider)
+        canvas.drawLine(0f, bottom.toFloat(), canvas.width.toFloat(), bottom.toFloat(), paintDivider)
     }
 
     private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {
@@ -170,11 +161,10 @@ internal class WeekBackgroundView(
         return offset
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val heightDp = durationMinutes * config.stretchingFactor
-        val newHeight = topOffsetPx + context.dipToPixeel(heightDp) + paddingBottom
-        val newHMS = View.MeasureSpec.makeMeasureSpec(newHeight.roundToInt(), View.MeasureSpec.EXACTLY)
-        super.onMeasure(widthMeasureSpec, newHMS)
+    override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
+        val height = topOffsetPx + context.dipToPixeel(getDurationMinutes() * config.stretchingFactor) + paddingBottom
+        val heightMeasureSpec2 = View.MeasureSpec.makeMeasureSpec(height.roundToInt(), View.MeasureSpec.EXACTLY)
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
 
 
@@ -185,5 +175,19 @@ internal class WeekBackgroundView(
     companion object {
         private val DIVIDER_WIDTH_PX: Float = 2f // should be a multiple of 2
         private val DIVIDER_COLOR = Color.LTGRAY
+    }
+
+    fun updateTimes(startTime: LocalTime, endTime: LocalTime) {
+        if (startTime.isAfter(endTime)) throw IllegalArgumentException()
+        if (startTime.isBefore(this.startTime)) {
+            this.startTime = startTime.truncatedTo(ChronoUnit.HOURS)
+        }
+        if (endTime.isAfter(this.endTime)) {
+            this.endTime = endTime.truncatedTo(ChronoUnit.HOURS).plusHours(1)
+        }
+    }
+
+    private fun getDurationMinutes(): Long {
+        return Duration.between(startTime, endTime).toMinutes()
     }
 }
