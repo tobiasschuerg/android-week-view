@@ -14,10 +14,7 @@ import android.view.animation.ScaleAnimation
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
-import de.tobiasschuerg.weekview.util.TextHelper
-import de.tobiasschuerg.weekview.util.ViewHelper
-import de.tobiasschuerg.weekview.util.dipToPixelF
-import de.tobiasschuerg.weekview.util.toLocalString
+import de.tobiasschuerg.weekview.util.*
 import kotlin.math.roundToInt
 
 
@@ -54,6 +51,8 @@ class EventView(
     private val teacherweight: Int
     private val locationWeight: Int
     private val typeWeight: Int
+
+    var scalingFactor = 1f
 
     init {
         val pad = this.context.dipToPixelF(2f).roundToInt()
@@ -182,8 +181,8 @@ class EventView(
             Log.v(TAG, "-> width: $debugWidth\n-> height: $debugHeight")
         }
 
-        val desiredHeightDp = event.duration.toMinutes() * config.stretchingFactor
-        val desiredHeightPx = context.dipToPixelF(desiredHeightDp).roundToInt()
+        val desiredHeightDp = event.duration.toMinutes() * scalingFactor
+        val desiredHeightPx = context.dipToPixelI(desiredHeightDp)
         val resolvedHeight = resolveSize(desiredHeightPx, heightMeasureSpec)
 
         setMeasuredDimension(width, resolvedHeight)
@@ -211,5 +210,4 @@ class EventView(
     }
 
     data class LessonViewContextInfo(var event: Event.Single) : ContextMenuInfo
-
 }

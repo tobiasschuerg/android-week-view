@@ -18,6 +18,7 @@ import org.threeten.bp.LocalTime
 import java.util.*
 import kotlin.math.absoluteValue
 
+
 class SampleActivity : AppCompatActivity() {
 
     private val random = Random()

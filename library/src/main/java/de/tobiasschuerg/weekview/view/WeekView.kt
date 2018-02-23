@@ -6,6 +6,8 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.RelativeLayout
 import de.tobiasschuerg.weekview.R
@@ -38,8 +40,10 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
     private val accentColor: Int
 
-    init {
+    private val scaleGestureDetector: ScaleGestureDetector
 
+
+    init {
         val days: MutableList<Int> = createListStartingOn().toMutableList()
         val iterator: MutableIterator<Int> = days.iterator()
         while (iterator.hasNext()) {
@@ -57,7 +61,36 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         backgroundView = WeekBackgroundView(context)
         backgroundView.setAccentColor(accentColor)
         addView(backgroundView)
-        // addLessonsToTimetable(data.getSingleEvents())
+
+        scaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
+    }
+
+    private var scaleFactor: Float = 1f
+        set(value) {
+            field = value
+            backgroundView.scalingFactor = value
+        }
+
+    private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            val factor = scaleFactor * detector.scaleFactor
+            // Don't let the object get too small or too large.
+            scaleFactor = Math.max(0.25f, Math.min(factor, 3.0f))
+            Log.d(TAG, "Scale factor is $scaleFactor")
+            invalidate()
+            requestLayout()
+            return true
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        scaleGestureDetector.onTouchEvent(event)
+        return super.onTouchEvent(event)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        super.dispatchTouchEvent(event)
+        return scaleGestureDetector.onTouchEvent(event)
     }
 
 
@@ -113,6 +146,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             }
 
             val lv = EventView(context, config, event)
+            lv.scalingFactor = scaleFactor
             backgroundView.updateTimes(event.startTime, event.endTime)
 
             // mark active event
@@ -197,11 +231,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             }
 
+            eventView.scalingFactor = scaleFactor
             val startTime = backgroundView.startTime
             val lessonStart = eventView.event.startTime
             val offset = Duration.between(startTime, lessonStart)
 
-            val yOffset = offset.toMinutes() * config.stretchingFactor
+            val yOffset = offset.toMinutes() * scaleFactor
             val top = context.dipToPixelF(yOffset) + backgroundView.topOffsetPx
 
             val bottom = top + eventView.measuredHeight
@@ -250,7 +285,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             else              -> throw IllegalStateException(firstDayOfTheWeek.toString() + " das is not supported as start day")
         }
     }
-
 
     fun setScreenshotModeEnabled(enabled: Boolean) {
         isInScreenshotMode = enabled

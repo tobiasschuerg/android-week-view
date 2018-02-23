@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
-import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.DayHelper
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import de.tobiasschuerg.weekview.util.dipToPixelI
@@ -20,14 +19,10 @@ import java.util.*
 import kotlin.math.roundToInt
 
 
-internal class WeekBackgroundView(
+internal class WeekBackgroundView @JvmOverloads constructor(
         context: Context,
-        private val config: WeekViewConfig,
         private val days: List<Int> = DayHelper.createListStartingOn()
 ) : View(context) {
-
-    /** Default constructor just for android system. Not used. */
-    constructor(context: Context) : this(context, WeekViewConfig()) {}
 
     private val TAG: String = javaClass.simpleName
 
@@ -62,6 +57,15 @@ internal class WeekBackgroundView(
         private set
     private var endTime: LocalTime = LocalTime.of(13, 0)
 
+    var scalingFactor = 1f
+        /**
+         * Updated the scaling factor and redraws the view.
+         */
+        set(value) {
+            field = value
+            requestLayout()
+            // invalidate()
+        }
 
     init {
         topOffsetPx = context.dipToPixelI(32f)
@@ -93,7 +97,7 @@ internal class WeekBackgroundView(
             val nowOffset = Duration.between(startTime, LocalTime.now())
 
             val minutes = nowOffset.toMinutes()
-            val y = topOffsetPx + context.dipToPixelF(minutes * config.stretchingFactor)
+            val y = topOffsetPx + context.dipToPixelF(minutes * scalingFactor)
             accentPaint.alpha = 200
             canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), accentPaint)
         }
@@ -106,7 +110,7 @@ internal class WeekBackgroundView(
         while (localTime.isBefore(endTime) && !last.isAfter(localTime)) {
             val offset = Duration.between(startTime, localTime)
             Log.v(TAG, "Offset $offset")
-            val y = topOffsetPx + context.dipToPixelF(offset.toMinutes() * config.stretchingFactor)
+            val y = topOffsetPx + context.dipToPixelF(offset.toMinutes() * scalingFactor)
             drawLine(0f, y, width.toFloat(), y, paintDivider)
 
             // final String timeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT));
@@ -188,7 +192,7 @@ internal class WeekBackgroundView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
-        val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * config.stretchingFactor) + paddingBottom
+        val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
         val heightMeasureSpec2 = View.MeasureSpec.makeMeasureSpec(height.roundToInt(), View.MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
