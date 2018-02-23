@@ -1,14 +1,8 @@
 package de.tobiasschuerg.weekview.data
 
-import android.graphics.Color
-import android.support.annotation.ColorInt
-
 data class WeekViewConfig(
 
         val stretchingFactor: Float = 1f,
-
-        @ColorInt
-        val accentColor: Int = Color.BLUE,
 
         val useShortNames: Boolean = true,
         val saturdayEnabled: Boolean = true,

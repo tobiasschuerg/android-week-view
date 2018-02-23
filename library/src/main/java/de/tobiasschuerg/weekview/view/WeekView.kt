@@ -1,12 +1,14 @@
 package de.tobiasschuerg.weekview.view
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
+import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
@@ -17,6 +19,7 @@ import org.threeten.bp.LocalTime
 import java.util.*
 import java.util.Calendar.*
 import kotlin.math.roundToInt
+
 
 class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
 
@@ -33,6 +36,8 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
     private var contextMenuListener: OnCreateContextMenuListener? = null
     private var eventTransitionName: String? = null
 
+    private val accentColor: Int
+
     init {
 
         val days: MutableList<Int> = createListStartingOn().toMutableList()
@@ -45,7 +50,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             }
         }
 
+        val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)
+        accentColor = arr.getColor(R.styleable.WeekView_accent_color, Color.BLUE)
+        arr.recycle()  // Do this when done.
+
         backgroundView = WeekBackgroundView(context)
+        backgroundView.setAccentColor(accentColor)
         addView(backgroundView)
         // addLessonsToTimetable(data.getSingleEvents())
     }

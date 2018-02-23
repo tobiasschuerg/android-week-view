@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.support.v4.graphics.ColorUtils
 import android.util.Log
 import android.view.View
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -31,12 +30,8 @@ internal class WeekBackgroundView(
 
     private val TAG: String = javaClass.simpleName
 
+    private val accentPaint = Paint()
 
-    private val accentPaint: Paint by lazy {
-        Paint().apply {
-            color = ColorUtils.setAlphaComponent(config.accentColor, 16)
-        }
-    }
     private val paintDivider: Paint by lazy {
         Paint().apply {
             isAntiAlias = true
@@ -64,9 +59,14 @@ internal class WeekBackgroundView(
         private set
     private var endTime: LocalTime = LocalTime.of(13, 0)
 
+
     init {
         topOffsetPx = context.dipToPixelI(32f)
         leftOffset = context.dipToPixelI(48f)
+    }
+
+    fun setAccentColor(color: Int) {
+        accentPaint.color = color
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -87,13 +87,11 @@ internal class WeekBackgroundView(
     private fun drawNowIndicator(canvas: Canvas) {
         if (startTime.isBefore(LocalTime.now()) && endTime.isAfter(LocalTime.now())) {
             Log.v(TAG, "Drawing now indicator")
-            paintDivider.color = config.accentColor
             val nowOffset = Duration.between(startTime, LocalTime.now())
 
             val minutes = nowOffset.toMinutes()
             val y = topOffsetPx + context.dipToPixelF(minutes * config.stretchingFactor)
-            canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), paintDivider)
-            paintDivider.color = DIVIDER_COLOR
+            canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), accentPaint)
         }
     }
 
@@ -140,7 +138,9 @@ internal class WeekBackgroundView(
         val left2: Int = getColumnStart(column, true)
         val right: Int = getColumnEnd(column, true)
         val rect = Rect(left2, 0, right, bottom)
+        accentPaint.alpha = 16
         drawRect(rect, accentPaint)
+        accentPaint.alpha = 255
     }
 
     private fun Canvas.drawWeekDayName(dayId: Int, column: Int) {
