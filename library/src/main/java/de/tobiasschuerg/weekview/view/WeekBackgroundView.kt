@@ -19,6 +19,7 @@ import java.text.DateFormatSymbols
 import java.util.*
 import kotlin.math.roundToInt
 
+
 internal class WeekBackgroundView(
         context: Context,
         private val config: WeekViewConfig,
@@ -30,7 +31,9 @@ internal class WeekBackgroundView(
 
     private val TAG: String = javaClass.simpleName
 
-    private val accentPaint = Paint()
+    private val accentPaint: Paint by lazy {
+        Paint().apply { strokeWidth = DIVIDER_WIDTH_PX.toFloat() * 2 }
+    }
 
     private val paintDivider: Paint by lazy {
         Paint().apply {
@@ -91,6 +94,7 @@ internal class WeekBackgroundView(
 
             val minutes = nowOffset.toMinutes()
             val y = topOffsetPx + context.dipToPixelF(minutes * config.stretchingFactor)
+            accentPaint.alpha = 200
             canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), accentPaint)
         }
     }
@@ -138,9 +142,8 @@ internal class WeekBackgroundView(
         val left2: Int = getColumnStart(column, true)
         val right: Int = getColumnEnd(column, true)
         val rect = Rect(left2, 0, right, bottom)
-        accentPaint.alpha = 16
+        accentPaint.alpha = 32
         drawRect(rect, accentPaint)
-        accentPaint.alpha = 255
     }
 
     private fun Canvas.drawWeekDayName(dayId: Int, column: Int) {
