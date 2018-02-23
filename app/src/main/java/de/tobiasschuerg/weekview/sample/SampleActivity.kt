@@ -25,7 +25,7 @@ class SampleActivity : AppCompatActivity() {
 
     private val data: MutableList<Event.Single> by lazy {
         WeekData().apply {
-            (0..10).map { data.add(createSampleEntry()) }
+            (0..10).map { this.add(createSampleEntry()) }
         }.getSingleEvents().toMutableList()
     }
 

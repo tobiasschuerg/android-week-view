@@ -4,16 +4,20 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
+import android.support.v4.graphics.ColorUtils
 import android.util.Log
 import android.view.View
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.DayHelper
-import de.tobiasschuerg.weekview.util.dipToPixeel
+import de.tobiasschuerg.weekview.util.dipToPixelF
+import de.tobiasschuerg.weekview.util.dipToPixelI
 import de.tobiasschuerg.weekview.util.toLocalString
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import org.threeten.bp.temporal.ChronoUnit
 import java.text.DateFormatSymbols
+import java.util.*
 import kotlin.math.roundToInt
 
 internal class WeekBackgroundView(
@@ -27,10 +31,16 @@ internal class WeekBackgroundView(
 
     private val TAG: String = javaClass.simpleName
 
+
+    private val accentPaint: Paint by lazy {
+        Paint().apply {
+            color = ColorUtils.setAlphaComponent(config.accentColor, 16)
+        }
+    }
     private val paintDivider: Paint by lazy {
         Paint().apply {
             isAntiAlias = true
-            strokeWidth = DIVIDER_WIDTH_PX
+            strokeWidth = DIVIDER_WIDTH_PX.toFloat()
             color = DIVIDER_COLOR
         }
     }
@@ -38,15 +48,15 @@ internal class WeekBackgroundView(
         Paint().apply {
             isAntiAlias = true
             color = Color.GRAY
-            textSize = context.dipToPixeel(12f)
+            textSize = context.dipToPixelF(12f)
             textAlign = Paint.Align.CENTER
         }
     }
-    
+
     private var isInScreenshotMode = false
 
-    val topOffsetPx: Float
-    private val leftOffset: Float
+    val topOffsetPx: Int
+    private val leftOffset: Int
 
     private var drawCount = 0
 
@@ -55,8 +65,8 @@ internal class WeekBackgroundView(
     private var endTime: LocalTime = LocalTime.of(13, 0)
 
     init {
-        topOffsetPx = context.dipToPixeel(32f)
-        leftOffset = context.dipToPixeel(48f)
+        topOffsetPx = context.dipToPixelI(32f)
+        leftOffset = context.dipToPixelI(48f)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -64,7 +74,7 @@ internal class WeekBackgroundView(
         super.onDraw(canvas)
         canvas.drawColor(Color.WHITE)
 
-        drawHorizontalDividers(canvas)
+        canvas.drawHorizontalDividers()
         canvas.drawColumnsWithHeaders()
 
         Log.d(TAG, "Screenshot mode? $isInScreenshotMode")
@@ -81,48 +91,62 @@ internal class WeekBackgroundView(
             val nowOffset = Duration.between(startTime, LocalTime.now())
 
             val minutes = nowOffset.toMinutes()
-            val y = topOffsetPx + context.dipToPixeel(minutes * config.stretchingFactor)
+            val y = topOffsetPx + context.dipToPixelF(minutes * config.stretchingFactor)
             canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), paintDivider)
             paintDivider.color = DIVIDER_COLOR
         }
     }
 
-    private fun Canvas.drawColumnsWithHeaders() {
-        Log.v(TAG, "Drawing vertical dividers on canvas")
-        for ((column, dayId) in days.withIndex()) {
-            // draw the divider
-            val xValue: Float = getColumnStart(column, false)
-            left
-            drawLine(xValue, 0f, xValue, bottom.toFloat(), paintDivider)
-
-            // draw name
-            val shortName = DateFormatSymbols().shortWeekdays[dayId]
-            val xLabel = (getColumnStart(column, false) + getColumnEnd(column, false)) / 2
-            drawText(shortName, xLabel, topOffsetPx / 2 + mPaintLabels.descent(), mPaintLabels)
-
-        }
-    }
-
-    private fun drawHorizontalDividers(canvas: Canvas) {
+    private fun Canvas.drawHorizontalDividers() {
         Log.d(TAG, "Drawing horizontal dividers")
         var localTime = startTime
         var last = LocalTime.MIN
         while (localTime.isBefore(endTime) && !last.isAfter(localTime)) {
             val offset = Duration.between(startTime, localTime)
             Log.v(TAG, "Offset $offset")
-            val y = topOffsetPx + context.dipToPixeel(offset.toMinutes() * config.stretchingFactor)
-            canvas.drawLine(0f, y, canvas.width.toFloat(), y, paintDivider)
+            val y = topOffsetPx + context.dipToPixelF(offset.toMinutes() * config.stretchingFactor)
+            drawLine(0f, y, width.toFloat(), y, paintDivider)
 
             // final String timeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT));
             val timeString = localTime.toLocalString(context)
-            drawMultiLineText(canvas, timeString, context.dipToPixeel(25f), y + context.dipToPixeel(20f), mPaintLabels)
+            drawMultiLineText(this, timeString, context.dipToPixelF(25f), y + context.dipToPixelF(20f), mPaintLabels)
 
             last = localTime
             localTime = localTime.plusHours(1)
         }
         val offset = Duration.between(startTime, localTime)
         Log.v(TAG, "Offset + $offset")
-        canvas.drawLine(0f, bottom.toFloat(), canvas.width.toFloat(), bottom.toFloat(), paintDivider)
+        drawLine(0f, bottom.toFloat(), width.toFloat(), bottom.toFloat(), paintDivider)
+    }
+
+    private fun Canvas.drawColumnsWithHeaders() {
+        Log.v(TAG, "Drawing vertical dividers on canvas")
+        val todayDay: Int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+        for ((column, dayId) in days.withIndex()) {
+            drawLeftColumnDivider(column)
+            drawWeekDayName(dayId, column)
+            if (dayId == todayDay) {
+                drawDayHighlight(column)
+            }
+        }
+    }
+
+    private fun Canvas.drawLeftColumnDivider(column: Int) {
+        val left: Int = getColumnStart(column, false)
+        drawLine(left.toFloat(), 0f, left.toFloat(), bottom.toFloat(), paintDivider)
+    }
+
+    private fun Canvas.drawDayHighlight(column: Int) {
+        val left2: Int = getColumnStart(column, true)
+        val right: Int = getColumnEnd(column, true)
+        val rect = Rect(left2, 0, right, bottom)
+        drawRect(rect, accentPaint)
+    }
+
+    private fun Canvas.drawWeekDayName(dayId: Int, column: Int) {
+        val shortName = DateFormatSymbols().shortWeekdays[dayId]
+        val xLabel = (getColumnStart(column, false) + getColumnEnd(column, false)) / 2
+        drawText(shortName, xLabel.toFloat(), topOffsetPx / 2 + mPaintLabels.descent(), mPaintLabels)
     }
 
     private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {
@@ -142,18 +166,18 @@ internal class WeekBackgroundView(
      * @param column starting to count at 0
      * @return offset in px
      */
-    internal fun getColumnStart(column: Int, considerDivider: Boolean): Float {
-        val contentWidth: Float = width - leftOffset
-        var offset: Float = leftOffset + contentWidth * column / days.size
+    internal fun getColumnStart(column: Int, considerDivider: Boolean): Int {
+        val contentWidth: Int = width - leftOffset
+        var offset: Int = leftOffset + contentWidth * column / days.size
         if (considerDivider) {
-            offset += (DIVIDER_WIDTH_PX / 2f)
+            offset += (DIVIDER_WIDTH_PX / 2)
         }
         return offset
     }
 
-    internal fun getColumnEnd(column: Int, considerDivider: Boolean): Float {
-        val contentWidth: Float = width - leftOffset
-        var offset: Float = leftOffset + contentWidth * (column + 1) / days.size
+    internal fun getColumnEnd(column: Int, considerDivider: Boolean): Int {
+        val contentWidth: Int = width - leftOffset
+        var offset: Int = leftOffset + contentWidth * (column + 1) / days.size
         if (considerDivider) {
             offset -= (DIVIDER_WIDTH_PX / 2)
         }
@@ -161,7 +185,7 @@ internal class WeekBackgroundView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
-        val height = topOffsetPx + context.dipToPixeel(getDurationMinutes() * config.stretchingFactor) + paddingBottom
+        val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * config.stretchingFactor) + paddingBottom
         val heightMeasureSpec2 = View.MeasureSpec.makeMeasureSpec(height.roundToInt(), View.MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
@@ -172,7 +196,9 @@ internal class WeekBackgroundView(
     }
 
     companion object {
-        private val DIVIDER_WIDTH_PX: Float = 2f // should be a multiple of 2
+        /** Thickness of the grid.
+         * Should be a multiple of 2 because of rounding. */
+        private val DIVIDER_WIDTH_PX: Int = 2
         private val DIVIDER_COLOR = Color.LTGRAY
     }
 

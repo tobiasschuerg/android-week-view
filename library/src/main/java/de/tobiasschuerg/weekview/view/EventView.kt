@@ -16,7 +16,7 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TextHelper
 import de.tobiasschuerg.weekview.util.ViewHelper
-import de.tobiasschuerg.weekview.util.dipToPixeel
+import de.tobiasschuerg.weekview.util.dipToPixelF
 import de.tobiasschuerg.weekview.util.toLocalString
 import kotlin.math.roundToInt
 
@@ -28,7 +28,7 @@ class EventView(
 ) : View(context) {
 
     private val TAG = javaClass.simpleName
-    private val CORNER_RADIUS = context.dipToPixeel(2f)
+    private val CORNER_RADIUS = context.dipToPixelF(2f)
 
     private val textPaint: Paint by lazy {
         Paint().apply {
@@ -56,7 +56,7 @@ class EventView(
     private val typeWeight: Int
 
     init {
-        val pad = this.context.dipToPixeel(2f).roundToInt()
+        val pad = this.context.dipToPixelF(2f).roundToInt()
         setPadding(pad, pad, pad, pad)
 
         background = PaintDrawable().apply {
@@ -183,7 +183,7 @@ class EventView(
         }
 
         val desiredHeightDp = event.duration.toMinutes() * config.stretchingFactor
-        val desiredHeightPx = context.dipToPixeel(desiredHeightDp).roundToInt()
+        val desiredHeightPx = context.dipToPixelF(desiredHeightDp).roundToInt()
         val resolvedHeight = resolveSize(desiredHeightPx, heightMeasureSpec)
 
         setMeasuredDimension(width, resolvedHeight)

@@ -6,7 +6,7 @@ import android.view.View.MeasureSpec
 
 object ViewHelper {
 
-    fun dp2px(dip: Float, context: Context): Float = context.dipToPixeel(dip)
+    fun dp2px(dip: Float, context: Context): Float = context.dipToPixelF(dip)
 
     fun debugMeasureSpec(spec: Int): String {
         val mode = MeasureSpec.getMode(spec)

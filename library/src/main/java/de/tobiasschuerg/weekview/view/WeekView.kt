@@ -11,7 +11,7 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
-import de.tobiasschuerg.weekview.util.dipToPixeel
+import de.tobiasschuerg.weekview.util.dipToPixelF
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import java.util.*
@@ -192,7 +192,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             val offset = Duration.between(startTime, lessonStart)
 
             val yOffset = offset.toMinutes() * config.stretchingFactor
-            val top = context.dipToPixeel(yOffset) + backgroundView.topOffsetPx
+            val top = context.dipToPixelF(yOffset) + backgroundView.topOffsetPx
 
             val bottom = top + eventView.measuredHeight
             eventView.layout(left, top.roundToInt(), right, bottom.roundToInt())
