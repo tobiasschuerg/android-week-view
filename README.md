@@ -7,7 +7,7 @@ Android library for displaying an overview of events for a week like in a schedu
 It's the week view initially used in Schedule Deluxe (https://play.google.com/store/apps/details?id=com.tobiasschuerg.stundenplan), 
 which is now outfactored in favor of a better modularization.
 
-<img src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400"> or <img src="https://lh3.googleusercontent.com/F-8Kn4XQoC-_fh6p_2T9LPFlWO5hXtY9boCX6KuFSHKa2Cp4rVP0xIM_xkl8SnuPhw=h400-rw" height="400">
+<img src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400">
 
 # Get it
 
