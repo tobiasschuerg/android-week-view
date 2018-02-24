@@ -3,6 +3,7 @@ package de.tobiasschuerg.weekview.sample
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
@@ -41,6 +42,22 @@ class SampleActivity : AppCompatActivity() {
         week_view_foo.setLessonClickListener { Toast.makeText(applicationContext, it.event.fullName, Toast.LENGTH_SHORT).show() }
         // optional: register a context menu to each event
         registerForContextMenu(week_view_foo)
+
+        week_view_foo.setOnTouchListener({ v, event ->
+            when (event.pointerCount) {
+                1 -> {
+                    Log.d("Scroll", "1-pointer touch")
+                    v.parent.requestDisallowInterceptTouchEvent(false)
+
+                }
+                2 -> {
+                    Log.d("Zoom", "2-pointer touch")
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+
+                }
+            }
+            false
+        })
     }
 
     private fun createSampleEntry(): Event.Single {
