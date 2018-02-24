@@ -24,9 +24,9 @@ class EventView(
         var scalingFactor: Float = 1f,
         val useShortNames: Boolean = true,
         val showTimeStart: Boolean = true,
-        val showType: Boolean = true,
-        val showTeacher: Boolean = true,
-        val showLocation: Boolean = true,
+        val showUpperText: Boolean = true,
+        val showSubtitle: Boolean = true,
+        val showLowerText: Boolean = true,
         val showTimeEnd: Boolean = true
 
 ) : View(context) {
@@ -36,17 +36,17 @@ class EventView(
 
     private val textPaint: Paint by lazy { Paint().apply { isAntiAlias = true } }
 
-    private val subjectName: String by lazy { if (useShortNames) event.shortName else event.fullName }
+    private val subjectName: String by lazy { if (useShortNames) event.shortTitle else event.title }
 
     private val textBounds: Rect = Rect()
 
     private val weightSum: Int
-    private val lessonWeight = 3
-    private val fromweight: Int
-    private val toWeight: Int
-    private val teacherweight: Int
-    private val locationWeight: Int
-    private val typeWeight: Int
+    private val weightStartTime: Int
+    private val weightUpperText: Int
+    private val weightTitle = 3
+    private val weightSubTitle: Int
+    private val weightLowerText: Int
+    private val weightEndTime: Int
 
 
     init {
@@ -59,20 +59,20 @@ class EventView(
         }
 
         /** Calculate weights above & below. */
-        if (showTimeStart) fromweight = 1 else fromweight = 0
-        if (showType) typeWeight = 1 else typeWeight = 0
-        if (showTeacher) teacherweight = 1 else teacherweight = 0
-        if (showLocation) locationWeight = 1 else locationWeight = 0
-        if (showTimeEnd) toWeight = 1 else toWeight = 0
+        if (showTimeStart) weightStartTime = 1 else weightStartTime = 0
+        if (showUpperText) weightUpperText = 1 else weightUpperText = 0
+        if (showSubtitle) weightSubTitle = 1 else weightSubTitle = 0
+        if (showLowerText) weightLowerText = 1 else weightLowerText = 0
+        if (showTimeEnd) weightEndTime = 1 else weightEndTime = 0
 
-        weightSum = fromweight + typeWeight + teacherweight + locationWeight + toWeight + lessonWeight
+        weightSum = weightStartTime + weightUpperText + weightSubTitle + weightLowerText + weightEndTime + weightTitle
 
         textPaint.color = event.textColor
     }
 
     // TODO: clean up
     override fun onDraw(canvas: Canvas) {
-        Log.d(TAG, "Drawing ${event.fullName}")
+        Log.d(TAG, "Drawing ${event.title}")
 
         // only for debugging
         if (Debug.isDebuggerConnected()) {
@@ -83,15 +83,15 @@ class EventView(
             }
         }
 
-        // subject
+        // title
         val maxTextSize = TextHelper.fitText(subjectName, textPaint.textSize * 3, width - (paddingLeft + paddingRight), height / 4)
         textPaint.textSize = maxTextSize
         textPaint.getTextBounds(subjectName, 0, subjectName.length, textBounds)
-        var weight = fromweight + typeWeight
+        var weight = weightStartTime + weightUpperText
         if (weight == 0) {
             weight++
         }
-        val subjectY = getY(weight, lessonWeight, textBounds)
+        val subjectY = getY(weight, weightTitle, textBounds)
         canvas.drawText(subjectName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
 
         textPaint.textSize = TextHelper.fitText("123456", maxTextSize, width / 2,
@@ -111,25 +111,25 @@ class EventView(
             canvas.drawText(endText, (width - (textBounds.right + paddingRight)).toFloat(), (height - paddingBottom).toFloat(), textPaint)
         }
 
-        // type
-        if (showType && event.type != null) {
-            textPaint.getTextBounds(event.type, 0, event.type.length, textBounds)
-            val typeY = getY(position = fromweight, bounds = textBounds)
-            canvas.drawText(event.type, (width / 2 - textBounds.centerX()).toFloat(), typeY.toFloat(), textPaint)
+        // upper text
+        if (showUpperText && event.upperText != null) {
+            textPaint.getTextBounds(event.upperText, 0, event.upperText.length, textBounds)
+            val typeY = getY(position = weightStartTime, bounds = textBounds)
+            canvas.drawText(event.upperText, (width / 2 - textBounds.centerX()).toFloat(), typeY.toFloat(), textPaint)
         }
 
-        // teacher
-        if (showTeacher && event.teacher != null) {
-            textPaint.getTextBounds(event.teacher, 0, event.teacher.length, textBounds)
-            val teacherY = getY(position = fromweight + typeWeight + lessonWeight, bounds = textBounds)
-            canvas.drawText(event.teacher, (width / 2 - textBounds.centerX()).toFloat(), teacherY.toFloat(), textPaint)
+        // subtitle
+        if (showSubtitle && event.subTitle != null) {
+            textPaint.getTextBounds(event.subTitle, 0, event.subTitle.length, textBounds)
+            val teacherY = getY(position = weightStartTime + weightUpperText + weightTitle, bounds = textBounds)
+            canvas.drawText(event.subTitle, (width / 2 - textBounds.centerX()).toFloat(), teacherY.toFloat(), textPaint)
         }
 
-        // location
-        if (showLocation && event.location != null) {
-            textPaint.getTextBounds(event.location, 0, event.location.length, textBounds)
-            val locationY = getY(position = fromweight + typeWeight + lessonWeight + teacherweight, bounds = textBounds)
-            canvas.drawText(event.location, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)
+        // lower text
+        if (showLowerText && event.lowerText != null) {
+            textPaint.getTextBounds(event.lowerText, 0, event.lowerText.length, textBounds)
+            val locationY = getY(position = weightStartTime + weightUpperText + weightTitle + weightSubTitle, bounds = textBounds)
+            canvas.drawText(event.lowerText, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)
         }
 
     }
@@ -140,9 +140,9 @@ class EventView(
         return Math.round(y) - bounds.centerY()
     }
 
-    var measureCount = 0
+    private var measureCount = 0
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        Log.v(TAG, "Measuring ${event.fullName} ${measureCount++}")
+        Log.v(TAG, "Measuring ${event.title} ${measureCount++}")
         if (BuildConfig.DEBUG) {
             val debugWidth = ViewHelper.debugMeasureSpec(widthMeasureSpec)
             val debugHeight = ViewHelper.debugMeasureSpec(heightMeasureSpec)
@@ -157,7 +157,7 @@ class EventView(
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        Log.d(TAG, "Laying out ${event.fullName}: changed[$changed] ($left, $top),($right, $bottom)")
+        Log.d(TAG, "Laying out ${event.title}: changed[$changed] ($left, $top),($right, $bottom)")
         super.onLayout(changed, left, top, right, bottom)
     }
 

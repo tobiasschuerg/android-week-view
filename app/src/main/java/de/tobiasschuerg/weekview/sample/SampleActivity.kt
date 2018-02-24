@@ -23,11 +23,23 @@ import kotlin.math.absoluteValue
 class SampleActivity : AppCompatActivity() {
 
     private val random = Random()
-    private val name = listOf("Foo", "Bar", "Android")
+    private val titles = listOf("Title", "Event", "Android", "Sport", "Yoga", "Shopping", "Meeting")
+    private val subTitles = listOf("City Center", "@Home", "urgent", "New York", null)
+
+    private val minEventLength = 30
+    private val maxEventLength = 90
 
     private val data: MutableList<Event.Single> by lazy {
         WeekData().apply {
-            (0..10).map { this.add(createSampleEntry()) }
+            var startTime: LocalTime
+            (1..7).map {
+                startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
+                while (startTime.isBefore(LocalTime.of(15, 0))) {
+                    val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())
+                    this.add(createSampleEntry(it, startTime, endTime))
+                    startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
+                }
+            }
         }.getSingleEvents().toMutableList()
     }
 
@@ -39,7 +51,7 @@ class SampleActivity : AppCompatActivity() {
         // set up the WeekView with the data
         week_view_foo.addLessonsToTimetable(data)
         // optional: add an onClickListener for each event
-        week_view_foo.setLessonClickListener { Toast.makeText(applicationContext, it.event.fullName, Toast.LENGTH_SHORT).show() }
+        week_view_foo.setLessonClickListener { Toast.makeText(applicationContext, it.event.title, Toast.LENGTH_SHORT).show() }
         // optional: register a context menu to each event
         registerForContextMenu(week_view_foo)
 
@@ -60,20 +72,20 @@ class SampleActivity : AppCompatActivity() {
         })
     }
 
-    private fun createSampleEntry(): Event.Single {
-        val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
-        val name = name[random.nextInt(name.size)]
+    private fun createSampleEntry(day: Int, startTime: LocalTime, endTime: LocalTime): Event.Single {
+        val name = titles[random.nextInt(titles.size)]
+        val subTitle = subTitles[random.nextInt(subTitles.size)]
         return Event.Single(
                 random.nextLong().absoluteValue,
                 LocalDate.now(),
                 name,
                 name,
-                random.nextInt(7) + 1,
+                subTitle,
+                day,
                 startTime,
-                startTime.plusMinutes(20 + random.nextInt(60).toLong()),
-                null,
-                null,
-                null,
+                endTime,
+                null, //"upper",
+                null, // "lower",
                 Color.WHITE,
                 randomColor()
         )
@@ -85,7 +97,7 @@ class SampleActivity : AppCompatActivity() {
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
         val (event) = menuInfo as EventView.LessonViewContextInfo
-        menu.setHeaderTitle(event.fullName)
+        menu.setHeaderTitle(event.title)
         menu.add("First Option")
         menu.add("Second Option")
         menu.add("Third Option")
@@ -98,7 +110,10 @@ class SampleActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val newEvents = listOf(createSampleEntry())
+        val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
+        val endTime = startTime.plusMinutes((30 + random.nextInt(60)).toLong())
+        val day = random.nextInt(7) + 1
+        val newEvents = listOf(createSampleEntry(day, startTime, endTime))
         data.addAll(newEvents)
         week_view_foo.addLessonsToTimetable(newEvents)
         registerForContextMenu(week_view_foo)

@@ -8,22 +8,22 @@ sealed class Event {
 
     abstract val id: Long
     abstract val date: LocalDate
-    abstract val fullName: String
-    abstract val shortName: String
+    abstract val title: String
+    abstract val shortTitle: String
 
     data class Single(
             override val id: Long,
             override val date: LocalDate,
-            override val fullName: String,
-            override val shortName: String,
+            override val title: String,
+            override val shortTitle: String,
+            val subTitle: String?,
 
             val day: Int,
             val startTime: LocalTime,
             val endTime: LocalTime,
 
-            val type: String?,
-            val teacher: String?,
-            val location: String?,
+            val upperText: String?,
+            val lowerText: String?,
 
             val textColor: Int,
             val backgroundColor: Int
@@ -34,15 +34,15 @@ sealed class Event {
     data class AllDay(
             override val id: Long,
             override val date: LocalDate,
-            override val fullName: String,
-            override val shortName: String
+            override val title: String,
+            override val shortTitle: String
     ) : Event()
 
     data class MultiDay(
             override val id: Long,
             override val date: LocalDate,
-            override val fullName: String,
-            override val shortName: String,
+            override val title: String,
+            override val shortTitle: String,
 
             val lastDate: LocalDate
     ) : Event()

@@ -135,12 +135,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             // don't add events for days which are not enabled
             if (event.day == SATURDAY) {
                 if (!config.saturdayEnabled) {
-                    Log.w(TAG, "Skipping ${event.fullName} as saturday is disabled")
+                    Log.w(TAG, "Skipping ${event.title} as saturday is disabled")
                     continue
                 }
             } else if (event.day == SUNDAY) {
                 if (!config.sundayEnabled) {
-                    Log.w(TAG, "Skipping ${event.fullName} as sunday is disabled")
+                    Log.w(TAG, "Skipping ${event.title} as sunday is disabled")
                     continue
                 }
             }
