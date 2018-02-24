@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -13,35 +14,30 @@ import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
-import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.*
-import kotlin.math.roundToInt
 
-
+/** this view is only constructed during runtime. */
+@SuppressLint("ViewConstructor")
 class EventView(
         context: Context,
-        private val config: WeekViewConfig,
-        val event: Event.Single
+        val event: Event.Single,
+        var scalingFactor: Float = 1f,
+        val useShortNames: Boolean = true,
+        val showTimeStart: Boolean = true,
+        val showType: Boolean = true,
+        val showTeacher: Boolean = true,
+        val showLocation: Boolean = true,
+        val showTimeEnd: Boolean = true
+
 ) : View(context) {
 
     private val TAG = javaClass.simpleName
-    private val CORNER_RADIUS = context.dipToPixelF(2f)
+    private val CORNER_RADIUS_PX = context.dipToPixelF(2f)
 
-    private val textPaint: Paint by lazy {
-        Paint().apply {
-            isAntiAlias = true
-        }
-    }
+    private val textPaint: Paint by lazy { Paint().apply { isAntiAlias = true } }
 
-    private val subjectName: String by lazy {
-        if (config.useShortNames) {
-            event.shortName
-        } else {
-            event.fullName
-        }
-    }
+    private val subjectName: String by lazy { if (useShortNames) event.shortName else event.fullName }
 
-    // TODO: specify this outside?
     private val textBounds: Rect = Rect()
 
     private val weightSum: Int
@@ -52,54 +48,26 @@ class EventView(
     private val locationWeight: Int
     private val typeWeight: Int
 
-    var scalingFactor = 1f
 
     init {
-        val pad = this.context.dipToPixelF(2f).roundToInt()
-        setPadding(pad, pad, pad, pad)
+        val padding = this.context.dipToPixelI(2f)
+        setPadding(padding, padding, padding, padding)
 
         background = PaintDrawable().apply {
             paint.color = event.backgroundColor
-            setCornerRadius(CORNER_RADIUS)
+            setCornerRadius(CORNER_RADIUS_PX)
         }
 
-        /**
-         * Calculate weights above & below:
-         */
-        if (config.showTimeStart) {
-            fromweight = 1
-        } else {
-            fromweight = 0
-        }
-
-        if (config.showType) {
-            typeWeight = 1
-        } else {
-            typeWeight = 0
-        }
-
-        if (config.showTeacher) {
-            teacherweight = 1
-        } else {
-            teacherweight = 0
-        }
-
-        if (config.showLocation) {
-            locationWeight = 1
-        } else {
-            locationWeight = 0
-        }
-
-        if (config.showTimeEnd) {
-            toWeight = 1
-        } else {
-            toWeight = 0
-        }
+        /** Calculate weights above & below. */
+        if (showTimeStart) fromweight = 1 else fromweight = 0
+        if (showType) typeWeight = 1 else typeWeight = 0
+        if (showTeacher) teacherweight = 1 else teacherweight = 0
+        if (showLocation) locationWeight = 1 else locationWeight = 0
+        if (showTimeEnd) toWeight = 1 else toWeight = 0
 
         weightSum = fromweight + typeWeight + teacherweight + locationWeight + toWeight + lessonWeight
 
-        val textColor = event.textColor
-        textPaint.color = textColor
+        textPaint.color = event.textColor
     }
 
     // TODO: clean up
@@ -130,35 +98,35 @@ class EventView(
                 getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds))
 
         // start time
-        if (config.showTimeStart) {
+        if (showTimeStart) {
             val startText = event.startTime.toLocalString(context)
             textPaint.getTextBounds(startText, 0, startText.length, textBounds)
             canvas.drawText(startText, (textBounds.left + paddingLeft).toFloat(), (textBounds.height() + paddingTop).toFloat(), textPaint)
         }
 
         // end time
-        if (config.showTimeEnd) {
+        if (showTimeEnd) {
             val endText = event.endTime.toLocalString(context)
             textPaint.getTextBounds(endText, 0, endText.length, textBounds)
             canvas.drawText(endText, (width - (textBounds.right + paddingRight)).toFloat(), (height - paddingBottom).toFloat(), textPaint)
         }
 
         // type
-        if (config.showType && event.type != null) {
+        if (showType && event.type != null) {
             textPaint.getTextBounds(event.type, 0, event.type.length, textBounds)
             val typeY = getY(position = fromweight, bounds = textBounds)
             canvas.drawText(event.type, (width / 2 - textBounds.centerX()).toFloat(), typeY.toFloat(), textPaint)
         }
 
         // teacher
-        if (config.showTeacher && event.teacher != null) {
+        if (showTeacher && event.teacher != null) {
             textPaint.getTextBounds(event.teacher, 0, event.teacher.length, textBounds)
             val teacherY = getY(position = fromweight + typeWeight + lessonWeight, bounds = textBounds)
             canvas.drawText(event.teacher, (width / 2 - textBounds.centerX()).toFloat(), teacherY.toFloat(), textPaint)
         }
 
         // location
-        if (config.showLocation && event.location != null) {
+        if (showLocation && event.location != null) {
             textPaint.getTextBounds(event.location, 0, event.location.length, textBounds)
             val locationY = getY(position = fromweight + typeWeight + lessonWeight + teacherweight, bounds = textBounds)
             canvas.drawText(event.location, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)

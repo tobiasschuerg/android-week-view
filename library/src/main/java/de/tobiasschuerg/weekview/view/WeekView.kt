@@ -145,8 +145,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                 }
             }
 
-            val lv = EventView(context, config, event)
-            lv.scalingFactor = scaleFactor
+            val lv = EventView(context, event, scaleFactor)
             backgroundView.updateTimes(event.startTime, event.endTime)
 
             // mark active event
