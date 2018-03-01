@@ -25,7 +25,6 @@ import kotlin.math.roundToInt
 class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
 
     private val TAG = javaClass.simpleName
-    private val config = WeekViewConfig() // TODO: add dynamically
 
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
@@ -40,31 +39,33 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
     private val accentColor: Int
 
     private val scaleGestureDetector: ScaleGestureDetector
-
+    private val weekViewConfig: WeekViewConfig
 
     init {
         val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)
         accentColor = arr.getColor(R.styleable.WeekView_accent_color, Color.BLUE)
         arr.recycle()  // Do this when done.
 
+        val prefs = context.getSharedPreferences("ts_week_view", Context.MODE_PRIVATE)
+        weekViewConfig = WeekViewConfig(prefs)
+
         backgroundView = WeekBackgroundView(context)
         backgroundView.setAccentColor(accentColor)
+        backgroundView.scalingFactor = weekViewConfig.scalingFactor
+
         addView(backgroundView)
 
         scaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
-    }
 
-    private var scaleFactor: Float = 1f
-        set(value) {
-            field = value
-            backgroundView.scalingFactor = value
-        }
+    }
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            val factor = scaleFactor * detector.scaleFactor
+            val factor = weekViewConfig.scalingFactor * detector.scaleFactor
             // Don't let the object get too small or too large.
-            scaleFactor = Math.max(0.25f, Math.min(factor, 3.0f))
+            val scaleFactor = Math.max(0.25f, Math.min(factor, 3.0f))
+            weekViewConfig.scalingFactor = scaleFactor
+            backgroundView.scalingFactor = scaleFactor
             Log.d(TAG, "Scale factor is $scaleFactor")
             invalidate()
             requestLayout()
@@ -141,7 +142,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                 }
             }
 
-            val lv = EventView(context, event, scaleFactor)
+            val lv = EventView(context, event, weekViewConfig.scalingFactor)
             backgroundView.updateTimes(event.startTime, event.endTime)
 
             // mark active event
@@ -181,7 +182,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         for (childIndex in 0 until childCount) {
             Log.i(TAG, "child $childIndex of $childCount")
             val eventView: EventView
-            var childView = getChildAt(childIndex)
+            val childView = getChildAt(childIndex)
             if (childView is EventView) {
                 eventView = childView
             } else {
@@ -227,12 +228,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             }
 
-            eventView.scalingFactor = scaleFactor
+            eventView.scalingFactor = weekViewConfig.scalingFactor
             val startTime = backgroundView.startTime
             val lessonStart = eventView.event.startTime
             val offset = Duration.between(startTime, lessonStart)
 
-            val yOffset = offset.toMinutes() * scaleFactor
+            val yOffset = offset.toMinutes() * weekViewConfig.scalingFactor
             val top = context.dipToPixelF(yOffset) + backgroundView.topOffsetPx
 
             val bottom = top + eventView.measuredHeight

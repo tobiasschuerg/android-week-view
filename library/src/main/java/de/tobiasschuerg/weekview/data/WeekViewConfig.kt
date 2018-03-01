@@ -1,13 +1,19 @@
 package de.tobiasschuerg.weekview.data
 
-data class WeekViewConfig(
+import android.content.SharedPreferences
 
-        val useShortNames: Boolean = true,
+/**
+ * Persists the WeekViewConfig.
+ *
+ * Created by Tobias Schürg on 01.03.2018.
+ */
+class WeekViewConfig(val prefs: SharedPreferences) {
 
-        val showTimeStart: Boolean = true,
-        val showType: Boolean = true,
-        val showTeacher: Boolean = true,
-        val showLocation: Boolean = true,
-        val showTimeEnd: Boolean = true
+    private val SCALING_FACTOR = "scaling_facor"
 
-)
+    var scalingFactor: Float = prefs.getFloat(SCALING_FACTOR, 1f)
+        set(value) {
+            field = value
+            prefs.edit().putFloat(SCALING_FACTOR, value).apply()
+        }
+}
