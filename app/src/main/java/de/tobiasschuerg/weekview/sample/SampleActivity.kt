@@ -32,7 +32,7 @@ class SampleActivity : AppCompatActivity() {
     private val data: MutableList<Event.Single> by lazy {
         WeekData().apply {
             var startTime: LocalTime
-            (1..7).map {
+            (1..7).filter { it != Calendar.SATURDAY }.map {
                 startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
                 while (startTime.isBefore(LocalTime.of(15, 0))) {
                     val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())

@@ -19,10 +19,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 
-internal class WeekBackgroundView @JvmOverloads constructor(
-        context: Context,
-        private val days: List<Int> = DayHelper.createListStartingOn()
-) : View(context) {
+internal class WeekBackgroundView constructor(context: Context) : View(context) {
 
     private val TAG: String = javaClass.simpleName
 
@@ -52,6 +49,13 @@ internal class WeekBackgroundView @JvmOverloads constructor(
     private val leftOffset: Int
 
     private var drawCount = 0
+
+    val days: MutableList<Int> = DayHelper.createListStartingOn()
+            .toMutableList()
+            .apply {
+                remove(Calendar.SATURDAY)
+                remove(Calendar.SUNDAY)
+            }
 
     var startTime: LocalTime = LocalTime.of(10, 0)
         private set

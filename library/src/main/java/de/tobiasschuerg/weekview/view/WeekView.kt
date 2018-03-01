@@ -14,7 +14,6 @@ import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
-import de.tobiasschuerg.weekview.util.DayHelper.createListStartingOn
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
@@ -44,16 +43,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
 
     init {
-        val days: MutableList<Int> = createListStartingOn().toMutableList()
-        val iterator: MutableIterator<Int> = days.iterator()
-        while (iterator.hasNext()) {
-            val id = iterator.next()
-            if (id == SATURDAY && !config.saturdayEnabled || id == SUNDAY && !config.sundayEnabled) {
-                Log.v(TAG, "Day $id is disabled")
-                iterator.remove()
-            }
-        }
-
         val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)
         accentColor = arr.getColor(R.styleable.WeekView_accent_color, Color.BLUE)
         arr.recycle()  // Do this when done.
@@ -132,21 +121,30 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         Log.d(TAG, "Adding ${events.size} events to timetable")
         val time: LocalTime = LocalTime.now()
         for (event in events) {
-            // don't add events for days which are not enabled
-            if (event.day == SATURDAY) {
-                if (!config.saturdayEnabled) {
-                    Log.w(TAG, "Skipping ${event.title} as saturday is disabled")
-                    continue
+
+            when {
+                event.day == SATURDAY -> {
+                    Log.i(TAG, "Enabling Saturday")
+                    if (!backgroundView.days.contains(Calendar.SATURDAY)) {
+                        backgroundView.days.add(Calendar.SATURDAY)
+                    }
                 }
-            } else if (event.day == SUNDAY) {
-                if (!config.sundayEnabled) {
-                    Log.w(TAG, "Skipping ${event.title} as sunday is disabled")
-                    continue
+                event.day == SUNDAY   -> {
+                    Log.i(TAG, "Enabling Saturday")
+                    if (!backgroundView.days.contains(Calendar.SATURDAY)) {
+                        backgroundView.days.add(Calendar.SATURDAY)
+                    }
+                    Log.i(TAG, "Enabling Sunday")
+                    if (!backgroundView.days.contains(Calendar.SUNDAY)) {
+                        backgroundView.days.add(Calendar.SUNDAY)
+                    }
                 }
             }
 
             val lv = EventView(context, event, scaleFactor)
             backgroundView.updateTimes(event.startTime, event.endTime)
+
+            // mark active event
 
             // mark active event
             if (Calendar.getInstance().get(DAY_OF_WEEK) == event.day && // this day
@@ -180,11 +178,10 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             backgroundView.setScreenshotMode(true)
         }
 
-        val childCount = childCount
-        var childView: View
         for (childIndex in 0 until childCount) {
+            Log.i(TAG, "child $childIndex of $childCount")
             val eventView: EventView
-            childView = getChildAt(childIndex)
+            var childView = getChildAt(childIndex)
             if (childView is EventView) {
                 eventView = childView
             } else {
@@ -248,12 +245,14 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         val firstDayOfTheWeek = Calendar.getInstance().firstDayOfWeek
 
         // directly return if day os not enabled
+        val saturdayEnabled = backgroundView.days.contains(Calendar.SATURDAY)
+        val sundayEnabled = backgroundView.days.contains(Calendar.SUNDAY)
         if (calendarDay == SATURDAY) {
-            if (!config.saturdayEnabled) {
+            if (!saturdayEnabled) {
                 return -1
             }
         } else if (calendarDay == SUNDAY) {
-            if (!config.sundayEnabled) {
+            if (!sundayEnabled) {
                 return -1
             }
         }
@@ -262,7 +261,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             Calendar.MONDAY   -> {
                 var column = (calendarDay + 5) % 7 // mo: 0, fr:4, su:6
-                if (!config.saturdayEnabled && column == 6) {
+                if (!saturdayEnabled && column == 6) {
                     column--
                 }
                 return column
@@ -270,12 +269,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             Calendar.SATURDAY -> {
                 var col = calendarDay % 7 // sa: 0, su: 1, fr: 6,
-                if (!config.sundayEnabled && col > 1) col--
-                if (!config.saturdayEnabled) col--
+                if (!sundayEnabled && col > 1) col--
+                if (!saturdayEnabled) col--
                 return col
             }
 
-            Calendar.SUNDAY   -> return if (config.sundayEnabled) {
+            Calendar.SUNDAY   -> return if (sundayEnabled) {
                 calendarDay - 1 // su: 0, mo: 1 fr: 5, sa: 6
             } else {
                 calendarDay - 2 // mo: 0 fr: 4, sa: 5, su: -1

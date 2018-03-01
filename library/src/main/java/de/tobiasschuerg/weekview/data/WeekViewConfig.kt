@@ -3,8 +3,6 @@ package de.tobiasschuerg.weekview.data
 data class WeekViewConfig(
 
         val useShortNames: Boolean = true,
-        val saturdayEnabled: Boolean = true,
-        val sundayEnabled: Boolean = true,
 
         val showTimeStart: Boolean = true,
         val showType: Boolean = true,
