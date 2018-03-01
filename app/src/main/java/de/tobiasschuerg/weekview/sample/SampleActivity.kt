@@ -51,7 +51,10 @@ class SampleActivity : AppCompatActivity() {
         // set up the WeekView with the data
         week_view_foo.addLessonsToTimetable(data)
         // optional: add an onClickListener for each event
-        week_view_foo.setLessonClickListener { Toast.makeText(applicationContext, it.event.title, Toast.LENGTH_SHORT).show() }
+        week_view_foo.setLessonClickListener {
+            Toast.makeText(applicationContext, "Removing " + it.event.title, Toast.LENGTH_SHORT).show()
+            week_view_foo.removeView(it)
+        }
         // optional: register a context menu to each event
         registerForContextMenu(week_view_foo)
 
