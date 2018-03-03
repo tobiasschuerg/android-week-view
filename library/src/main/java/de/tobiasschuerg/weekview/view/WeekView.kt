@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
+import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.dipToPixelF
@@ -40,6 +41,11 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
     private val scaleGestureDetector: ScaleGestureDetector
     private val weekViewConfig: WeekViewConfig
+
+    private var eventConfig = EventConfig()
+        set(value) {
+            field = value
+        }
 
     init {
         val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)
@@ -142,7 +148,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                 }
             }
 
-            val lv = EventView(context, event, weekViewConfig.scalingFactor)
+            val lv = EventView(context, event, eventConfig, weekViewConfig.scalingFactor)
             backgroundView.updateTimes(event.startTime, event.endTime)
 
             // mark active event

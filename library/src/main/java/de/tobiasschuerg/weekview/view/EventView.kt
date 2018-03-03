@@ -14,6 +14,7 @@ import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
+import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.*
 
 /** this view is only constructed during runtime. */
@@ -21,13 +22,9 @@ import de.tobiasschuerg.weekview.util.*
 class EventView(
         context: Context,
         val event: Event.Single,
-        var scalingFactor: Float = 1f,
-        val useShortNames: Boolean = true,
-        val showTimeStart: Boolean = true,
-        val showUpperText: Boolean = true,
-        val showSubtitle: Boolean = true,
-        val showLowerText: Boolean = true,
-        val showTimeEnd: Boolean = true
+        val config: EventConfig,
+        var scalingFactor: Float = 1f
+
 
 ) : View(context) {
 
@@ -36,7 +33,7 @@ class EventView(
 
     private val textPaint: Paint by lazy { Paint().apply { isAntiAlias = true } }
 
-    private val subjectName: String by lazy { if (useShortNames) event.shortTitle else event.title }
+    private val subjectName: String by lazy { if (config.useShortNames) event.shortTitle else event.title }
 
     private val textBounds: Rect = Rect()
 
@@ -59,11 +56,11 @@ class EventView(
         }
 
         /** Calculate weights above & below. */
-        if (showTimeStart) weightStartTime = 1 else weightStartTime = 0
-        if (showUpperText) weightUpperText = 1 else weightUpperText = 0
-        if (showSubtitle) weightSubTitle = 1 else weightSubTitle = 0
-        if (showLowerText) weightLowerText = 1 else weightLowerText = 0
-        if (showTimeEnd) weightEndTime = 1 else weightEndTime = 0
+        if (config.showTimeStart) weightStartTime = 1 else weightStartTime = 0
+        if (config.showUpperText) weightUpperText = 1 else weightUpperText = 0
+        if (config.showSubtitle) weightSubTitle = 1 else weightSubTitle = 0
+        if (config.showLowerText) weightLowerText = 1 else weightLowerText = 0
+        if (config.showTimeEnd) weightEndTime = 1 else weightEndTime = 0
 
         weightSum = weightStartTime + weightUpperText + weightSubTitle + weightLowerText + weightEndTime + weightTitle
 
@@ -98,35 +95,35 @@ class EventView(
                 getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds))
 
         // start time
-        if (showTimeStart) {
+        if (config.showTimeStart) {
             val startText = event.startTime.toLocalString(context)
             textPaint.getTextBounds(startText, 0, startText.length, textBounds)
             canvas.drawText(startText, (textBounds.left + paddingLeft).toFloat(), (textBounds.height() + paddingTop).toFloat(), textPaint)
         }
 
         // end time
-        if (showTimeEnd) {
+        if (config.showTimeEnd) {
             val endText = event.endTime.toLocalString(context)
             textPaint.getTextBounds(endText, 0, endText.length, textBounds)
             canvas.drawText(endText, (width - (textBounds.right + paddingRight)).toFloat(), (height - paddingBottom).toFloat(), textPaint)
         }
 
         // upper text
-        if (showUpperText && event.upperText != null) {
+        if (config.showUpperText && event.upperText != null) {
             textPaint.getTextBounds(event.upperText, 0, event.upperText.length, textBounds)
             val typeY = getY(position = weightStartTime, bounds = textBounds)
             canvas.drawText(event.upperText, (width / 2 - textBounds.centerX()).toFloat(), typeY.toFloat(), textPaint)
         }
 
         // subtitle
-        if (showSubtitle && event.subTitle != null) {
+        if (config.showSubtitle && event.subTitle != null) {
             textPaint.getTextBounds(event.subTitle, 0, event.subTitle.length, textBounds)
             val teacherY = getY(position = weightStartTime + weightUpperText + weightTitle, bounds = textBounds)
             canvas.drawText(event.subTitle, (width / 2 - textBounds.centerX()).toFloat(), teacherY.toFloat(), textPaint)
         }
 
         // lower text
-        if (showLowerText && event.lowerText != null) {
+        if (config.showLowerText && event.lowerText != null) {
             textPaint.getTextBounds(event.lowerText, 0, event.lowerText.length, textBounds)
             val locationY = getY(position = weightStartTime + weightUpperText + weightTitle + weightSubTitle, bounds = textBounds)
             canvas.drawText(event.lowerText, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)
