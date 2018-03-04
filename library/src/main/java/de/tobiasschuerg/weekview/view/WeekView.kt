@@ -42,10 +42,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
     private val scaleGestureDetector: ScaleGestureDetector
     private val weekViewConfig: WeekViewConfig
 
-    private var eventConfig = EventConfig()
-        set(value) {
-            field = value
-        }
+    var eventConfig = EventConfig()
 
     init {
         val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)

@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import com.jakewharton.threetenabp.AndroidThreeTen
 import de.tobiasschuerg.weekview.data.Event
+import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.view.EventView
 import kotlinx.android.synthetic.main.activity_sample.*
@@ -47,6 +48,10 @@ class SampleActivity : AppCompatActivity() {
         AndroidThreeTen.init(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
+
+
+        val config = EventConfig(showSubtitle = false, showTimeEnd = false)
+        week_view_foo.eventConfig = config
 
         // set up the WeekView with the data
         week_view_foo.addLessonsToTimetable(data)
