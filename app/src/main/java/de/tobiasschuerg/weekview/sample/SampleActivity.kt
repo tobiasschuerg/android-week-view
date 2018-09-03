@@ -63,7 +63,7 @@ class SampleActivity : AppCompatActivity() {
         // optional: register a context menu to each event
         registerForContextMenu(week_view_foo)
 
-        week_view_foo.setOnTouchListener({ v, event ->
+        week_view_foo.setOnTouchListener { v, event ->
             when (event.pointerCount) {
                 1 -> {
                     Log.d("Scroll", "1-pointer touch")
@@ -77,7 +77,7 @@ class SampleActivity : AppCompatActivity() {
                 }
             }
             false
-        })
+        }
     }
 
     private fun createSampleEntry(day: Int, startTime: LocalTime, endTime: LocalTime): Event.Single {
@@ -113,7 +113,7 @@ class SampleActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.add("Add").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        menu.add("Add").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return super.onCreateOptionsMenu(menu)
     }
 

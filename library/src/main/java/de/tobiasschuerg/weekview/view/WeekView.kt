@@ -25,8 +25,6 @@ import kotlin.math.roundToInt
 
 class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
 
-    private val TAG = javaClass.simpleName
-
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
 
@@ -202,15 +200,15 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                 removeView(childView)
                 continue
             }
-            var left: Int = backgroundView.getColumnStart(column, true).toInt()
-            val right: Int = backgroundView.getColumnEnd(column, true).toInt()
+            var left: Int = backgroundView.getColumnStart(column, true)
+            val right: Int = backgroundView.getColumnEnd(column, true)
 
             overlapsWith.clear()
             for (j in 0 until childIndex) {
                 val v2 = getChildAt(j)
                 // get next LessonView
                 if (v2 is EventView) {
-// check for overlap
+                    // check for overlap
                     if (v2.event.day != eventView.event.day) {
                         continue // days differ, overlap not possible
                     } else if (overlaps(eventView, v2)) {
@@ -221,11 +219,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             if (overlapsWith.size > 0) {
                 val width = (right - left) / (overlapsWith.size + 1)
-                var iw = 0
-                for (view in overlapsWith) {
-                    val left2 = left + iw * width
+                for ((index, view) in overlapsWith.withIndex()) {
+                    val left2 = left + index * width
                     view.layout(left2, view.top, left2 + width, view.bottom)
-                    iw++
                 }
                 left = right - width
 
@@ -306,5 +302,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         val lessonWithin = leftStartsAfterRightStarts && rightEndsAfterLeftEnds
 
         return lessonStartsWithing || lessonEndsWithing || lessonWithin
+    }
+
+    companion object {
+        private const val TAG = "WeekView"
     }
 }
