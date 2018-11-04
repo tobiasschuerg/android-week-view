@@ -21,8 +21,6 @@ import kotlin.math.roundToInt
 
 internal class WeekBackgroundView constructor(context: Context) : View(context) {
 
-    private val TAG: String = javaClass.simpleName
-
     private val accentPaint: Paint by lazy {
         Paint().apply { strokeWidth = DIVIDER_WIDTH_PX.toFloat() * 2 }
     }
@@ -45,8 +43,8 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     private var isInScreenshotMode = false
 
-    val topOffsetPx: Int
-    private val leftOffset: Int
+    val topOffsetPx: Int = context.dipToPixelI(32f)
+    private val leftOffset: Int = context.dipToPixelI(48f)
 
     private var drawCount = 0
 
@@ -70,11 +68,6 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
             requestLayout()
             // invalidate()
         }
-
-    init {
-        topOffsetPx = context.dipToPixelI(32f)
-        leftOffset = context.dipToPixelI(48f)
-    }
 
     fun setAccentColor(color: Int) {
         accentPaint.color = color
@@ -206,13 +199,6 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         isInScreenshotMode = screenshotMode
     }
 
-    companion object {
-        /** Thickness of the grid.
-         * Should be a multiple of 2 because of rounding. */
-        private val DIVIDER_WIDTH_PX: Int = 2
-        private val DIVIDER_COLOR = Color.LTGRAY
-    }
-
     fun updateTimes(startTime: LocalTime, endTime: LocalTime) {
         if (startTime.isAfter(endTime)) throw IllegalArgumentException()
         if (startTime.isBefore(this.startTime)) {
@@ -225,5 +211,13 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     private fun getDurationMinutes(): Long {
         return Duration.between(startTime, endTime).toMinutes()
+    }
+
+    companion object {
+        /** Thickness of the grid.
+         * Should be a multiple of 2 because of rounding. */
+        private const val DIVIDER_WIDTH_PX: Int = 2
+        private const val DIVIDER_COLOR = Color.LTGRAY
+        private const val TAG = "WeekBackgroundView"
     }
 }

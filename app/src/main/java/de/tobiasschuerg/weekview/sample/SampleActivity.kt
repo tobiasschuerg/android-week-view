@@ -30,7 +30,7 @@ class SampleActivity : AppCompatActivity() {
     private val minEventLength = 30
     private val maxEventLength = 90
 
-    private val data: MutableList<Event.Single> by lazy {
+    private val data: WeekData by lazy {
         WeekData().apply {
             var startTime: LocalTime
             (1..7).filter { it != Calendar.SATURDAY }.map {
@@ -41,7 +41,8 @@ class SampleActivity : AppCompatActivity() {
                     startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
                 }
             }
-        }.getSingleEvents().toMutableList()
+            earliestStart = LocalTime.MIN
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,8 +123,8 @@ class SampleActivity : AppCompatActivity() {
         val endTime = startTime.plusMinutes((30 + random.nextInt(60)).toLong())
         val day = random.nextInt(7) + 1
         val newEvents = listOf(createSampleEntry(day, startTime, endTime))
-        data.addAll(newEvents)
-        week_view_foo.addLessonsToTimetable(newEvents)
+        newEvents.forEach { data.add(it) }
+        week_view_foo.addLessonsToTimetable(data)
         registerForContextMenu(week_view_foo)
         return true
     }

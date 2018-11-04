@@ -11,8 +11,8 @@ import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.RelativeLayout
 import de.tobiasschuerg.weekview.R
-import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.dipToPixelF
@@ -119,10 +119,13 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         }
     }
 
-    fun addLessonsToTimetable(events: List<Event.Single>) {
-        Log.d(TAG, "Adding ${events.size} events to timetable")
+    fun addLessonsToTimetable(weekData: WeekData) {
+        Log.d(TAG, "Adding ${weekData.getSingleEvents().size} weekData to timetable")
+
+        backgroundView.updateTimes(weekData.earliestStart, weekData.latestEnd)
+
         val time: LocalTime = LocalTime.now()
-        for (event in events) {
+        for (event in weekData.getSingleEvents()) {
 
             when {
                 event.day == SATURDAY -> {
@@ -162,7 +165,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             addView(lv)
         }
-        Log.d(TAG, " - Done adding events to timetable")
+
+        // TODO: support multi day weekData
+        Log.d(TAG, " - Done adding weekData to timetable")
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
