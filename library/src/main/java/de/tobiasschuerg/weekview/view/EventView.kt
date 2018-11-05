@@ -15,16 +15,19 @@ import android.view.animation.ScaleAnimation
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.util.*
+import de.tobiasschuerg.weekview.util.TextHelper
+import de.tobiasschuerg.weekview.util.ViewHelper
+import de.tobiasschuerg.weekview.util.dipToPixelF
+import de.tobiasschuerg.weekview.util.dipToPixelI
+import de.tobiasschuerg.weekview.util.toLocalString
 
 /** this view is only constructed during runtime. */
 @SuppressLint("ViewConstructor")
 class EventView(
-        context: Context,
-        val event: Event.Single,
-        val config: EventConfig,
-        var scalingFactor: Float = 1f
-
+    context: Context,
+    val event: Event.Single,
+    val config: EventConfig,
+    var scalingFactor: Float = 1f
 
 ) : View(context) {
 
@@ -44,7 +47,6 @@ class EventView(
     private val weightSubTitle: Int
     private val weightLowerText: Int
     private val weightEndTime: Int
-
 
     init {
         val padding = this.context.dipToPixelI(2f)
@@ -92,7 +94,7 @@ class EventView(
         canvas.drawText(subjectName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
 
         textPaint.textSize = TextHelper.fitText("123456", maxTextSize, width / 2,
-                getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds))
+            getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds))
 
         // start time
         if (config.showTimeStart) {
@@ -128,7 +130,6 @@ class EventView(
             val locationY = getY(position = weightStartTime + weightUpperText + weightTitle + weightSubTitle, bounds = textBounds)
             canvas.drawText(event.lowerText, (width / 2 - textBounds.centerX()).toFloat(), locationY.toFloat(), textPaint)
         }
-
     }
 
     private fun getY(position: Int, weight: Int = 1, bounds: Rect): Int {
@@ -161,10 +162,10 @@ class EventView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val anim = ScaleAnimation(
-                0f, 1f, // Start and end values for the X axis scaling
-                0f, 1f, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f) // Pivot point of Y scaling
+            0f, 1f, // Start and end values for the X axis scaling
+            0f, 1f, // Start and end values for the Y axis scaling
+            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+            Animation.RELATIVE_TO_SELF, 0.5f) // Pivot point of Y scaling
         anim.fillAfter = true // Needed to keep the result of the animation
         anim.duration = 1000
         this.startAnimation(anim)

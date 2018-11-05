@@ -3,13 +3,13 @@ package de.tobiasschuerg.weekview.view
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
-import androidx.annotation.RequiresApi
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.RelativeLayout
+import androidx.annotation.RequiresApi
 import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
@@ -18,10 +18,12 @@ import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
-import java.util.*
-import java.util.Calendar.*
+import java.util.ArrayList
+import java.util.Calendar
+import java.util.Calendar.DAY_OF_WEEK
+import java.util.Calendar.SATURDAY
+import java.util.Calendar.SUNDAY
 import kotlin.math.roundToInt
-
 
 class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
 
@@ -45,7 +47,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
     init {
         val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)
         accentColor = arr.getColor(R.styleable.WeekView_accent_color, Color.BLUE)
-        arr.recycle()  // Do this when done.
+        arr.recycle() // Do this when done.
 
         val prefs = context.getSharedPreferences("ts_week_view", Context.MODE_PRIVATE)
         weekViewConfig = WeekViewConfig(prefs)
@@ -57,7 +59,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         addView(backgroundView)
 
         scaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
-
     }
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -84,7 +85,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         return scaleGestureDetector.onTouchEvent(event)
     }
 
-
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setEventTransitionName(transitionName: String) {
         this.eventTransitionName = transitionName
@@ -95,7 +95,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             }
         }
     }
-
 
     fun setLessonClickListener(clickListener: (view: EventView) -> Unit) {
         this.clickListener = clickListener
@@ -134,7 +133,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                         backgroundView.days.add(Calendar.SATURDAY)
                     }
                 }
-                event.day == SUNDAY   -> {
+                event.day == SUNDAY -> {
                     Log.i(TAG, "Enabling Saturday")
                     if (!backgroundView.days.contains(Calendar.SATURDAY)) {
                         backgroundView.days.add(Calendar.SATURDAY)
@@ -153,7 +152,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             // mark active event
             if (Calendar.getInstance().get(DAY_OF_WEEK) == event.day && // this day
-                    event.startTime < time && event.endTime > time) {
+                event.startTime < time && event.endTime > time) {
                 lv.animation = Animation.createBlinkAnimation()
             }
 
@@ -229,7 +228,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                     view.layout(left2, view.top, left2 + width, view.bottom)
                 }
                 left = right - width
-
             }
 
             eventView.scalingFactor = weekViewConfig.scalingFactor
@@ -244,7 +242,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             eventView.layout(left, top.roundToInt(), right, bottom.roundToInt())
         }
     }
-
 
     private fun mapDayToColumn(calendarDay: Int): Int {
         val firstDayOfTheWeek = Calendar.getInstance().firstDayOfWeek
@@ -264,7 +261,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
         when (firstDayOfTheWeek) {
 
-            Calendar.MONDAY   -> {
+            Calendar.MONDAY -> {
                 var column = (calendarDay + 5) % 7 // mo: 0, fr:4, su:6
                 if (!saturdayEnabled && column == 6) {
                     column--
@@ -279,13 +276,13 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                 return col
             }
 
-            Calendar.SUNDAY   -> return if (sundayEnabled) {
+            Calendar.SUNDAY -> return if (sundayEnabled) {
                 calendarDay - 1 // su: 0, mo: 1 fr: 5, sa: 6
             } else {
                 calendarDay - 2 // mo: 0 fr: 4, sa: 5, su: -1
             }
 
-            else              -> throw IllegalStateException(firstDayOfTheWeek.toString() + " das is not supported as start day")
+            else -> throw IllegalStateException(firstDayOfTheWeek.toString() + " das is not supported as start day")
         }
     }
 

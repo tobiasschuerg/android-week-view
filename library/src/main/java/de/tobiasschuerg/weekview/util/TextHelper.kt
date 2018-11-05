@@ -29,5 +29,4 @@ internal object TextHelper {
         // Use lo so that we undershoot rather than overshoot
         return lo
     }
-
 }

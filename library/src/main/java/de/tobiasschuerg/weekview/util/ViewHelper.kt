@@ -3,7 +3,6 @@ package de.tobiasschuerg.weekview.util
 import android.content.Context
 import android.view.View.MeasureSpec
 
-
 object ViewHelper {
 
     fun dp2px(dip: Float, context: Context): Float = context.dipToPixelF(dip)
@@ -18,7 +17,4 @@ object ViewHelper {
             else -> "? $size px"
         }
     }
-
 }
-
-

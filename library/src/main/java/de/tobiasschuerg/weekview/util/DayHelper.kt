@@ -1,7 +1,8 @@
 package de.tobiasschuerg.weekview.util
 
 import java.text.DateFormatSymbols
-import java.util.*
+import java.util.ArrayList
+import java.util.Calendar
 
 internal object DayHelper {
 
@@ -24,5 +25,4 @@ internal object DayHelper {
         }
         return days
     }
-
 }

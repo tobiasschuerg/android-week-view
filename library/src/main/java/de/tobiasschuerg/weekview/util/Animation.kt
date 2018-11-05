@@ -13,5 +13,4 @@ internal object Animation {
         blinkAnimation.repeatCount = Animation.INFINITE
         return blinkAnimation
     }
-
 }

@@ -15,9 +15,8 @@ import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
 import org.threeten.bp.temporal.ChronoUnit
 import java.text.DateFormatSymbols
-import java.util.*
+import java.util.Calendar
 import kotlin.math.roundToInt
-
 
 internal class WeekBackgroundView constructor(context: Context) : View(context) {
 
@@ -49,11 +48,11 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     private var drawCount = 0
 
     val days: MutableList<Int> = DayHelper.createListStartingOn()
-            .toMutableList()
-            .apply {
-                remove(Calendar.SATURDAY)
-                remove(Calendar.SUNDAY)
-            }
+        .toMutableList()
+        .apply {
+            remove(Calendar.SATURDAY)
+            remove(Calendar.SUNDAY)
+        }
 
     var startTime: LocalTime = LocalTime.of(10, 0)
         private set
@@ -156,11 +155,11 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {
         var currentY = initialY
         text.split(" ")
-                .dropLastWhile(String::isEmpty)
-                .forEach {
-                    canvas.drawText(it, initialX, currentY, paint)
-                    currentY += (-paint.ascent() + paint.descent()).toInt()
-                }
+            .dropLastWhile(String::isEmpty)
+            .forEach {
+                canvas.drawText(it, initialX, currentY, paint)
+                currentY += (-paint.ascent() + paint.descent()).toInt()
+            }
     }
 
     /**
@@ -193,7 +192,6 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         val heightMeasureSpec2 = View.MeasureSpec.makeMeasureSpec(height.roundToInt(), View.MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
-
 
     fun setScreenshotMode(screenshotMode: Boolean) {
         isInScreenshotMode = screenshotMode
