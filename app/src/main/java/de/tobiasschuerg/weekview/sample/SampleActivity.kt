@@ -59,7 +59,7 @@ class SampleActivity : AppCompatActivity() {
         week_view_foo.eventConfig = config
 
         // set up the WeekView with the data
-        week_view_foo.addLessonsToTimetable(data)
+        week_view_foo.addEvents(data)
         // optional: add an onClickListener for each event
         week_view_foo.setLessonClickListener {
             Toast.makeText(applicationContext, "Removing " + it.event.title, Toast.LENGTH_SHORT).show()
@@ -126,7 +126,7 @@ class SampleActivity : AppCompatActivity() {
         val day = DayOfWeek.values().asList().shuffled().first()
         val newEvents = listOf(createSampleEntry(day, startTime, endTime))
         newEvents.forEach { data.add(it) }
-        week_view_foo.addLessonsToTimetable(data)
+        week_view_foo.addEvents(data)
         registerForContextMenu(week_view_foo)
         return true
     }

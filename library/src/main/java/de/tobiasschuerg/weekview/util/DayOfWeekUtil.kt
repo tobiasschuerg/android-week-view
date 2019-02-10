@@ -18,14 +18,14 @@ internal object DayOfWeekUtil {
      * Considers the first day of the week for the given [Locale],
      * as well as if a day is 'enabled' and skips it.
      */
-    fun mapDayToColumn(calendarDay: DayOfWeek, saturdayEnabled: Boolean, sundayEnabled: Boolean): Int {
+    fun mapDayToColumn(day: DayOfWeek, saturdayEnabled: Boolean, sundayEnabled: Boolean): Int {
         val firstDayOfTheWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 
-        if (calendarDay == DayOfWeek.SATURDAY && !saturdayEnabled) {
+        if (day == DayOfWeek.SATURDAY && !saturdayEnabled) {
             throw java.lang.IllegalStateException("Passed saturday although it is disabled")
         }
 
-        if (calendarDay == DayOfWeek.SUNDAY && !sundayEnabled) {
+        if (day == DayOfWeek.SUNDAY && !sundayEnabled) {
             throw java.lang.IllegalStateException("Passed sunday although it is disabled")
         }
 
@@ -33,8 +33,8 @@ internal object DayOfWeekUtil {
 
             DayOfWeek.MONDAY -> {
                 // mo: 0, fr:4, su:6
-                val column = calendarDay.value
-                return if (!saturdayEnabled && calendarDay == DayOfWeek.SUNDAY) {
+                val column = day.value
+                return if (!saturdayEnabled && day == DayOfWeek.SUNDAY) {
                     5
                 } else {
                     column - 1
@@ -45,25 +45,25 @@ internal object DayOfWeekUtil {
                 // sa: 0, su: 1, fr: 6,
                 if (saturdayEnabled) {
                     return if (sundayEnabled) {
-                        when (calendarDay) {
+                        when (day) {
                             DayOfWeek.SATURDAY -> 0
                             DayOfWeek.SUNDAY -> 1
-                            else -> calendarDay.value + 1
+                            else -> day.value + 1
                         }
                     } else {
-                        return when (calendarDay) {
+                        return when (day) {
                             DayOfWeek.SATURDAY -> 0
-                            else -> calendarDay.value
+                            else -> day.value
                         }
                     }
                 } else {
                     return if (sundayEnabled) {
-                        when (calendarDay) {
+                        when (day) {
                             DayOfWeek.SUNDAY -> 0
-                            else -> calendarDay.value
+                            else -> day.value
                         }
                     } else {
-                        return calendarDay.value - 1
+                        return day.value - 1
                     }
                 }
             }
@@ -71,14 +71,14 @@ internal object DayOfWeekUtil {
             DayOfWeek.SUNDAY -> {
                 return if (sundayEnabled) {
                     // su: 0, mo: 1 fr: 5, sa: 6
-                    if (calendarDay == DayOfWeek.SUNDAY) {
+                    if (day == DayOfWeek.SUNDAY) {
                         0
                     } else {
-                        calendarDay.value
+                        day.value
                     }
                 } else {
                     // mo: 0 fr: 4, sa: 5, su: -1
-                    calendarDay.value - 1
+                    day.value - 1
                 }
             }
             else -> throw IllegalStateException("$firstDayOfTheWeek das is not supported as start day")

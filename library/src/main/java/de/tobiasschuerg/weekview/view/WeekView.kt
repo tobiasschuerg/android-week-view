@@ -117,7 +117,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         }
     }
 
-    fun addLessonsToTimetable(weekData: WeekData) {
+    fun addEvents(weekData: WeekData) {
         Log.d(TAG, "Adding ${weekData.getSingleEvents().size} weekData to timetable")
 
         backgroundView.updateTimes(weekData.earliestStart, weekData.latestEnd)

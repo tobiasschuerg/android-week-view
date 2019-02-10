@@ -97,7 +97,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
             val minutes = nowOffset.toMinutes()
             val y = topOffsetPx + context.dipToPixelF(minutes * scalingFactor)
             accentPaint.alpha = 200
-            canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), accentPaint)
+            canvas.drawLine(0f, y, canvas.width.toFloat(), y, accentPaint)
         }
     }
 
@@ -112,7 +112,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
             drawLine(0f, y, width.toFloat(), y, paintDivider)
 
             // final String timeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT));
-            val timeString = localTime.toLocalString(context)
+            val timeString = localTime.toLocalString()
             drawMultiLineText(this, timeString, context.dipToPixelF(25f), y + context.dipToPixelF(20f), mPaintLabels)
 
             last = localTime
