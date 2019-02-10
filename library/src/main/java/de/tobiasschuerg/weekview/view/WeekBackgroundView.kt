@@ -7,15 +7,17 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
-import de.tobiasschuerg.weekview.util.DayHelper
+import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import de.tobiasschuerg.weekview.util.dipToPixelI
 import de.tobiasschuerg.weekview.util.toLocalString
+import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalTime
+import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.ChronoUnit
-import java.text.DateFormatSymbols
-import java.util.Calendar
+import org.threeten.bp.temporal.WeekFields
+import java.util.*
 import kotlin.math.roundToInt
 
 internal class WeekBackgroundView constructor(context: Context) : View(context) {
@@ -47,12 +49,12 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     private var drawCount = 0
 
-    val days: MutableList<Int> = DayHelper.createListStartingOn()
-        .toMutableList()
-        .apply {
-            remove(Calendar.SATURDAY)
-            remove(Calendar.SUNDAY)
-        }
+    val days: MutableList<DayOfWeek> = DayOfWeekUtil.createList()
+            .toMutableList()
+            .apply {
+                remove(DayOfWeek.SATURDAY)
+                remove(DayOfWeek.SUNDAY)
+            }
 
     var startTime: LocalTime = LocalTime.of(10, 0)
         private set
@@ -123,7 +125,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     private fun Canvas.drawColumnsWithHeaders() {
         Log.v(TAG, "Drawing vertical dividers on canvas")
-        val todayDay: Int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+        val todayDay: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         for ((column, dayId) in days.withIndex()) {
             drawLeftColumnDivider(column)
             drawWeekDayName(dayId, column)
@@ -146,8 +148,8 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         drawRect(rect, accentPaint)
     }
 
-    private fun Canvas.drawWeekDayName(dayId: Int, column: Int) {
-        val shortName = DateFormatSymbols().shortWeekdays[dayId]
+    private fun Canvas.drawWeekDayName(day: DayOfWeek, column: Int) {
+        val shortName = day.getDisplayName(TextStyle.SHORT, Locale.getDefault())
         val xLabel = (getColumnStart(column, false) + getColumnEnd(column, false)) / 2
         drawText(shortName, xLabel.toFloat(), topOffsetPx / 2 + mPaintLabels.descent(), mPaintLabels)
     }
@@ -155,11 +157,11 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {
         var currentY = initialY
         text.split(" ")
-            .dropLastWhile(String::isEmpty)
-            .forEach {
-                canvas.drawText(it, initialX, currentY, paint)
-                currentY += (-paint.ascent() + paint.descent()).toInt()
-            }
+                .dropLastWhile(String::isEmpty)
+                .forEach {
+                    canvas.drawText(it, initialX, currentY, paint)
+                    currentY += (-paint.ascent() + paint.descent()).toInt()
+                }
     }
 
     /**

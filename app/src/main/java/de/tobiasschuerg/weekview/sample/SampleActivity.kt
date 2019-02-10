@@ -14,11 +14,11 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.view.EventView
-import kotlinx.android.synthetic.main.activity_sample.week_view_foo
+import kotlinx.android.synthetic.main.activity_sample.*
+import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
-import java.util.Calendar
-import java.util.Random
+import java.util.*
 import kotlin.math.absoluteValue
 
 class SampleActivity : AppCompatActivity() {
@@ -30,17 +30,22 @@ class SampleActivity : AppCompatActivity() {
     private val minEventLength = 30
     private val maxEventLength = 90
 
+
     private val data: WeekData by lazy {
         WeekData().apply {
             var startTime: LocalTime
-            (1..7).filter { it != Calendar.SATURDAY }.map {
-                startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
-                while (startTime.isBefore(LocalTime.of(15, 0))) {
-                    val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())
-                    this.add(createSampleEntry(it, startTime, endTime))
-                    startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
-                }
-            }
+            DayOfWeek.values()
+                    // Filter the weekend
+                    .filter { it != DayOfWeek.SATURDAY }
+                    .filter { it != DayOfWeek.SUNDAY }
+                    .map { dayOfWeek ->
+                        startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
+                        while (startTime.isBefore(LocalTime.of(15, 0))) {
+                            val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())
+                            this.add(createSampleEntry(dayOfWeek, startTime, endTime))
+                            startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
+                        }
+                    }
             earliestStart = LocalTime.MIN
         }
     }
@@ -78,7 +83,7 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-    private fun createSampleEntry(day: Int, startTime: LocalTime, endTime: LocalTime): Event.Single {
+    private fun createSampleEntry(day: DayOfWeek, startTime: LocalTime, endTime: LocalTime): Event.Single {
         val name = titles[random.nextInt(titles.size)]
         val subTitle = subTitles[random.nextInt(subTitles.size)]
         return Event.Single(
@@ -118,7 +123,7 @@ class SampleActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
         val endTime = startTime.plusMinutes((30 + random.nextInt(60)).toLong())
-        val day = random.nextInt(7) + 1
+        val day = DayOfWeek.values().asList().shuffled().first()
         val newEvents = listOf(createSampleEntry(day, startTime, endTime))
         newEvents.forEach { data.add(it) }
         week_view_foo.addLessonsToTimetable(data)

@@ -15,14 +15,13 @@ import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
+import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import de.tobiasschuerg.weekview.util.dipToPixelF
+import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Calendar.DAY_OF_WEEK
-import java.util.Calendar.SATURDAY
-import java.util.Calendar.SUNDAY
+import java.util.*
 import kotlin.math.roundToInt
 
 class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
@@ -127,20 +126,20 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         for (event in weekData.getSingleEvents()) {
 
             when {
-                event.day == SATURDAY -> {
+                event.day == DayOfWeek.SATURDAY -> {
                     Log.i(TAG, "Enabling Saturday")
-                    if (!backgroundView.days.contains(Calendar.SATURDAY)) {
-                        backgroundView.days.add(Calendar.SATURDAY)
+                    if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
+                        backgroundView.days.add(DayOfWeek.SATURDAY)
                     }
                 }
-                event.day == SUNDAY -> {
+                event.day == DayOfWeek.SUNDAY -> {
                     Log.i(TAG, "Enabling Saturday")
-                    if (!backgroundView.days.contains(Calendar.SATURDAY)) {
-                        backgroundView.days.add(Calendar.SATURDAY)
+                    if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
+                        backgroundView.days.add(DayOfWeek.SATURDAY)
                     }
                     Log.i(TAG, "Enabling Sunday")
-                    if (!backgroundView.days.contains(Calendar.SUNDAY)) {
-                        backgroundView.days.add(Calendar.SUNDAY)
+                    if (!backgroundView.days.contains(DayOfWeek.SUNDAY)) {
+                        backgroundView.days.add(DayOfWeek.SUNDAY)
                     }
                 }
             }
@@ -151,8 +150,8 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             // mark active event
 
             // mark active event
-            if (Calendar.getInstance().get(DAY_OF_WEEK) == event.day && // this day
-                event.startTime < time && event.endTime > time) {
+            if (LocalDate.now().dayOfWeek == event.day && // this day
+                    event.startTime < time && event.endTime > time) {
                 lv.animation = Animation.createBlinkAnimation()
             }
 
@@ -184,6 +183,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             backgroundView.setScreenshotMode(true)
         }
 
+        val saturdayEnabled = backgroundView.days.contains(DayOfWeek.SATURDAY)
+        val sundayEnabled = backgroundView.days.contains(DayOfWeek.SUNDAY)
+
         for (childIndex in 0 until childCount) {
             Log.i(TAG, "child $childIndex of $childCount")
             val eventView: EventView
@@ -195,8 +197,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             }
 
             // FIXME   lessonView.setShortNameEnabled(isShortNameEnabled);
-
-            val column: Int = mapDayToColumn(eventView.event.day)
+            val column: Int = DayOfWeekUtil.mapDayToColumn(eventView.event.day, saturdayEnabled, sundayEnabled)
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
                 Log.v(TAG, "Removing view for event $eventView")
@@ -240,49 +241,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
             val bottom = top + eventView.measuredHeight
             eventView.layout(left, top.roundToInt(), right, bottom.roundToInt())
-        }
-    }
-
-    private fun mapDayToColumn(calendarDay: Int): Int {
-        val firstDayOfTheWeek = Calendar.getInstance().firstDayOfWeek
-
-        // directly return if day os not enabled
-        val saturdayEnabled = backgroundView.days.contains(Calendar.SATURDAY)
-        val sundayEnabled = backgroundView.days.contains(Calendar.SUNDAY)
-        if (calendarDay == SATURDAY) {
-            if (!saturdayEnabled) {
-                return -1
-            }
-        } else if (calendarDay == SUNDAY) {
-            if (!sundayEnabled) {
-                return -1
-            }
-        }
-
-        when (firstDayOfTheWeek) {
-
-            Calendar.MONDAY -> {
-                var column = (calendarDay + 5) % 7 // mo: 0, fr:4, su:6
-                if (!saturdayEnabled && column == 6) {
-                    column--
-                }
-                return column
-            }
-
-            Calendar.SATURDAY -> {
-                var col = calendarDay % 7 // sa: 0, su: 1, fr: 6,
-                if (!sundayEnabled && col > 1) col--
-                if (!saturdayEnabled) col--
-                return col
-            }
-
-            Calendar.SUNDAY -> return if (sundayEnabled) {
-                calendarDay - 1 // su: 0, mo: 1 fr: 5, sa: 6
-            } else {
-                calendarDay - 2 // mo: 0 fr: 4, sa: 5, su: -1
-            }
-
-            else -> throw IllegalStateException(firstDayOfTheWeek.toString() + " das is not supported as start day")
         }
     }
 
