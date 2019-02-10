@@ -14,11 +14,11 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.view.EventView
-import kotlinx.android.synthetic.main.activity_sample.*
+import kotlinx.android.synthetic.main.activity_sample.week_view_foo
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
-import java.util.*
+import java.util.Random
 import kotlin.math.absoluteValue
 
 class SampleActivity : AppCompatActivity() {
@@ -29,7 +29,6 @@ class SampleActivity : AppCompatActivity() {
 
     private val minEventLength = 30
     private val maxEventLength = 90
-
 
     private val data: WeekData by lazy {
         WeekData().apply {

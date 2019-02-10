@@ -3,7 +3,7 @@ package de.tobiasschuerg.weekview.util
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.threeten.bp.DayOfWeek
-import java.util.*
+import java.util.Locale
 
 class DayOfWeekUtilTest {
 

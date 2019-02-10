@@ -17,7 +17,7 @@ import org.threeten.bp.LocalTime
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.ChronoUnit
 import org.threeten.bp.temporal.WeekFields
-import java.util.*
+import java.util.Locale
 import kotlin.math.roundToInt
 
 internal class WeekBackgroundView constructor(context: Context) : View(context) {

@@ -21,7 +21,7 @@ import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
-import java.util.*
+import java.util.ArrayList
 import kotlin.math.roundToInt
 
 class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {

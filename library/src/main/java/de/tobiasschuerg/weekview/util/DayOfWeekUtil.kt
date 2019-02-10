@@ -2,7 +2,7 @@ package de.tobiasschuerg.weekview.util
 
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.temporal.WeekFields
-import java.util.*
+import java.util.Locale
 
 internal object DayOfWeekUtil {
 
@@ -84,5 +84,4 @@ internal object DayOfWeekUtil {
             else -> throw IllegalStateException("$firstDayOfTheWeek das is not supported as start day")
         }
     }
-
 }

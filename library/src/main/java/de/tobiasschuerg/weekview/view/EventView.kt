@@ -24,10 +24,10 @@ import de.tobiasschuerg.weekview.util.toLocalString
 /** this view is only constructed during runtime. */
 @SuppressLint("ViewConstructor")
 class EventView(
-        context: Context,
-        val event: Event.Single,
-        val config: EventConfig,
-        var scalingFactor: Float = 1f
+    context: Context,
+    val event: Event.Single,
+    val config: EventConfig,
+    var scalingFactor: Float = 1f
 
 ) : View(context) {
 
