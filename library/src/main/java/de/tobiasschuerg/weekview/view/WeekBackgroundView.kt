@@ -13,10 +13,10 @@ import de.tobiasschuerg.weekview.util.dipToPixelI
 import de.tobiasschuerg.weekview.util.toLocalString
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.ChronoUnit
-import org.threeten.bp.temporal.WeekFields
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -125,7 +125,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     private fun Canvas.drawColumnsWithHeaders() {
         Log.v(TAG, "Drawing vertical dividers on canvas")
-        val todayDay: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val todayDay: DayOfWeek = LocalDate.now().dayOfWeek
         for ((column, dayId) in days.withIndex()) {
             drawLeftColumnDivider(column)
             drawWeekDayName(dayId, column)
@@ -191,7 +191,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
         val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
-        val heightMeasureSpec2 = View.MeasureSpec.makeMeasureSpec(height.roundToInt(), View.MeasureSpec.EXACTLY)
+        val heightMeasureSpec2 = MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
 
