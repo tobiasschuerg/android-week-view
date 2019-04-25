@@ -207,6 +207,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         if (endTime.isAfter(this.endTime)) {
             this.endTime = endTime.truncatedTo(ChronoUnit.HOURS).plusHours(1)
         }
+        requestLayout()
     }
 
     private fun getDurationMinutes(): Long {

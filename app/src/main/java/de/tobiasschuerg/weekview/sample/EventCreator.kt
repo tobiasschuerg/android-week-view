@@ -33,7 +33,6 @@ object EventCreator {
                             startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
                         }
                     }
-            earliestStart = LocalTime.MIN
         }
     }
 
