@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import de.tobiasschuerg.weekview.R
+import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -118,59 +119,60 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
     }
 
     fun addEvents(weekData: WeekData) {
-        Log.d(TAG, "Adding ${weekData.getSingleEvents().size} weekData to timetable")
+        Log.d(TAG, "Adding ${weekData.getSingleEvents().size} weekData to week view")
 
         backgroundView.updateTimes(weekData.earliestStart, weekData.latestEnd)
 
-        val time: LocalTime = LocalTime.now()
         for (event in weekData.getSingleEvents()) {
-
-            when {
-                event.day == DayOfWeek.SATURDAY -> {
-                    Log.i(TAG, "Enabling Saturday")
-                    if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
-                        backgroundView.days.add(DayOfWeek.SATURDAY)
-                    }
-                }
-                event.day == DayOfWeek.SUNDAY -> {
-                    Log.i(TAG, "Enabling Saturday")
-                    if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
-                        backgroundView.days.add(DayOfWeek.SATURDAY)
-                    }
-                    Log.i(TAG, "Enabling Sunday")
-                    if (!backgroundView.days.contains(DayOfWeek.SUNDAY)) {
-                        backgroundView.days.add(DayOfWeek.SUNDAY)
-                    }
-                }
-            }
-
-            val lv = EventView(context, event, eventConfig, weekViewConfig.scalingFactor)
-            backgroundView.updateTimes(event.startTime, event.endTime)
-
-            // mark active event
-
-            // mark active event
-            if (LocalDate.now().dayOfWeek == event.day && // this day
-                    event.startTime < time && event.endTime > time) {
-                lv.animation = Animation.createBlinkAnimation()
-            }
-
-            lv.setOnClickListener { clickListener?.invoke(lv) }
-            lv.setOnCreateContextMenuListener(contextMenuListener)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                lv.transitionName = eventTransitionName
-            }
-
-            addView(lv)
+            addEvent(event)
         }
 
         // TODO: support multi day weekData
         Log.d(TAG, " - Done adding weekData to timetable")
     }
 
+    fun addEvent(event: Event.Single) {
+        when {
+            event.day == DayOfWeek.SATURDAY -> {
+                Log.i(TAG, "Enabling Saturday")
+                if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
+                    backgroundView.days.add(DayOfWeek.SATURDAY)
+                }
+            }
+            event.day == DayOfWeek.SUNDAY -> {
+                Log.i(TAG, "Enabling Saturday")
+                if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
+                    backgroundView.days.add(DayOfWeek.SATURDAY)
+                }
+                Log.i(TAG, "Enabling Sunday")
+                if (!backgroundView.days.contains(DayOfWeek.SUNDAY)) {
+                    backgroundView.days.add(DayOfWeek.SUNDAY)
+                }
+            }
+        }
+
+        val lv = EventView(context, event, eventConfig, weekViewConfig.scalingFactor)
+        backgroundView.updateTimes(event.startTime, event.endTime)
+
+        // mark active event
+        val now = LocalTime.now()
+        if (LocalDate.now().dayOfWeek == event.day && // this day
+                event.startTime < now && event.endTime > now) {
+            lv.animation = Animation.createBlinkAnimation()
+        }
+
+        lv.setOnClickListener { clickListener?.invoke(lv) }
+        lv.setOnCreateContextMenuListener(contextMenuListener)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            lv.transitionName = eventTransitionName
+        }
+
+        addView(lv)
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
-        val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         Log.v(TAG, "Measuring ($widthSize x $heightSize)")
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }

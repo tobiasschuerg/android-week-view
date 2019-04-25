@@ -1,6 +1,5 @@
 package de.tobiasschuerg.weekview.sample
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextMenu
@@ -10,44 +9,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
-import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.view.EventView
-import kotlinx.android.synthetic.main.activity_sample.week_view_foo
-import org.threeten.bp.DayOfWeek
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import java.util.Random
-import kotlin.math.absoluteValue
+import de.tobiasschuerg.weekview.view.WeekView
 
 class SampleActivity : AppCompatActivity() {
 
-    private val random = Random()
-    private val titles = listOf("Title", "Event", "Android", "Sport", "Yoga", "Shopping", "Meeting")
-    private val subTitles = listOf("City Center", "@Home", "urgent", "New York", null)
-
-    private val minEventLength = 30
-    private val maxEventLength = 90
-
-    private val data: WeekData by lazy {
-        WeekData().apply {
-            var startTime: LocalTime
-            DayOfWeek.values()
-                    // Filter the weekend
-                    .filter { it != DayOfWeek.SATURDAY }
-                    .filter { it != DayOfWeek.SUNDAY }
-                    .map { dayOfWeek ->
-                        startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
-                        while (startTime.isBefore(LocalTime.of(15, 0))) {
-                            val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())
-                            this.add(createSampleEntry(dayOfWeek, startTime, endTime))
-                            startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
-                        }
-                    }
-            earliestStart = LocalTime.MIN
-        }
-    }
+    private val weekView: WeekView by lazy { findViewById<WeekView>(R.id.week_view) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidThreeTen.init(this)
@@ -55,19 +23,21 @@ class SampleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sample)
 
         val config = EventConfig(showSubtitle = false, showTimeEnd = false)
-        week_view_foo.eventConfig = config
+        weekView.eventConfig = config
 
         // set up the WeekView with the data
-        week_view_foo.addEvents(data)
-        // optional: add an onClickListener for each event
-        week_view_foo.setLessonClickListener {
-            Toast.makeText(applicationContext, "Removing " + it.event.title, Toast.LENGTH_SHORT).show()
-            week_view_foo.removeView(it)
-        }
-        // optional: register a context menu to each event
-        registerForContextMenu(week_view_foo)
+        weekView.addEvents(EventCreator.weekData)
 
-        week_view_foo.setOnTouchListener { v, event ->
+        // optional: add an onClickListener for each event
+        weekView.setLessonClickListener {
+            Toast.makeText(applicationContext, "Removing " + it.event.title, Toast.LENGTH_SHORT).show()
+            weekView.removeView(it)
+        }
+
+        // optional: register a context menu to each event
+        registerForContextMenu(weekView)
+
+        weekView.setOnTouchListener { v, event ->
             when (event.pointerCount) {
                 1 -> {
                     Log.d("Scroll", "1-pointer touch")
@@ -82,28 +52,6 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-    private fun createSampleEntry(day: DayOfWeek, startTime: LocalTime, endTime: LocalTime): Event.Single {
-        val name = titles[random.nextInt(titles.size)]
-        val subTitle = subTitles[random.nextInt(subTitles.size)]
-        return Event.Single(
-                random.nextLong().absoluteValue,
-                LocalDate.now(),
-                name,
-                name,
-                subTitle,
-                day,
-                startTime,
-                endTime,
-                null, // "upper",
-                null, // "lower",
-                Color.WHITE,
-                randomColor()
-        )
-    }
-
-    private fun randomColor(): Int {
-        return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256))
-    }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
         val (event) = menuInfo as EventView.LessonViewContextInfo
@@ -116,17 +64,30 @@ class SampleActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.add("Add").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        menu.add("Clear").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
-        val endTime = startTime.plusMinutes((30 + random.nextInt(60)).toLong())
-        val day = DayOfWeek.values().asList().shuffled().first()
-        val newEvents = listOf(createSampleEntry(day, startTime, endTime))
-        newEvents.forEach { data.add(it) }
-        week_view_foo.addEvents(data)
-        registerForContextMenu(week_view_foo)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.title) {
+            "Add" -> addRandomItem()
+            "Clear" -> removeAllEvents()
+        }
         return true
+    }
+
+    private fun removeAllEvents() {
+        Log.i(TAG, "removeAllEvents()")
+        weekView.removeViews(1, weekView.childCount - 1)
+    }
+
+    private fun addRandomItem() {
+        Log.i(TAG, "addRandomItem()")
+        val newEvent = EventCreator.createRandomEvent()
+        weekView.addEvent(newEvent)
+    }
+
+    companion object {
+        private const val TAG = "SampleActivity"
     }
 }
