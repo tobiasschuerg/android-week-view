@@ -200,14 +200,27 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     }
 
     fun updateTimes(startTime: LocalTime, endTime: LocalTime) {
-        if (startTime.isAfter(endTime)) throw IllegalArgumentException()
+        if (startTime.isAfter(endTime)) {
+            throw IllegalArgumentException("Start time $startTime must be before end time $endTime")
+        }
+        var timesHaveChanged = false
         if (startTime.isBefore(this.startTime)) {
             this.startTime = startTime.truncatedTo(ChronoUnit.HOURS)
+            timesHaveChanged = true
         }
         if (endTime.isAfter(this.endTime)) {
-            this.endTime = endTime.truncatedTo(ChronoUnit.HOURS).plusHours(1)
+            if (endTime.isBefore(LocalTime.of(23, 0))) {
+                this.endTime = endTime.truncatedTo(ChronoUnit.HOURS).plusHours(1)
+            } else {
+                this.endTime = LocalTime.MAX
+            }
+            timesHaveChanged = true
         }
-        requestLayout()
+        if (this.startTime.isAfter(this.endTime)) throw IllegalArgumentException()
+
+        if (timesHaveChanged) {
+            requestLayout()
+        }
     }
 
     private fun getDurationMinutes(): Long {
