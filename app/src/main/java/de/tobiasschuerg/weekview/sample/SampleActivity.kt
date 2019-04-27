@@ -52,7 +52,6 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
         val (event) = menuInfo as EventView.LessonViewContextInfo
         menu.setHeaderTitle(event.title)
