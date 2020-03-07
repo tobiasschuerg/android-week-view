@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.sample
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextMenu
@@ -9,9 +10,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
+import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.view.EventView
 import de.tobiasschuerg.weekview.view.WeekView
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.temporal.ChronoUnit
 
 class SampleActivity : AppCompatActivity() {
 
@@ -27,6 +32,18 @@ class SampleActivity : AppCompatActivity() {
 
         // set up the WeekView with the data
         weekView.addEvents(EventCreator.weekData)
+
+        val nowEvent = Event.Single(
+                id = 1337,
+                date = LocalDate.now(),
+                title = "Current hour",
+                shortTitle = "Now",
+                startTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS),
+                endTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS).plusMinutes(60),
+                backgroundColor = Color.RED,
+                textColor = Color.WHITE
+        )
+        weekView.addEvent(nowEvent)
 
         // optional: add an onClickListener for each event
         weekView.setLessonClickListener {

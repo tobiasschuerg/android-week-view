@@ -47,18 +47,15 @@ object EventCreator {
         val name = titles[random.nextInt(titles.size)]
         val subTitle = subTitles[random.nextInt(subTitles.size)]
         return Event.Single(
-                random.nextLong(),
-                LocalDate.now(),
-                name,
-                name,
-                subTitle,
-                day,
-                startTime,
-                endTime,
-                null, // "upper",
-                null, // "lower",
-                Color.WHITE,
-                randomColor()
+                id = random.nextLong(),
+                date = LocalDate.now().with(day),
+                title = name,
+                shortTitle = name,
+                subTitle = subTitle,
+                startTime = startTime,
+                endTime = endTime,
+                textColor = Color.WHITE,
+                backgroundColor = randomColor()
         )
     }
 

@@ -132,14 +132,15 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
     }
 
     fun addEvent(event: Event.Single) {
-        when {
-            event.day == DayOfWeek.SATURDAY -> {
+        // enable weekend if not enabled yet
+        when (event.date.dayOfWeek) {
+            DayOfWeek.SATURDAY -> {
                 Log.i(TAG, "Enabling Saturday")
                 if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
                     backgroundView.days.add(DayOfWeek.SATURDAY)
                 }
             }
-            event.day == DayOfWeek.SUNDAY -> {
+            DayOfWeek.SUNDAY -> {
                 Log.i(TAG, "Enabling Saturday")
                 if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
                     backgroundView.days.add(DayOfWeek.SATURDAY)
@@ -149,6 +150,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                     backgroundView.days.add(DayOfWeek.SUNDAY)
                 }
             }
+            else -> {
+                // nothing to do, just add the event
+            }
         }
 
         val lv = EventView(context, event, eventConfig, weekViewConfig.scalingFactor)
@@ -156,7 +160,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
 
         // mark active event
         val now = LocalTime.now()
-        if (LocalDate.now().dayOfWeek == event.day && // this day
+        if (LocalDate.now().dayOfWeek == event.date.dayOfWeek && // this day
                 event.startTime < now && event.endTime > now) {
             lv.animation = Animation.createBlinkAnimation()
         }
@@ -199,7 +203,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             }
 
             // FIXME   lessonView.setShortNameEnabled(isShortNameEnabled);
-            val column: Int = DayOfWeekUtil.mapDayToColumn(eventView.event.day, saturdayEnabled, sundayEnabled)
+            val column: Int = DayOfWeekUtil.mapDayToColumn(eventView.event.date.dayOfWeek, saturdayEnabled, sundayEnabled)
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
                 Log.v(TAG, "Removing view for event $eventView")
@@ -216,7 +220,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
                 // get next LessonView
                 if (v2 is EventView) {
                     // check for overlap
-                    if (v2.event.day != eventView.event.day) {
+                    if (v2.event.date != eventView.event.date) {
                         continue // days differ, overlap not possible
                     } else if (overlaps(eventView, v2)) {
                         overlapsWith.add(v2)
