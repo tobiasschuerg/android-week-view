@@ -34,14 +34,14 @@ class SampleActivity : AppCompatActivity() {
         weekView.addEvents(EventCreator.weekData)
 
         val nowEvent = Event.Single(
-                id = 1337,
-                date = LocalDate.now(),
-                title = "Current hour",
-                shortTitle = "Now",
-                startTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS),
-                endTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS).plusMinutes(59),
-                backgroundColor = Color.RED,
-                textColor = Color.WHITE
+            id = 1337,
+            date = LocalDate.now(),
+            title = "Current hour",
+            shortTitle = "Now",
+            startTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS),
+            endTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS).plusMinutes(59),
+            backgroundColor = Color.RED,
+            textColor = Color.WHITE
         )
         weekView.addEvent(nowEvent)
 

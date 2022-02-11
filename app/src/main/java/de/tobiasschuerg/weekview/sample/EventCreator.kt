@@ -14,9 +14,9 @@ object EventCreator {
     private val titles = listOf("Title", "Event", "Android", "Sport", "Yoga", "Shopping", "Meeting")
     private val subTitles = listOf("City Center", "@Home", "urgent", "New York", null)
     private val weekDays = DayOfWeek.values()
-            // Filter the weekend
-            .filter { it != DayOfWeek.SATURDAY }
-            .filter { it != DayOfWeek.SUNDAY }
+        // Filter the weekend
+        .filter { it != DayOfWeek.SATURDAY }
+        .filter { it != DayOfWeek.SUNDAY }
 
     private const val minEventLength = 30
     private const val maxEventLength = 90
@@ -25,14 +25,14 @@ object EventCreator {
         WeekData().apply {
             var startTime: LocalTime
             weekDays
-                    .map { dayOfWeek ->
-                        startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
-                        while (startTime.isBefore(LocalTime.of(15, 0))) {
-                            val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())
-                            this.add(createSampleEntry(dayOfWeek, startTime, endTime))
-                            startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
-                        }
+                .map { dayOfWeek ->
+                    startTime = LocalTime.of(8 + random.nextInt(1), random.nextInt(60))
+                    while (startTime.isBefore(LocalTime.of(15, 0))) {
+                        val endTime = startTime.plusMinutes(minEventLength + random.nextInt(maxEventLength - minEventLength).toLong())
+                        this.add(createSampleEntry(dayOfWeek, startTime, endTime))
+                        startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
                     }
+                }
         }
     }
 
@@ -47,15 +47,15 @@ object EventCreator {
         val name = titles[random.nextInt(titles.size)]
         val subTitle = subTitles[random.nextInt(subTitles.size)]
         return Event.Single(
-                id = random.nextLong(),
-                date = LocalDate.now().with(day),
-                title = name,
-                shortTitle = name,
-                subTitle = subTitle,
-                startTime = startTime,
-                endTime = endTime,
-                textColor = Color.WHITE,
-                backgroundColor = randomColor()
+            id = random.nextLong(),
+            date = LocalDate.now().with(day),
+            title = name,
+            shortTitle = name,
+            subTitle = subTitle,
+            startTime = startTime,
+            endTime = endTime,
+            textColor = Color.WHITE,
+            backgroundColor = randomColor()
         )
     }
 

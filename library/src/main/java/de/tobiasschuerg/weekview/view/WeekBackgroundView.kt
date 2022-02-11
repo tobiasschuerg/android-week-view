@@ -50,11 +50,11 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     private var drawCount = 0
 
     val days: MutableList<DayOfWeek> = DayOfWeekUtil.createList()
-            .toMutableList()
-            .apply {
-                remove(DayOfWeek.SATURDAY)
-                remove(DayOfWeek.SUNDAY)
-            }
+        .toMutableList()
+        .apply {
+            remove(DayOfWeek.SATURDAY)
+            remove(DayOfWeek.SUNDAY)
+        }
 
     var startTime: LocalTime = LocalTime.of(10, 0)
         private set
@@ -157,11 +157,11 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {
         var currentY = initialY
         text.split(" ")
-                .dropLastWhile(String::isEmpty)
-                .forEach {
-                    canvas.drawText(it, initialX, currentY, paint)
-                    currentY += (-paint.ascent() + paint.descent()).toInt()
-                }
+            .dropLastWhile(String::isEmpty)
+            .forEach {
+                canvas.drawText(it, initialX, currentY, paint)
+                currentY += (-paint.ascent() + paint.descent()).toInt()
+            }
     }
 
     /**

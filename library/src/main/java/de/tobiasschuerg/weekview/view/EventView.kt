@@ -93,8 +93,10 @@ class EventView(
         val subjectY = getY(weight, weightTitle, textBounds)
         canvas.drawText(subjectName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
 
-        textPaint.textSize = TextHelper.fitText("123456", maxTextSize, width / 2,
-                getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds))
+        textPaint.textSize = TextHelper.fitText(
+            "123456", maxTextSize, width / 2,
+            getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds)
+        )
 
         // start time
         if (config.showTimeStart) {
@@ -162,10 +164,11 @@ class EventView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val anim = ScaleAnimation(
-                0f, 1f, // Start and end values for the X axis scaling
-                0f, 1f, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f) // Pivot point of Y scaling
+            0f, 1f, // Start and end values for the X axis scaling
+            0f, 1f, // Start and end values for the Y axis scaling
+            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+            Animation.RELATIVE_TO_SELF, 0.5f
+        ) // Pivot point of Y scaling
         anim.fillAfter = true // Needed to keep the result of the animation
         anim.duration = 1000
         this.startAnimation(anim)
