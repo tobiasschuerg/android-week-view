@@ -22,10 +22,12 @@ import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
-import java.util.ArrayList
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
-class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
+class WeekView(context: Context, attributeSet: AttributeSet) :
+    RelativeLayout(context, attributeSet) {
 
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
@@ -65,7 +67,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             val factor = weekViewConfig.scalingFactor * detector.scaleFactor
             // Don't let the object get too small or too large.
-            val scaleFactor = Math.max(0.25f, Math.min(factor, 3.0f))
+            val scaleFactor = max(0.25f, min(factor, 3.0f))
             weekViewConfig.scalingFactor = scaleFactor
             backgroundView.scalingFactor = scaleFactor
             Log.d(TAG, "Scale factor is $scaleFactor")
@@ -161,7 +163,8 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
         // mark active event
         val now = LocalTime.now()
         if (LocalDate.now().dayOfWeek == event.date.dayOfWeek && // this day
-                event.startTime < now && event.endTime > now) {
+            event.startTime < now && event.endTime > now
+        ) {
             lv.animation = Animation.createBlinkAnimation()
         }
 
@@ -203,7 +206,11 @@ class WeekView(context: Context, attributeSet: AttributeSet) : RelativeLayout(co
             }
 
             // FIXME   lessonView.setShortNameEnabled(isShortNameEnabled);
-            val column: Int = DayOfWeekUtil.mapDayToColumn(eventView.event.date.dayOfWeek, saturdayEnabled, sundayEnabled)
+            val column: Int = DayOfWeekUtil.mapDayToColumn(
+                eventView.event.date.dayOfWeek,
+                saturdayEnabled,
+                sundayEnabled
+            )
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
                 Log.v(TAG, "Removing view for event $eventView")

@@ -39,7 +39,7 @@ class SampleActivity : AppCompatActivity() {
                 title = "Current hour",
                 shortTitle = "Now",
                 startTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS),
-                endTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS).plusMinutes(60),
+                endTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS).plusMinutes(59),
                 backgroundColor = Color.RED,
                 textColor = Color.WHITE
         )
