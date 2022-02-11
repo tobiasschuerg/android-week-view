@@ -1,8 +1,8 @@
 package de.tobiasschuerg.weekview.data
 
+import de.tobiasschuerg.weekview.util.TimeSpan
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
 
 sealed class Event {
 
@@ -18,8 +18,7 @@ sealed class Event {
         override val shortTitle: String,
         val subTitle: String? = null,
 
-        val startTime: LocalTime,
-        val endTime: LocalTime,
+        val timeSpan: TimeSpan,
 
         val upperText: String? = null,
         val lowerText: String? = null,
@@ -27,7 +26,7 @@ sealed class Event {
         val textColor: Int,
         val backgroundColor: Int
     ) : Event() {
-        val duration: Duration = Duration.between(startTime, endTime)
+        val duration: Duration = timeSpan.duration
     }
 
     data class AllDay(

@@ -1,16 +1,22 @@
 package de.tobiasschuerg.weekview.data
 
+import de.tobiasschuerg.weekview.util.TimeSpan
 import org.threeten.bp.LocalTime
 
 class WeekData {
 
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
-
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
+    private var earliestStart: LocalTime? = null
+    private var latestEnd: LocalTime? = null
 
-    var earliestStart: LocalTime = LocalTime.MAX
-
-    var latestEnd: LocalTime = LocalTime.MIN
+    fun getTimeSpan(): TimeSpan? {
+        return if (earliestStart != null && latestEnd != null) {
+            TimeSpan(earliestStart!!, latestEnd!!)
+        } else {
+            null
+        }
+    }
 
     fun add(item: Event.AllDay) {
         allDays.add(item)
@@ -19,12 +25,12 @@ class WeekData {
     fun add(item: Event.Single) {
         singleEvents.add(item)
 
-        if (item.startTime.isBefore(earliestStart)) {
-            earliestStart = item.startTime
+        if (earliestStart == null || item.timeSpan.start.isBefore(earliestStart)) {
+            earliestStart = item.timeSpan.start
         }
 
-        if (item.endTime.isAfter(latestEnd)) {
-            latestEnd = item.endTime
+        if (latestEnd == null || item.timeSpan.endExclusive.isAfter(latestEnd)) {
+            latestEnd = item.timeSpan.endExclusive
         }
     }
 

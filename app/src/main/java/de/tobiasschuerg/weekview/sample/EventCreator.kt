@@ -3,6 +3,7 @@ package de.tobiasschuerg.weekview.sample
 import android.graphics.Color
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekData
+import de.tobiasschuerg.weekview.util.TimeSpan
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -52,8 +53,7 @@ object EventCreator {
             title = name,
             shortTitle = name,
             subTitle = subTitle,
-            startTime = startTime,
-            endTime = endTime,
+            timeSpan = TimeSpan(startTime, endTime),
             textColor = Color.WHITE,
             backgroundColor = randomColor()
         )

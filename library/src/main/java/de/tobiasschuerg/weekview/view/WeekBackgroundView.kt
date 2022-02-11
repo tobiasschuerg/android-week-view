@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import de.tobiasschuerg.weekview.util.DayOfWeekUtil
+import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import de.tobiasschuerg.weekview.util.dipToPixelI
 import de.tobiasschuerg.weekview.util.toLocalString
@@ -113,7 +114,13 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
             // final String timeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT));
             val timeString = localTime.toLocalString()
-            drawMultiLineText(this, timeString, context.dipToPixelF(25f), y + context.dipToPixelF(20f), mPaintLabels)
+            drawMultiLineText(
+                this,
+                timeString,
+                context.dipToPixelF(25f),
+                y + context.dipToPixelF(20f),
+                mPaintLabels
+            )
 
             last = localTime
             localTime = localTime.plusHours(1)
@@ -151,10 +158,21 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     private fun Canvas.drawWeekDayName(day: DayOfWeek, column: Int) {
         val shortName = day.getDisplayName(TextStyle.SHORT, Locale.getDefault())
         val xLabel = (getColumnStart(column, false) + getColumnEnd(column, false)) / 2
-        drawText(shortName, xLabel.toFloat(), topOffsetPx / 2 + mPaintLabels.descent(), mPaintLabels)
+        drawText(
+            shortName,
+            xLabel.toFloat(),
+            topOffsetPx / 2 + mPaintLabels.descent(),
+            mPaintLabels
+        )
     }
 
-    private fun drawMultiLineText(canvas: Canvas, text: String, initialX: Float, initialY: Float, paint: Paint) {
+    private fun drawMultiLineText(
+        canvas: Canvas,
+        text: String,
+        initialX: Float,
+        initialY: Float,
+        paint: Paint
+    ) {
         var currentY = initialY
         text.split(" ")
             .dropLastWhile(String::isEmpty)
@@ -190,8 +208,10 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     }
 
     override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
-        val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
-        val heightMeasureSpec2 = MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
+        val height =
+            topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
+        val heightMeasureSpec2 =
+            MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
 
@@ -199,18 +219,15 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         isInScreenshotMode = screenshotMode
     }
 
-    fun updateTimes(startTime: LocalTime, endTime: LocalTime) {
-        if (startTime.isAfter(endTime)) {
-            throw IllegalArgumentException("Start time $startTime must be before end time $endTime")
-        }
+    fun updateTimes(timeSpan: TimeSpan) {
         var timesHaveChanged = false
-        if (startTime.isBefore(this.startTime)) {
-            this.startTime = startTime.truncatedTo(ChronoUnit.HOURS)
+        if (timeSpan.start.isBefore(startTime)) {
+            startTime = timeSpan.start.truncatedTo(ChronoUnit.HOURS)
             timesHaveChanged = true
         }
-        if (endTime.isAfter(this.endTime)) {
-            if (endTime.isBefore(LocalTime.of(23, 0))) {
-                this.endTime = endTime.truncatedTo(ChronoUnit.HOURS).plusHours(1)
+        if (timeSpan.endExclusive.isAfter(endTime)) {
+            if (timeSpan.endExclusive.isBefore(LocalTime.of(23, 0))) {
+                this.endTime = timeSpan.endExclusive.truncatedTo(ChronoUnit.HOURS).plusHours(1)
             } else {
                 this.endTime = LocalTime.MAX
             }

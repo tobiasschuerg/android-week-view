@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.view.EventView
 import de.tobiasschuerg.weekview.view.WeekView
+import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.temporal.ChronoUnit
@@ -38,8 +40,7 @@ class SampleActivity : AppCompatActivity() {
             date = LocalDate.now(),
             title = "Current hour",
             shortTitle = "Now",
-            startTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS),
-            endTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS).plusMinutes(59),
+            timeSpan = TimeSpan.of(LocalTime.now().truncatedTo(ChronoUnit.HOURS), Duration.ofHours(1)),
             backgroundColor = Color.RED,
             textColor = Color.WHITE
         )

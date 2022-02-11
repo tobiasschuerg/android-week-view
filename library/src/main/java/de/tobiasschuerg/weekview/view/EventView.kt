@@ -100,14 +100,14 @@ class EventView(
 
         // start time
         if (config.showTimeStart) {
-            val startText = event.startTime.toLocalString()
+            val startText = event.timeSpan.start.toLocalString()
             textPaint.getTextBounds(startText, 0, startText.length, textBounds)
             canvas.drawText(startText, (textBounds.left + paddingLeft).toFloat(), (textBounds.height() + paddingTop).toFloat(), textPaint)
         }
 
         // end time
         if (config.showTimeEnd) {
-            val endText = event.endTime.toLocalString()
+            val endText = event.timeSpan.endExclusive.toLocalString()
             textPaint.getTextBounds(endText, 0, endText.length, textBounds)
             canvas.drawText(endText, (width - (textBounds.right + paddingRight)).toFloat(), (height - paddingBottom).toFloat(), textPaint)
         }

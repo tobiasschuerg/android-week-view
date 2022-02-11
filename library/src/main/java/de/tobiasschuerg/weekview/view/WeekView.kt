@@ -123,7 +123,9 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
     fun addEvents(weekData: WeekData) {
         Log.d(TAG, "Adding ${weekData.getSingleEvents().size} weekData to week view")
 
-        backgroundView.updateTimes(weekData.earliestStart, weekData.latestEnd)
+        weekData.getTimeSpan()?.let {
+            backgroundView.updateTimes(it)
+        }
 
         for (event in weekData.getSingleEvents()) {
             addEvent(event)
@@ -158,12 +160,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         }
 
         val lv = EventView(context, event, eventConfig, weekViewConfig.scalingFactor)
-        backgroundView.updateTimes(event.startTime, event.endTime)
+        backgroundView.updateTimes(event.timeSpan)
 
         // mark active event
         val now = LocalTime.now()
         if (LocalDate.now().dayOfWeek == event.date.dayOfWeek && // this day
-            event.startTime < now && event.endTime > now
+            event.timeSpan.start < now && event.timeSpan.endExclusive > now
         ) {
             lv.animation = Animation.createBlinkAnimation()
         }
@@ -246,7 +248,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
 
             eventView.scalingFactor = weekViewConfig.scalingFactor
             val startTime = backgroundView.startTime
-            val lessonStart = eventView.event.startTime
+            val lessonStart = eventView.event.timeSpan.start
             val offset = Duration.between(startTime, lessonStart)
 
             val yOffset = offset.toMinutes() * weekViewConfig.scalingFactor
@@ -262,16 +264,16 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun overlaps(left: EventView, right: EventView): Boolean {
-        val rightStartsAfterLeftStarts = right.event.startTime >= left.event.startTime
-        val rightStartsBeforeLeftEnds = right.event.startTime < left.event.endTime
+        val rightStartsAfterLeftStarts = right.event.timeSpan.start >= left.event.timeSpan.start
+        val rightStartsBeforeLeftEnds = right.event.timeSpan.start < left.event.timeSpan.endExclusive
         val lessonStartsWithing = rightStartsAfterLeftStarts && rightStartsBeforeLeftEnds
 
-        val leftStartsBeforeRightEnds = left.event.startTime < right.event.endTime
-        val rightEndsBeforeOrWithLeftEnds = right.event.endTime <= left.event.endTime
+        val leftStartsBeforeRightEnds = left.event.timeSpan.start < right.event.timeSpan.endExclusive
+        val rightEndsBeforeOrWithLeftEnds = right.event.timeSpan.endExclusive <= left.event.timeSpan.endExclusive
         val lessonEndsWithing = leftStartsBeforeRightEnds && rightEndsBeforeOrWithLeftEnds
 
-        val leftStartsAfterRightStarts = left.event.startTime > right.event.startTime
-        val rightEndsAfterLeftEnds = right.event.endTime > left.event.endTime
+        val leftStartsAfterRightStarts = left.event.timeSpan.start > right.event.timeSpan.start
+        val rightEndsAfterLeftEnds = right.event.timeSpan.start > left.event.timeSpan.endExclusive
         val lessonWithin = leftStartsAfterRightStarts && rightEndsAfterLeftEnds
 
         return lessonStartsWithing || lessonEndsWithing || lessonWithin
