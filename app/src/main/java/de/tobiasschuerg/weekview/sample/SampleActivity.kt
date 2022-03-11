@@ -22,7 +22,7 @@ import org.threeten.bp.temporal.ChronoUnit
 
 class SampleActivity : AppCompatActivity() {
 
-    private val weekView: WeekView by lazy { findViewById<WeekView>(R.id.week_view) }
+    private val weekView: WeekView by lazy { findViewById(R.id.week_view) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidThreeTen.init(this)
@@ -31,6 +31,7 @@ class SampleActivity : AppCompatActivity() {
 
         val config = EventConfig(showSubtitle = false, showTimeEnd = false)
         weekView.eventConfig = config
+        weekView.setShowNowIndicator(true)
 
         // set up the WeekView with the data
         weekView.addEvents(EventCreator.weekData)
@@ -87,21 +88,16 @@ class SampleActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.title) {
-            "Add" -> addRandomItem()
-            "Clear" -> removeAllEvents()
+            "Add" -> {
+                Log.i(TAG, "add option clicked")
+                weekView.addEvent(EventCreator.createRandomEvent())
+            }
+            "Clear" -> {
+                Log.i(TAG, "clear option clicked")
+                weekView.removeAllEvents()
+            }
         }
         return true
-    }
-
-    private fun removeAllEvents() {
-        Log.i(TAG, "removeAllEvents()")
-        weekView.removeViews(1, weekView.childCount - 1)
-    }
-
-    private fun addRandomItem() {
-        Log.i(TAG, "addRandomItem()")
-        val newEvent = EventCreator.createRandomEvent()
-        weekView.addEvent(newEvent)
     }
 
     companion object {

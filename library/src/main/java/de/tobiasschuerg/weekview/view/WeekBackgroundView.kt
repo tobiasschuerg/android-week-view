@@ -43,7 +43,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         }
     }
 
-    private var isInScreenshotMode = false
+    var showNowIndicator = false
 
     val topOffsetPx: Int = context.dipToPixelI(32f)
     private val leftOffset: Int = context.dipToPixelI(48f)
@@ -83,8 +83,8 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         canvas.drawHorizontalDividers()
         canvas.drawColumnsWithHeaders()
 
-        Log.d(TAG, "Screenshot mode? $isInScreenshotMode")
-        if (!isInScreenshotMode && !isInEditMode) {
+        Log.d(TAG, "Show now indicator? $showNowIndicator")
+        if (showNowIndicator && !isInEditMode) {
             drawNowIndicator(canvas)
         }
         Log.d(TAG, "Drawing background completed.")
@@ -213,10 +213,6 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         val heightMeasureSpec2 =
             MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
-    }
-
-    fun setScreenshotMode(screenshotMode: Boolean) {
-        isInScreenshotMode = screenshotMode
     }
 
     fun updateTimes(timeSpan: TimeSpan) {

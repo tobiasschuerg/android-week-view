@@ -32,7 +32,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
 
-    private var isInScreenshotMode = false
     private var layoutCount = 0
 
     private var clickListener: ((view: EventView) -> Unit)? = null
@@ -190,9 +189,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         Log.v(TAG, "Laying out timetable for the ${++layoutCount} time.")
         Log.v(TAG, "l: $l, t: $t, r: $r, b: $b")
         super.onLayout(true, l, t, r, b)
-        if (isInScreenshotMode) {
-            backgroundView.setScreenshotMode(true)
-        }
 
         val saturdayEnabled = backgroundView.days.contains(DayOfWeek.SATURDAY)
         val sundayEnabled = backgroundView.days.contains(DayOfWeek.SUNDAY)
@@ -259,8 +255,8 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun setScreenshotModeEnabled(enabled: Boolean) {
-        isInScreenshotMode = enabled
+    fun setShowNowIndicator(enabled: Boolean) {
+        backgroundView.showNowIndicator = enabled
     }
 
     private fun overlaps(left: EventView, right: EventView): Boolean {
@@ -278,6 +274,21 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
 
         return lessonStartsWithing || lessonEndsWithing || lessonWithin
     }
+
+    /**
+     * Removed all [EventView]s.
+     */
+    fun removeAllEvents() = removeViews(1, childCount - 1)
+
+    /**
+     * Removes ALL [View]s - also the background.
+     * This is probably not what you want.
+     */
+    @Deprecated(
+        message = "Better use removeAllEvents in order to keep the background!",
+        replaceWith = ReplaceWith("removeAllEvents()")
+    )
+    override fun removeAllViews() = super.removeAllViews()
 
     companion object {
         private const val TAG = "WeekView"

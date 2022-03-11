@@ -26,7 +26,7 @@ import de.tobiasschuerg.weekview.util.toLocalString
 class EventView(
     context: Context,
     val event: Event.Single,
-    val config: EventConfig,
+    private val config: EventConfig,
     var scalingFactor: Float = 1f
 
 ) : View(context) {
@@ -36,7 +36,7 @@ class EventView(
 
     private val textPaint: Paint by lazy { Paint().apply { isAntiAlias = true } }
 
-    private val subjectName: String by lazy { if (config.useShortNames) event.shortTitle else event.title }
+    private val eventName: String by lazy { if (config.useShortNames) event.shortTitle else event.title }
 
     private val textBounds: Rect = Rect()
 
@@ -83,15 +83,15 @@ class EventView(
         }
 
         // title
-        val maxTextSize = TextHelper.fitText(subjectName, textPaint.textSize * 3, width - (paddingLeft + paddingRight), height / 4)
+        val maxTextSize = TextHelper.fitText(eventName, textPaint.textSize * 3, width - (paddingLeft + paddingRight), height / 4)
         textPaint.textSize = maxTextSize
-        textPaint.getTextBounds(subjectName, 0, subjectName.length, textBounds)
+        textPaint.getTextBounds(eventName, 0, eventName.length, textBounds)
         var weight = weightStartTime + weightUpperText
         if (weight == 0) {
             weight++
         }
         val subjectY = getY(weight, weightTitle, textBounds)
-        canvas.drawText(subjectName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
+        canvas.drawText(eventName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
 
         textPaint.textSize = TextHelper.fitText(
             "123456", maxTextSize, width / 2,
