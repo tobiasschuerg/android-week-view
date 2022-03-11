@@ -36,7 +36,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = 'com.github.tobiasschuerg'
-                version = '1.6.0'
+                version = "${lib_version}"
             }
         }
     }
