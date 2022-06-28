@@ -48,7 +48,7 @@ class SampleActivity : AppCompatActivity() {
         weekView.addEvent(nowEvent)
 
         // optional: add an onClickListener for each event
-        weekView.setLessonClickListener {
+        weekView.setEventClickListener {
             Toast.makeText(applicationContext, "Removing " + it.event.title, Toast.LENGTH_SHORT).show()
             weekView.removeView(it)
         }

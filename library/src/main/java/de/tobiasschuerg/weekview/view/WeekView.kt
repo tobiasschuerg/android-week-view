@@ -97,7 +97,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun setLessonClickListener(clickListener: (view: EventView) -> Unit) {
+    fun setEventClickListener(clickListener: (view: EventView) -> Unit) {
         this.clickListener = clickListener
         for (childIndex in 0 until childCount) {
             val view: View = getChildAt(childIndex)
