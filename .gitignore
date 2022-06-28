@@ -18,3 +18,4 @@
 .externalNativeBuild
 .idea/jarRepositories.xml
 .idea/compiler.xml
+.idea/other.xml
