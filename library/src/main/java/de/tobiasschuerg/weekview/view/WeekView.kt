@@ -76,7 +76,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         scaleGestureDetector.onTouchEvent(event)
         return super.onTouchEvent(event)
     }
