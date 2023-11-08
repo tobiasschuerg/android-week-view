@@ -9,7 +9,43 @@ which is now outsourced in favor of a better modularization.
 
 <img src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400">
 
-# Get it
+## Usage:
+See `SampleActivity.kt` for how to use the week view.
+
+### In short:
+1. Attach the view to your layout:
+```xml
+<de.tobiasschuerg.weekview.view.WeekView
+    android:id="@+id/week_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:accent_color="@color/colorAccent"
+    app:start_hour="8"
+    app:end_hour="15" />
+```
+2. Configure how events are displayed (optional):
+```kotlin
+val config = EventConfig(showSubtitle = false, showTimeEnd = false)
+weekView.eventConfig = config
+weekView.setShowNowIndicator(true)
+```
+
+3Add events:
+```kotlin
+val nowEvent = Event.Single(
+    id = 1337,
+    date = LocalDate.now(),
+    title = "Dentist Appointment",
+    shortTitle = "DENT",
+    timeSpan = TimeSpan.of(LocalTime.of(10, 0), Duration.ofHours(1)),
+    backgroundColor = Color.RED,
+    textColor = Color.WHITE
+)
+weekView.addEvent(nowEvent)
+```
+
+
+## Get it
 
 1. Add it in your root build.gradle at the end of repositories:
 ```gradle
