@@ -20,6 +20,7 @@ import de.tobiasschuerg.weekview.util.ViewHelper
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import de.tobiasschuerg.weekview.util.dipToPixelI
 import de.tobiasschuerg.weekview.util.toLocalString
+import kotlin.math.roundToInt
 
 /** this view is only constructed during runtime. */
 @SuppressLint("ViewConstructor")
@@ -31,8 +32,8 @@ class EventView(
 
 ) : View(context) {
 
-    private val TAG = javaClass.simpleName
-    private val CORNER_RADIUS_PX = context.dipToPixelF(2f)
+    private val tag = javaClass.simpleName
+    private val cornerRadiusPx = context.dipToPixelF(2f)
 
     private val textPaint: Paint by lazy { Paint().apply { isAntiAlias = true } }
 
@@ -54,15 +55,15 @@ class EventView(
 
         background = PaintDrawable().apply {
             paint.color = event.backgroundColor
-            setCornerRadius(CORNER_RADIUS_PX)
+            setCornerRadius(cornerRadiusPx)
         }
 
         /** Calculate weights above & below. */
-        if (config.showTimeStart) weightStartTime = 1 else weightStartTime = 0
-        if (config.showUpperText) weightUpperText = 1 else weightUpperText = 0
-        if (config.showSubtitle) weightSubTitle = 1 else weightSubTitle = 0
-        if (config.showLowerText) weightLowerText = 1 else weightLowerText = 0
-        if (config.showTimeEnd) weightEndTime = 1 else weightEndTime = 0
+        weightStartTime = if (config.showTimeStart) 1 else 0
+        weightUpperText = if (config.showUpperText) 1 else 0
+        weightSubTitle = if (config.showSubtitle) 1 else 0
+        weightLowerText = if (config.showLowerText) 1 else 0
+        weightEndTime = if (config.showTimeEnd) 1 else 0
 
         weightSum = weightStartTime + weightUpperText + weightSubTitle + weightLowerText + weightEndTime + weightTitle
 
@@ -71,14 +72,14 @@ class EventView(
 
     // TODO: clean up
     override fun onDraw(canvas: Canvas) {
-        Log.d(TAG, "Drawing ${event.title}")
+        Log.d(tag, "Drawing ${event.title}")
 
         // only for debugging
         if (Debug.isDebuggerConnected()) {
             for (i in 0..weightSum) {
                 val content = height - (paddingTop + paddingBottom)
                 val y = content * i / weightSum + paddingTop
-                canvas.drawLine(0f, y.toFloat(), canvas.width.toFloat(), y.toFloat(), textPaint)
+                canvas.drawLine(0f, y.toFloat(), width.toFloat(), y.toFloat(), textPaint)
             }
         }
 
@@ -94,7 +95,9 @@ class EventView(
         canvas.drawText(eventName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
 
         textPaint.textSize = TextHelper.fitText(
-            "123456", maxTextSize, width / 2,
+            "123456",
+            maxTextSize,
+            width / 2,
             getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds)
         )
 
@@ -137,16 +140,16 @@ class EventView(
     private fun getY(position: Int, weight: Int = 1, bounds: Rect): Int {
         val content = height - (paddingTop + paddingBottom)
         val y = (content * (position + 0.5f * weight) / weightSum) + paddingTop
-        return Math.round(y) - bounds.centerY()
+        return y.roundToInt() - bounds.centerY()
     }
 
     private var measureCount = 0
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        Log.v(TAG, "Measuring ${event.title} ${measureCount++}")
+        Log.v(tag, "Measuring ${event.title} ${measureCount++}")
         if (BuildConfig.DEBUG) {
             val debugWidth = ViewHelper.debugMeasureSpec(widthMeasureSpec)
             val debugHeight = ViewHelper.debugMeasureSpec(heightMeasureSpec)
-            Log.v(TAG, "-> width: $debugWidth\n-> height: $debugHeight")
+            Log.v(tag, "-> width: $debugWidth\n-> height: $debugHeight")
         }
 
         val desiredHeightDp = event.duration.toMinutes() * scalingFactor
@@ -157,17 +160,21 @@ class EventView(
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        Log.d(TAG, "Laying out ${event.title}: changed[$changed] ($left, $top),($right, $bottom)")
+        Log.d(tag, "Laying out ${event.title}: changed[$changed] ($left, $top),($right, $bottom)")
         super.onLayout(changed, left, top, right, bottom)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val anim = ScaleAnimation(
-            0f, 1f, // Start and end values for the X axis scaling
-            0f, 1f, // Start and end values for the Y axis scaling
-            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-            Animation.RELATIVE_TO_SELF, 0.5f
+            0f,
+            1f, // Start and end values for the X axis scaling
+            0f,
+            1f, // Start and end values for the Y axis scaling
+            Animation.RELATIVE_TO_SELF,
+            0.5f, // Pivot point of X scaling
+            Animation.RELATIVE_TO_SELF,
+            0.5f
         ) // Pivot point of Y scaling
         anim.fillAfter = true // Needed to keep the result of the animation
         anim.duration = 1000

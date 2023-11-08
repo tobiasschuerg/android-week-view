@@ -30,7 +30,6 @@ internal object DayOfWeekUtil {
         }
 
         when (firstDayOfTheWeek) {
-
             DayOfWeek.MONDAY -> {
                 // mo: 0, fr:4, su:6
                 val column = day.value

@@ -17,6 +17,7 @@ import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayOfWeekUtil
+import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Duration
@@ -48,12 +49,15 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
     init {
         val arr = context.obtainStyledAttributes(attributeSet, R.styleable.WeekView)
         accentColor = arr.getColor(R.styleable.WeekView_accent_color, Color.BLUE)
+        val start = arr.getInt(R.styleable.WeekView_start_hour, 10)
+        val end = arr.getInt(R.styleable.WeekView_end_hour, 14)
         arr.recycle() // Do this when done.
 
         val prefs = context.getSharedPreferences("ts_week_view", Context.MODE_PRIVATE)
         weekViewConfig = WeekViewConfig(prefs)
 
         backgroundView = WeekBackgroundView(context)
+        backgroundView.defaultTimeSpan = TimeSpan(LocalTime.of(start, 0), LocalTime.of(end, 0))
         backgroundView.setAccentColor(accentColor)
         backgroundView.scalingFactor = weekViewConfig.scalingFactor
 
@@ -143,6 +147,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
                     backgroundView.days.add(DayOfWeek.SATURDAY)
                 }
             }
+
             DayOfWeek.SUNDAY -> {
                 Log.i(TAG, "Enabling Saturday")
                 if (!backgroundView.days.contains(DayOfWeek.SATURDAY)) {
@@ -153,6 +158,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
                     backgroundView.days.add(DayOfWeek.SUNDAY)
                 }
             }
+
             else -> {
                 // nothing to do, just add the event
             }
@@ -243,7 +249,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
             }
 
             eventView.scalingFactor = weekViewConfig.scalingFactor
-            val startTime = backgroundView.startTime
+            val startTime = backgroundView.defaultTimeSpan.start
             val lessonStart = eventView.event.timeSpan.start
             val offset = Duration.between(startTime, lessonStart)
 

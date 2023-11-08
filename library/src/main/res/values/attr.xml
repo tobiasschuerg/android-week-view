@@ -2,5 +2,7 @@
 <resources>
     <declare-styleable name="WeekView">
         <attr name="accent_color" format="color" />
+        <attr name="start_hour" format="integer" />
+        <attr name="end_hour" format="integer" />
     </declare-styleable>
 </resources>

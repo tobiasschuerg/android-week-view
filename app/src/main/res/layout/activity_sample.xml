@@ -15,7 +15,9 @@
             android:id="@+id/week_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:accent_color="@color/colorAccent">
+            app:accent_color="@color/colorAccent"
+            app:end_hour="15"
+            app:start_hour="8">
 
             <TextView
                 android:layout_width="wrap_content"

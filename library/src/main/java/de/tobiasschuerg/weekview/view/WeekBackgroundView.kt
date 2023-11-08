@@ -57,10 +57,6 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
             remove(DayOfWeek.SUNDAY)
         }
 
-    var startTime: LocalTime = LocalTime.of(10, 0)
-        private set
-    private var endTime: LocalTime = LocalTime.of(13, 0)
-
     var scalingFactor = 1f
         /**
          * Updated the scaling factor and redraws the view.
@@ -68,7 +64,12 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
         set(value) {
             field = value
             requestLayout()
-            // invalidate()
+        }
+
+    var defaultTimeSpan = TimeSpan.of(LocalTime.of(10, 0), Duration.ofHours(4))
+        set(value) {
+            field = value
+            requestLayout()
         }
 
     fun setAccentColor(color: Int) {
@@ -91,9 +92,9 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     }
 
     private fun drawNowIndicator(canvas: Canvas) {
-        if (startTime.isBefore(LocalTime.now()) && endTime.isAfter(LocalTime.now())) {
+        if (defaultTimeSpan.start.isBefore(LocalTime.now()) && defaultTimeSpan.endExclusive.isAfter(LocalTime.now())) {
             Log.v(TAG, "Drawing now indicator")
-            val nowOffset = Duration.between(startTime, LocalTime.now())
+            val nowOffset = Duration.between(defaultTimeSpan.start, LocalTime.now())
 
             val minutes = nowOffset.toMinutes()
             val y = topOffsetPx + context.dipToPixelF(minutes * scalingFactor)
@@ -104,10 +105,10 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
 
     private fun Canvas.drawHorizontalDividers() {
         Log.d(TAG, "Drawing horizontal dividers")
-        var localTime = startTime
+        var localTime = defaultTimeSpan.start
         var last = LocalTime.MIN
-        while (localTime.isBefore(endTime) && !last.isAfter(localTime)) {
-            val offset = Duration.between(startTime, localTime)
+        while (localTime.isBefore(defaultTimeSpan.endExclusive) && !last.isAfter(localTime)) {
+            val offset = Duration.between(defaultTimeSpan.start, localTime)
             Log.v(TAG, "Offset $offset")
             val y = topOffsetPx + context.dipToPixelF(offset.toMinutes() * scalingFactor)
             drawLine(0f, y, width.toFloat(), y, paintDivider)
@@ -125,7 +126,7 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
             last = localTime
             localTime = localTime.plusHours(1)
         }
-        val offset = Duration.between(startTime, localTime)
+        val offset = Duration.between(defaultTimeSpan.start, localTime)
         Log.v(TAG, "Offset + $offset")
         drawLine(0f, bottom.toFloat(), width.toFloat(), bottom.toFloat(), paintDivider)
     }
@@ -216,28 +217,20 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     }
 
     fun updateTimes(timeSpan: TimeSpan) {
-        var timesHaveChanged = false
-        if (timeSpan.start.isBefore(startTime)) {
-            startTime = timeSpan.start.truncatedTo(ChronoUnit.HOURS)
-            timesHaveChanged = true
+        if (timeSpan.start.isBefore(defaultTimeSpan.start)) {
+            defaultTimeSpan = defaultTimeSpan.copy(start = timeSpan.start.truncatedTo(ChronoUnit.HOURS))
         }
-        if (timeSpan.endExclusive.isAfter(endTime)) {
-            if (timeSpan.endExclusive.isBefore(LocalTime.of(23, 0))) {
-                this.endTime = timeSpan.endExclusive.truncatedTo(ChronoUnit.HOURS).plusHours(1)
+        if (timeSpan.endExclusive.isAfter(defaultTimeSpan.endExclusive)) {
+            defaultTimeSpan = if (timeSpan.endExclusive.isBefore(LocalTime.of(23, 0))) {
+                defaultTimeSpan.copy(endExclusive = timeSpan.endExclusive.truncatedTo(ChronoUnit.HOURS).plusHours(1))
             } else {
-                this.endTime = LocalTime.MAX
+                defaultTimeSpan.copy(endExclusive = LocalTime.MAX)
             }
-            timesHaveChanged = true
-        }
-        if (this.startTime.isAfter(this.endTime)) throw IllegalArgumentException()
-
-        if (timesHaveChanged) {
-            requestLayout()
         }
     }
 
     private fun getDurationMinutes(): Long {
-        return Duration.between(startTime, endTime).toMinutes()
+        return Duration.between(defaultTimeSpan.start, defaultTimeSpan.endExclusive).toMinutes()
     }
 
     companion object {
