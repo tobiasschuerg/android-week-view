@@ -20,3 +20,6 @@
 .idea/compiler.xml
 .idea/other.xml
 .idea/kotlinc.xml
+.idea/appInsightsSettings.xml
+.idea/deploymentTargetDropDown.xml
+.idea/migrations.xml
