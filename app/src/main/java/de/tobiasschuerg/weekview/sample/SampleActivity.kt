@@ -9,23 +9,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.jakewharton.threetenabp.AndroidThreeTen
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.view.EventView
 import de.tobiasschuerg.weekview.view.WeekView
-import org.threeten.bp.Duration
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.temporal.ChronoUnit
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 class SampleActivity : AppCompatActivity() {
 
     private val weekView: WeekView by lazy { findViewById(R.id.week_view) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidThreeTen.init(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
 
@@ -62,6 +60,7 @@ class SampleActivity : AppCompatActivity() {
                     Log.d("Scroll", "1-pointer touch")
                     v.parent.requestDisallowInterceptTouchEvent(false)
                 }
+
                 2 -> {
                     Log.d("Zoom", "2-pointer touch")
                     v.parent.requestDisallowInterceptTouchEvent(true)
@@ -92,6 +91,7 @@ class SampleActivity : AppCompatActivity() {
                 Log.i(TAG, "add option clicked")
                 weekView.addEvent(EventCreator.createRandomEvent())
             }
+
             "Clear" -> {
                 Log.i(TAG, "clear option clicked")
                 weekView.removeAllEvents()

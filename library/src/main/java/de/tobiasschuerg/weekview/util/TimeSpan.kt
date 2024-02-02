@@ -1,7 +1,7 @@
 package de.tobiasschuerg.weekview.util
 
-import org.threeten.bp.Duration
-import org.threeten.bp.LocalTime
+import java.time.Duration
+import java.time.LocalTime
 
 /**
  * Holds a duration of time.

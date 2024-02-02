@@ -4,9 +4,9 @@ import android.graphics.Color
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.util.TimeSpan
-import org.threeten.bp.DayOfWeek
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Random
 
 object EventCreator {

@@ -1,8 +1,8 @@
 package de.tobiasschuerg.weekview.data
 
 import de.tobiasschuerg.weekview.util.TimeSpan
-import org.threeten.bp.Duration
-import org.threeten.bp.LocalDate
+import java.time.Duration
+import java.time.LocalDate
 
 sealed class Event {
 

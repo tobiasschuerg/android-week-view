@@ -5,17 +5,27 @@ plugins {
 }
 
 android {
-    compileSdk 34
 
     defaultConfig {
         minSdkVersion 16
+        compileSdk 34
         targetSdkVersion 34
+        multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
@@ -28,8 +38,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.7.0'
-    api 'com.jakewharton.threetenabp:threetenabp:1.4.6'
+    implementation 'androidx.annotation:annotation:1.7.1'
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
 
     testImplementation 'junit:junit:4.13.2'
 }

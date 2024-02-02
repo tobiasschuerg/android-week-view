@@ -2,8 +2,8 @@ package de.tobiasschuerg.weekview.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.threeten.bp.Duration
-import org.threeten.bp.LocalTime
+import java.time.Duration
+import java.time.LocalTime
 
 /**
  * Created by Tobias Schrg on 11.02.2022.
