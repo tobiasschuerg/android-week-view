@@ -209,10 +209,8 @@ internal class WeekBackgroundView constructor(context: Context) : View(context) 
     }
 
     override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
-        val height =
-            topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
-        val heightMeasureSpec2 =
-            MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
+        val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
+        val heightMeasureSpec2 = MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
     }
 
