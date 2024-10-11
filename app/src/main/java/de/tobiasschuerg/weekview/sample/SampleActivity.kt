@@ -39,7 +39,7 @@ class SampleActivity : AppCompatActivity() {
             date = LocalDate.now(),
             title = "Current hour",
             shortTitle = "Now",
-            timeSpan = TimeSpan.of(LocalTime.now().truncatedTo(ChronoUnit.HOURS), Duration.ofHours(1)),
+            timeSpan = TimeSpan.of(LocalTime.now().truncatedTo(ChronoUnit.HOURS), Duration.ofHours(1).minusNanos(1)),
             backgroundColor = Color.RED,
             textColor = Color.WHITE
         )
