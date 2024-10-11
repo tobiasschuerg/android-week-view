@@ -4,6 +4,12 @@ plugins {
     id 'maven-publish'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 android {
 
     defaultConfig {
@@ -16,12 +22,6 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -38,8 +38,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.7.1'
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
+    implementation 'androidx.annotation:annotation:1.8.2'
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.2"
 
     testImplementation 'junit:junit:4.13.2'
 }
