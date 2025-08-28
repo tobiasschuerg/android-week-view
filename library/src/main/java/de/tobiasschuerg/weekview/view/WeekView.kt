@@ -29,7 +29,6 @@ import kotlin.math.roundToInt
 
 class WeekView(context: Context, attributeSet: AttributeSet) :
     RelativeLayout(context, attributeSet) {
-
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
 
@@ -184,14 +183,23 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         addView(lv)
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    override fun onMeasure(
+        widthMeasureSpec: Int,
+        heightMeasureSpec: Int,
+    ) {
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         Log.v(TAG, "Measuring ($widthSize x $heightSize)")
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    override fun onLayout(
+        changed: Boolean,
+        l: Int,
+        t: Int,
+        r: Int,
+        b: Int,
+    ) {
         Log.v(TAG, "Laying out timetable for the ${++layoutCount} time.")
         Log.v(TAG, "l: $l, t: $t, r: $r, b: $b")
         super.onLayout(true, l, t, r, b)
@@ -210,11 +218,12 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
             }
 
             // FIXME   lessonView.setShortNameEnabled(isShortNameEnabled);
-            val column: Int = DayOfWeekUtil.mapDayToColumn(
-                eventView.event.date.dayOfWeek,
-                saturdayEnabled,
-                sundayEnabled
-            )
+            val column: Int =
+                DayOfWeekUtil.mapDayToColumn(
+                    eventView.event.date.dayOfWeek,
+                    saturdayEnabled,
+                    sundayEnabled,
+                )
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
                 Log.v(TAG, "Removing view for event $eventView")
@@ -265,7 +274,10 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         backgroundView.showNowIndicator = enabled
     }
 
-    private fun overlaps(left: EventView, right: EventView): Boolean {
+    private fun overlaps(
+        left: EventView,
+        right: EventView,
+    ): Boolean {
         val rightStartsAfterLeftStarts = right.event.timeSpan.start >= left.event.timeSpan.start
         val rightStartsBeforeLeftEnds = right.event.timeSpan.start < left.event.timeSpan.endExclusive
         val lessonStartsWithing = rightStartsAfterLeftStarts && rightStartsBeforeLeftEnds
@@ -292,7 +304,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
      */
     @Deprecated(
         message = "Better use removeAllEvents in order to keep the background!",
-        replaceWith = ReplaceWith("removeAllEvents()")
+        replaceWith = ReplaceWith("removeAllEvents()"),
     )
     override fun removeAllViews() = super.removeAllViews()
 

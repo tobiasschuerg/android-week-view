@@ -4,7 +4,6 @@ import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalTime
 
 class WeekData {
-
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
     private var earliestStart: LocalTime? = null

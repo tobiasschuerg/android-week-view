@@ -3,7 +3,6 @@ package de.tobiasschuerg.weekview.util
 import android.view.View.MeasureSpec
 
 internal object ViewHelper {
-
     fun debugMeasureSpec(spec: Int): String {
         val mode = MeasureSpec.getMode(spec)
         val size = MeasureSpec.getSize(spec)

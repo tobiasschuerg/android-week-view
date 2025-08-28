@@ -7,7 +7,6 @@ import java.time.temporal.WeekFields
 import java.util.Locale
 
 class DayOfWeekUtilTest {
-
     @Test
     fun `test mapping for Germany where monday is the first day of the week`() {
         Locale.setDefault(Locale.GERMANY)

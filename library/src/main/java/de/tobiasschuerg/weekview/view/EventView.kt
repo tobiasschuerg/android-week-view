@@ -28,10 +28,8 @@ class EventView(
     context: Context,
     val event: Event.Single,
     private val config: EventConfig,
-    var scalingFactor: Float = 1f
-
+    var scalingFactor: Float = 1f,
 ) : View(context) {
-
     private val tag = javaClass.simpleName
     private val cornerRadiusPx = context.dipToPixelF(2f)
 
@@ -53,10 +51,11 @@ class EventView(
         val padding = this.context.dipToPixelI(2f)
         setPadding(padding, padding, padding, padding)
 
-        background = PaintDrawable().apply {
-            paint.color = event.backgroundColor
-            setCornerRadius(cornerRadiusPx)
-        }
+        background =
+            PaintDrawable().apply {
+                paint.color = event.backgroundColor
+                setCornerRadius(cornerRadiusPx)
+            }
 
         /** Calculate weights above & below. */
         weightStartTime = if (config.showTimeStart) 1 else 0
@@ -94,12 +93,13 @@ class EventView(
         val subjectY = getY(weight, weightTitle, textBounds)
         canvas.drawText(eventName, (width / 2 - textBounds.centerX()).toFloat(), subjectY.toFloat(), textPaint)
 
-        textPaint.textSize = TextHelper.fitText(
-            "123456",
-            maxTextSize,
-            width / 2,
-            getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds)
-        )
+        textPaint.textSize =
+            TextHelper.fitText(
+                "123456",
+                maxTextSize,
+                width / 2,
+                getY(position = 1, bounds = textBounds) - getY(position = 0, bounds = textBounds),
+            )
 
         // start time
         if (config.showTimeStart) {
@@ -137,14 +137,22 @@ class EventView(
         }
     }
 
-    private fun getY(position: Int, weight: Int = 1, bounds: Rect): Int {
+    private fun getY(
+        position: Int,
+        weight: Int = 1,
+        bounds: Rect,
+    ): Int {
         val content = height - (paddingTop + paddingBottom)
         val y = (content * (position + 0.5f * weight) / weightSum) + paddingTop
         return y.roundToInt() - bounds.centerY()
     }
 
     private var measureCount = 0
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+
+    override fun onMeasure(
+        widthMeasureSpec: Int,
+        heightMeasureSpec: Int,
+    ) {
         Log.v(tag, "Measuring ${event.title} ${measureCount++}")
         if (BuildConfig.DEBUG) {
             val debugWidth = ViewHelper.debugMeasureSpec(widthMeasureSpec)
@@ -159,23 +167,34 @@ class EventView(
         setMeasuredDimension(width, resolvedHeight)
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+    override fun onLayout(
+        changed: Boolean,
+        left: Int,
+        top: Int,
+        right: Int,
+        bottom: Int,
+    ) {
         Log.d(tag, "Laying out ${event.title}: changed[$changed] ($left, $top),($right, $bottom)")
         super.onLayout(changed, left, top, right, bottom)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        val anim = ScaleAnimation(
-            0f,
-            1f, // Start and end values for the X axis scaling
-            0f,
-            1f, // Start and end values for the Y axis scaling
-            Animation.RELATIVE_TO_SELF,
-            0.5f, // Pivot point of X scaling
-            Animation.RELATIVE_TO_SELF,
-            0.5f
-        ) // Pivot point of Y scaling
+        val anim =
+            ScaleAnimation(
+                // Start and end values for the X axis scaling
+                0f,
+                1f,
+                // Start and end values for the Y axis scaling
+                0f,
+                1f,
+                // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                // Pivot point of Y scaling
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+            )
         anim.fillAfter = true // Needed to keep the result of the animation
         anim.duration = 1000
         this.startAnimation(anim)

@@ -4,7 +4,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 
 internal object Animation {
-
     fun createBlinkAnimation(): Animation {
         val blinkAnimation = AlphaAnimation(0.4f, 1.0f)
         blinkAnimation.duration = 500 // manage the time of the blink

@@ -8,7 +8,6 @@ import java.util.Locale
  * Utility class for working with DayOfWeek.
  */
 internal object DayOfWeekUtil {
-
     /**
      * Creates a list of all week days starting from the provided [firstDay].
      *
@@ -32,7 +31,7 @@ internal object DayOfWeekUtil {
     fun mapDayToColumn(
         day: DayOfWeek,
         saturdayEnabled: Boolean,
-        sundayEnabled: Boolean
+        sundayEnabled: Boolean,
     ): Int {
         val firstDayOfTheWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 

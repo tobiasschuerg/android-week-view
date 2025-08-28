@@ -8,9 +8,8 @@ import java.time.LocalTime
  */
 data class TimeSpan(
     val start: LocalTime,
-    val endExclusive: LocalTime
+    val endExclusive: LocalTime,
 ) {
-
     init {
         require(start.isBefore(endExclusive)) {
             "Start time $start must be before end time $endExclusive!"
@@ -20,7 +19,10 @@ data class TimeSpan(
     val duration: Duration by lazy { Duration.between(start, endExclusive) }
 
     companion object {
-        fun of(start: LocalTime, duration: Duration): TimeSpan {
+        fun of(
+            start: LocalTime,
+            duration: Duration,
+        ): TimeSpan {
             return TimeSpan(start, start.plus(duration))
         }
     }

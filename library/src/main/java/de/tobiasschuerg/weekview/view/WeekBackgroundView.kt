@@ -22,7 +22,6 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 internal class WeekBackgroundView(context: Context) : View(context) {
-
     private val accentPaint: Paint by lazy {
         Paint().apply { strokeWidth = DIVIDER_WIDTH_PX.toFloat() * 2 }
     }
@@ -50,12 +49,13 @@ internal class WeekBackgroundView(context: Context) : View(context) {
 
     private var drawCount = 0
 
-    val days: MutableList<DayOfWeek> = DayOfWeekUtil.createList()
-        .toMutableList()
-        .apply {
-            remove(DayOfWeek.SATURDAY)
-            remove(DayOfWeek.SUNDAY)
-        }
+    val days: MutableList<DayOfWeek> =
+        DayOfWeekUtil.createList()
+            .toMutableList()
+            .apply {
+                remove(DayOfWeek.SATURDAY)
+                remove(DayOfWeek.SUNDAY)
+            }
 
     var scalingFactor = 1f
         /**
@@ -120,7 +120,7 @@ internal class WeekBackgroundView(context: Context) : View(context) {
                 timeString,
                 context.dipToPixelF(25f),
                 y + context.dipToPixelF(20f),
-                mPaintLabels
+                mPaintLabels,
             )
 
             last = localTime
@@ -156,14 +156,17 @@ internal class WeekBackgroundView(context: Context) : View(context) {
         drawRect(rect, accentPaint)
     }
 
-    private fun Canvas.drawWeekDayName(day: DayOfWeek, column: Int) {
+    private fun Canvas.drawWeekDayName(
+        day: DayOfWeek,
+        column: Int,
+    ) {
         val shortName = day.getDisplayName(TextStyle.SHORT, Locale.getDefault())
         val xLabel = (getColumnStart(column, false) + getColumnEnd(column, false)) / 2
         drawText(
             shortName,
             xLabel.toFloat(),
             topOffsetPx / 2 + mPaintLabels.descent(),
-            mPaintLabels
+            mPaintLabels,
         )
     }
 
@@ -172,7 +175,7 @@ internal class WeekBackgroundView(context: Context) : View(context) {
         text: String,
         initialX: Float,
         initialY: Float,
-        paint: Paint
+        paint: Paint,
     ) {
         var currentY = initialY
         text.split(" ")
@@ -190,7 +193,10 @@ internal class WeekBackgroundView(context: Context) : View(context) {
      * @param column starting to count at 0
      * @return offset in px
      */
-    internal fun getColumnStart(column: Int, considerDivider: Boolean): Int {
+    internal fun getColumnStart(
+        column: Int,
+        considerDivider: Boolean,
+    ): Int {
         val contentWidth: Int = width - leftOffset
         var offset: Int = leftOffset + contentWidth * column / days.size
         if (considerDivider) {
@@ -199,7 +205,10 @@ internal class WeekBackgroundView(context: Context) : View(context) {
         return offset
     }
 
-    internal fun getColumnEnd(column: Int, considerDivider: Boolean): Int {
+    internal fun getColumnEnd(
+        column: Int,
+        considerDivider: Boolean,
+    ): Int {
         val contentWidth: Int = width - leftOffset
         var offset: Int = leftOffset + contentWidth * (column + 1) / days.size
         if (considerDivider) {
@@ -208,7 +217,10 @@ internal class WeekBackgroundView(context: Context) : View(context) {
         return offset
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, hms: Int) {
+    override fun onMeasure(
+        widthMeasureSpec: Int,
+        hms: Int,
+    ) {
         val height = topOffsetPx + context.dipToPixelF(getDurationMinutes() * scalingFactor) + paddingBottom
         val heightMeasureSpec2 = MeasureSpec.makeMeasureSpec(height.roundToInt(), MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec2)
@@ -219,11 +231,12 @@ internal class WeekBackgroundView(context: Context) : View(context) {
             defaultTimeSpan = defaultTimeSpan.copy(start = timeSpan.start.truncatedTo(ChronoUnit.HOURS))
         }
         if (timeSpan.endExclusive.isAfter(defaultTimeSpan.endExclusive)) {
-            defaultTimeSpan = if (timeSpan.endExclusive.isBefore(LocalTime.of(23, 0))) {
-                defaultTimeSpan.copy(endExclusive = timeSpan.endExclusive.truncatedTo(ChronoUnit.HOURS).plusHours(1))
-            } else {
-                defaultTimeSpan.copy(endExclusive = LocalTime.MAX)
-            }
+            defaultTimeSpan =
+                if (timeSpan.endExclusive.isBefore(LocalTime.of(23, 0))) {
+                    defaultTimeSpan.copy(endExclusive = timeSpan.endExclusive.truncatedTo(ChronoUnit.HOURS).plusHours(1))
+                } else {
+                    defaultTimeSpan.copy(endExclusive = LocalTime.MAX)
+                }
         }
     }
 
