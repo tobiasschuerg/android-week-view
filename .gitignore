@@ -23,3 +23,5 @@
 /local.properties
 .idea/deploymentTargetSelector.xml
 .idea/AndroidProjectSystem.xml
+.idea/copilotDiffState.xml
+.idea/inspectionProfiles/Project_Default.xml
