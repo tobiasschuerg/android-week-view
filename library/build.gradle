@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.21'
     id 'maven-publish'
 }
 
@@ -21,11 +22,18 @@ android {
     }
 
     compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
     }
 
     buildFeatures {
         buildConfig true
+        compose true
     }
 
     buildTypes {
@@ -38,10 +46,35 @@ android {
 }
 
 dependencies {
+    // Core Android dependencies
     implementation 'androidx.annotation:annotation:1.8.2'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.4'
+
+    // Compose BOM
+    implementation platform('androidx.compose:compose-bom:2024.06.00')
+
+    // Compose dependencies
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.runtime:runtime'
+    implementation 'androidx.compose.ui:ui-geometry'
+    implementation 'androidx.compose.ui:ui-text'
+    implementation 'androidx.activity:activity-compose:1.9.1'
+
+    // Compose debugging tools
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // Core library desugaring for java.time API
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.2"
 
+    // Test dependencies
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.compose.ui:ui-test-junit4'
 }
 
 afterEvaluate {
