@@ -54,33 +54,40 @@ fun EventCompose(
         return
     }
 
-    // Calculate vertical position based on start time
+    // Calculate vertical position based on start time with proper alignment
     val startOffsetHours =
         maxOf(
             0f,
             (event.timeSpan.start.hour + event.timeSpan.start.minute / 60f) - startTime.hour,
         )
-    val yOffsetDp = (startOffsetHours * rowHeightDp.value).dp
+    // Add topOffsetDp to account for the day labels at the top of the grid
+    val topOffsetDp = 32.dp
+    val yOffsetDp = topOffsetDp + (startOffsetHours * rowHeightDp.value).dp
 
     // Calculate event height based on duration
     val durationHours = event.timeSpan.duration.toMinutes() / 60f
-    val eventHeightDp = (durationHours * rowHeightDp.value).dp
+    val eventHeightDp = maxOf(8.dp, (durationHours * rowHeightDp.value).dp) // Minimum height
 
-    // Calculate horizontal position
-    val xOffsetDp = leftOffsetDp + (dayIndex * columnWidthDp.value).dp
+    // Calculate horizontal position to match grid exactly
+    // Grid draws columns at: timeLabelWidth + (i * columnWidth)
+    // We need to position events between grid lines with 1dp padding (half of 2dp grid line)
+    val gridLinePadding = 1.dp
+    val xOffsetDp = leftOffsetDp + (dayIndex * columnWidthDp.value).dp + gridLinePadding
+
+    // Calculate event width to fit exactly between grid lines
+    val eventWidthDp = columnWidthDp - (gridLinePadding * 2)
 
     // Event content
     Box(
         modifier =
             modifier
                 .offset(x = xOffsetDp, y = yOffsetDp)
-                .width(columnWidthDp)
+                .width(eventWidthDp)
                 .height(eventHeightDp)
-                .padding(1.dp) // Small padding to separate overlapping events
                 .clip(RoundedCornerShape(4.dp))
                 .background(Color(event.backgroundColor))
                 .clickable { onEventClick?.invoke(event.id) }
-                .padding(4.dp),
+                .padding(horizontal = 2.dp, vertical = 1.dp),
     ) {
         Column {
             // Event title
