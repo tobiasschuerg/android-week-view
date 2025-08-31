@@ -22,7 +22,6 @@ fun WeekViewCompose(
     eventConfig: EventConfig = EventConfig(),
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
-    onEventContextMenu: ((eventId: Long) -> Unit)? = null,
 ) {
     // Determine time range from weekData or use defaults
     val timeSpan = weekData.getTimeSpan()
@@ -37,6 +36,8 @@ fun WeekViewCompose(
             java.time.DayOfWeek.WEDNESDAY,
             java.time.DayOfWeek.THURSDAY,
             java.time.DayOfWeek.FRIDAY,
+            java.time.DayOfWeek.SATURDAY,
+            java.time.DayOfWeek.SUNDAY,
         )
 
     Box(modifier = modifier) {

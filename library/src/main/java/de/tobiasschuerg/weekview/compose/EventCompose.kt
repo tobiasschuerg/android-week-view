@@ -2,13 +2,7 @@ package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -24,8 +19,10 @@ import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekViewConfig
+import de.tobiasschuerg.weekview.util.EventOverlapCalculator
 import java.time.DayOfWeek
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Composable that renders individual events on the week view grid.
@@ -34,83 +31,82 @@ import java.time.LocalTime
 @Composable
 fun EventCompose(
     event: Event.Single,
-    dayOfWeek: DayOfWeek,
-    days: List<DayOfWeek>,
-    startTime: LocalTime,
-    endTime: LocalTime,
-    rowHeightDp: Dp,
-    columnWidthDp: Dp,
-    leftOffsetDp: Dp,
-    eventConfig: EventConfig,
     weekViewConfig: WeekViewConfig,
+    eventConfig: EventConfig,
+    startTime: LocalTime,
+    hourHeight: Dp,
+    columnWidth: Dp,
+    eventLayout: EventOverlapCalculator.EventLayout,
+    modifier: Modifier = Modifier,
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
-    modifier: Modifier = Modifier,
+    onEventContextMenu: ((eventId: Long) -> Unit)? = null,
 ) {
-    // Calculate event position and dimensions
-    val dayIndex = days.indexOf(dayOfWeek)
-    if (dayIndex < 0) return // Event not in visible days
+    val density = LocalDensity.current
 
-    // Event should only be displayed if it's within the visible time range
-    if (event.timeSpan.start.isAfter(endTime) || event.timeSpan.endExclusive.isBefore(startTime)) {
-        return
-    }
+    // Calculate event positioning based on time
+    val startMinutes =
+        (event.timeSpan.start.hour - startTime.hour) * 60 +
+            (event.timeSpan.start.minute - startTime.minute)
+    val durationMinutes = event.timeSpan.duration.toMinutes().toInt()
 
-    // Calculate vertical position based on start time (no topOffset needed in scrollable grid)
-    val startOffsetHours =
-        maxOf(
-            0f,
-            (event.timeSpan.start.hour + event.timeSpan.start.minute / 60f) - startTime.hour,
-        )
-    val yOffsetDp = (startOffsetHours * rowHeightDp.value).dp
+    // Calculate dimensions with scaling factor
+    val topOffset = with(density) { (startMinutes * weekViewConfig.scalingFactor).dp }
+    val eventHeight = with(density) { (durationMinutes * weekViewConfig.scalingFactor).dp }
 
-    // Calculate event height based on duration
-    val durationHours = event.timeSpan.duration.toMinutes() / 60f
-    val eventHeightDp = maxOf(8.dp, (durationHours * rowHeightDp.value).dp) // Minimum height
+    // Apply overlap layout calculations
+    val eventWidth = columnWidth * eventLayout.widthFraction
+    val horizontalOffset = columnWidth * eventLayout.offsetFraction
 
-    // Calculate horizontal position within the grid (no leftOffsetDp since we're in grid area)
-    val gridLinePadding = 1.dp
-    // Use a fixed margin to avoid overlapping grid lines and keep events visually inside the column
-    val eventMarginDp = 4.dp
-    val xOffsetDp = (dayIndex * columnWidthDp.value).dp + eventMarginDp
+    // Event styling
+    val backgroundColor = Color(event.backgroundColor)
+    val textColor = Color(event.textColor)
+    val cornerRadius = 4.dp
+    val eventPadding = 4.dp
 
-    // Calculate event width to fit exactly between grid lines
-    val eventWidthDp = columnWidthDp - (eventMarginDp * 2)
+    // Determine which title to show based on config
+    val displayTitle =
+        if (eventConfig.useShortNames && event.shortTitle.isNotBlank()) {
+            event.shortTitle
+        } else {
+            event.title
+        }
 
-    // Event content
     Box(
         modifier =
             modifier
-                .offset(x = xOffsetDp, y = yOffsetDp)
-                .width(eventWidthDp)
-                .height(eventHeightDp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color(event.backgroundColor))
-                .pointerInput(onEventClick, onEventLongPress) {
+                .offset(x = horizontalOffset, y = topOffset)
+                .size(width = eventWidth, height = eventHeight)
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(backgroundColor)
+                .pointerInput(event.id) {
                     detectTapGestures(
                         onTap = { onEventClick?.invoke(event.id) },
                         onLongPress = { onEventLongPress?.invoke(event.id) },
                     )
                 }
-                .padding(horizontal = 2.dp, vertical = 1.dp),
+                .padding(eventPadding),
     ) {
-        Column {
-            // Event title
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+        ) {
+            // Main title
             Text(
-                text = if (eventConfig.useShortNames) event.shortTitle else event.title,
-                color = Color(event.textColor),
+                text = displayTitle,
+                color = textColor,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
+                fontWeight = FontWeight.Medium,
+                maxLines = if (eventConfig.showSubtitle || eventConfig.showTimeEnd) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            // Event subtitle if enabled and available
-            if (eventConfig.showSubtitle && !event.subTitle.isNullOrBlank()) {
+            // Subtitle (if enabled and available)
+            if (eventConfig.showSubtitle && event.subTitle?.isNotBlank() == true) {
                 Text(
                     text = event.subTitle,
-                    color = Color(event.textColor),
+                    color = textColor.copy(alpha = 0.8f),
                     fontSize = 10.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -118,36 +114,19 @@ fun EventCompose(
                 )
             }
 
-            // Event time if enabled
+            // Time information (if enabled)
             if (eventConfig.showTimeEnd) {
-                val timeText = "${event.timeSpan.start} - ${event.timeSpan.endExclusive}"
+                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+                val timeText =
+                    if (eventConfig.showTimeEnd) {
+                        "${event.timeSpan.start.format(timeFormatter)} - ${event.timeSpan.endExclusive.format(timeFormatter)}"
+                    } else {
+                        event.timeSpan.start.format(timeFormatter)
+                    }
+
                 Text(
                     text = timeText,
-                    color = Color(event.textColor).copy(alpha = 0.8f),
-                    fontSize = 9.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            // Upper text if available
-            if (!event.upperText.isNullOrBlank()) {
-                Text(
-                    text = event.upperText,
-                    color = Color(event.textColor),
-                    fontSize = 9.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            // Lower text if available
-            if (!event.lowerText.isNullOrBlank()) {
-                Text(
-                    text = event.lowerText,
-                    color = Color(event.textColor),
+                    color = textColor.copy(alpha = 0.7f),
                     fontSize = 9.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -184,17 +163,66 @@ fun EventsCompose(
             if (days.contains(eventDayOfWeek)) {
                 EventCompose(
                     event = event,
-                    dayOfWeek = eventDayOfWeek,
-                    days = days,
-                    startTime = startTime,
-                    endTime = endTime,
-                    rowHeightDp = rowHeightDp,
-                    columnWidthDp = columnWidthDp,
-                    leftOffsetDp = leftOffsetDp,
-                    eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
+                    eventConfig = eventConfig,
+                    startTime = startTime,
+                    hourHeight = rowHeightDp,
+                    columnWidth = columnWidthDp,
+                    eventLayout = EventOverlapCalculator.EventLayout(1f, 0f, 0),
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Composable for rendering multiple events with overlap handling.
+ * Calculates overlap layouts and renders each event with proper positioning.
+ */
+@Composable
+fun EventsWithOverlapHandling(
+    events: List<Event.Single>,
+    weekViewConfig: WeekViewConfig,
+    eventConfig: EventConfig,
+    startTime: LocalTime,
+    endTime: LocalTime,
+    hourHeight: Dp,
+    columnWidth: Dp,
+    dayColumnIndex: Int,
+    modifier: Modifier = Modifier,
+    onEventClick: ((eventId: Long) -> Unit)? = null,
+    onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    onEventContextMenu: ((eventId: Long) -> Unit)? = null,
+) {
+    // Filter events for the current day and time range
+    val visibleEvents =
+        events.filter { event ->
+            // Check if event is within the visible time range
+            event.timeSpan.start < endTime && event.timeSpan.endExclusive > startTime
+        }
+
+    if (visibleEvents.isEmpty()) return
+
+    // Calculate overlap layouts for all visible events
+    val eventLayouts = EventOverlapCalculator.calculateEventLayouts(visibleEvents)
+
+    Box(modifier = modifier) {
+        visibleEvents.forEach { event ->
+            val layout = eventLayouts[event.id]
+            if (layout != null) {
+                EventCompose(
+                    event = event,
+                    weekViewConfig = weekViewConfig,
+                    eventConfig = eventConfig,
+                    startTime = startTime,
+                    hourHeight = hourHeight,
+                    columnWidth = columnWidth,
+                    eventLayout = layout,
+                    onEventClick = onEventClick,
+                    onEventLongPress = onEventLongPress,
+                    onEventContextMenu = onEventContextMenu,
                 )
             }
         }

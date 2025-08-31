@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -201,46 +202,59 @@ fun WeekBackgroundCompose(
                                 strokeWidth = 2f,
                             )
                         }
-                        // Highlight today's column
-                        val todayIndex = days.indexOf(today)
-                        if (todayIndex >= 0) {
-                            val left = todayIndex * columnWidth
+
+                        // Today highlight
+                        if (days.contains(today)) {
+                            val todayColumnIndex = days.indexOf(today)
+                            val left = todayColumnIndex * columnWidth
+                            val right = left + columnWidth
                             drawRect(
                                 color = todayHighlightColor,
                                 topLeft = Offset(left, 0f),
                                 size = androidx.compose.ui.geometry.Size(columnWidth, size.height),
                             )
                         }
-                        // Now indicator - always draw when time is in range
-                        if (showNowIndicator) {
-                            if (now.isAfter(startTime) && now.isBefore(effectiveEndTime)) {
-                                val y = ((now.hour + now.minute / 60f) - startTime.hour) * rowHeightPx
-                                drawLine(
-                                    color = nowIndicatorColor,
-                                    start = Offset(0f, y),
-                                    end = Offset(size.width, y),
-                                    strokeWidth = 4f,
+
+                        // Now indicator line (full width)
+                        if (showNowIndicator && now.isAfter(startTime) && now.isBefore(effectiveEndTime)) {
+                            val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
+                            val nowY = nowPositionFloat * rowHeightPx
+                            drawLine(
+                                color = nowIndicatorColor,
+                                start = Offset(0f, nowY),
+                                end = Offset(size.width, nowY),
+                                strokeWidth = 4f,
+                            )
+                        }
+                    }
+
+                    // Render events with overlap handling for each day column
+                    days.forEachIndexed { dayIndex, day ->
+                        val dayDate = LocalDate.now().with(day) // You might want to pass actual dates
+                        val eventsForDay = events.filter { it.date.dayOfWeek == day }
+
+                        if (eventsForDay.isNotEmpty()) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .offset(x = dayIndex * dynamicColumnWidthDp)
+                                        .size(dynamicColumnWidthDp, gridHeightDp),
+                            ) {
+                                EventsWithOverlapHandling(
+                                    events = eventsForDay,
+                                    weekViewConfig = weekViewConfig,
+                                    eventConfig = eventConfig,
+                                    startTime = startTime,
+                                    endTime = effectiveEndTime,
+                                    hourHeight = rowHeightDp,
+                                    columnWidth = dynamicColumnWidthDp,
+                                    dayColumnIndex = dayIndex,
+                                    onEventClick = onEventClick,
+                                    onEventLongPress = onEventLongPress,
                                 )
                             }
                         }
                     }
-                    // Events overlay within the scrollable grid
-                    EventsCompose(
-                        events = events,
-                        days = days,
-                        startTime = startTime,
-                        endTime = effectiveEndTime,
-                        rowHeightDp = rowHeightDp,
-                        columnWidthDp = dynamicColumnWidthDp,
-                        // No left offset needed since we're already in the grid area
-                        leftOffsetDp = 0.dp,
-                        eventConfig = eventConfig,
-                        weekViewConfig = weekViewConfig,
-                        onEventClick = onEventClick,
-                        onEventLongPress = onEventLongPress,
-                        // Ensures events overlay matches grid size
-                        modifier = Modifier.matchParentSize(),
-                    )
                 }
             }
         }
