@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -21,8 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import java.util.Locale
@@ -68,7 +70,7 @@ fun WeekBackgroundCompose(
     LaunchedEffect(Unit) {
         while (true) {
             now = LocalTime.now()
-            delay(1000) // jede Sekunde aktualisieren
+            delay(1000) // update every second
         }
     }
 
@@ -95,7 +97,7 @@ fun WeekBackgroundCompose(
                     .width(leftOffsetDp)
                     .height(gridHeightDp)
             ) {
-                // Reguläre Zeitlabels (Stunden)
+                // Regular time labels (hours)
                 Column(
                     modifier = Modifier.verticalScroll(scrollState)
                 ) {
@@ -110,7 +112,7 @@ fun WeekBackgroundCompose(
                     }
                 }
 
-                // Now-Indikator Zeit Label (HH:mm)
+                // Current time indicator label (HH:mm)
                 if (showNowIndicator && now.isAfter(startTime) && now.isBefore(endTime)) {
                     val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
                     val nowPositionDp = (nowPositionFloat * rowHeightDp.value).dp
@@ -124,9 +126,10 @@ fun WeekBackgroundCompose(
                             style = androidx.compose.ui.text.TextStyle(
                                 fontSize = 11.sp,
                                 color = nowIndicatorColor,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.End
                             ),
-                            modifier = Modifier
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
@@ -140,9 +143,9 @@ fun WeekBackgroundCompose(
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val columnWidth = size.width / columnCount
-                    // Zeilenhöhe in Pixeln aus Dp berechnen, damit sie exakt zu den Zeitlabel-Boxen passt
+                    // Calculate row height in pixels from Dp to match the time label boxes exactly
                     val rowHeightPx = with(this@Canvas) { rowHeightDp.toPx() }
-                    // Vertikale Linien (Tag-Spalten)
+                    // Vertical lines (day columns)
                     for (i in 0..columnCount) {
                         val x = i * columnWidth
                         drawLine(
@@ -152,7 +155,7 @@ fun WeekBackgroundCompose(
                             strokeWidth = 2f,
                         )
                     }
-                    // Horizontale Linien (Stunden) - volle Breite
+                    // Horizontal lines (hours) - full width
                     for (i in 0..hourCount) {
                         val y = i * rowHeightPx
                         drawLine(
@@ -162,7 +165,7 @@ fun WeekBackgroundCompose(
                             strokeWidth = 2f,
                         )
                     }
-                    // Heute-Spalte hervorheben
+                    // Highlight today's column
                     val todayIndex = days.indexOf(today)
                     if (todayIndex >= 0) {
                         val left = todayIndex * columnWidth
@@ -172,7 +175,7 @@ fun WeekBackgroundCompose(
                             size = androidx.compose.ui.geometry.Size(columnWidth, size.height),
                         )
                     }
-                    // Now-Indicator immer zeichnen
+                    // Now indicator - always draw when time is in range
                     if (showNowIndicator) {
                         if (now.isAfter(startTime) && now.isBefore(endTime)) {
                             val y = ((now.hour + now.minute / 60f) - startTime.hour) * rowHeightPx
