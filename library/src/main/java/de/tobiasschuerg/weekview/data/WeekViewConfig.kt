@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.data
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 /**
  * Persists the WeekViewConfig.
@@ -12,7 +13,7 @@ class WeekViewConfig(private val prefs: SharedPreferences) {
     var scalingFactor: Float = prefs.getFloat(PREFS_KEY_SCALING_FACTOR, 1f)
         set(value) {
             field = value
-            prefs.edit().putFloat(PREFS_KEY_SCALING_FACTOR, value).apply()
+            prefs.edit { putFloat(PREFS_KEY_SCALING_FACTOR, value) }
         }
 
     companion object {

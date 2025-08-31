@@ -27,7 +27,6 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
-import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -41,13 +40,11 @@ fun EventCompose(
     weekViewConfig: WeekViewConfig,
     eventConfig: EventConfig,
     startTime: LocalTime,
-    hourHeight: Dp,
     columnWidth: Dp,
     eventLayout: EventOverlapCalculator.EventLayout,
     modifier: Modifier = Modifier,
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
-    onEventContextMenu: ((eventId: Long) -> Unit)? = null,
 ) {
     val density = LocalDensity.current
 
@@ -82,6 +79,7 @@ fun EventCompose(
     Box(
         modifier =
             modifier
+                .padding(1.dp)
                 .offset(x = horizontalOffset, y = topOffset)
                 .size(width = eventWidth, height = eventHeight)
                 .clip(RoundedCornerShape(cornerRadius))
@@ -95,7 +93,9 @@ fun EventCompose(
                 .padding(eventPadding),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxSize(),
             verticalArrangement = Arrangement.Top,
         ) {
             // Main title
@@ -145,46 +145,6 @@ fun EventCompose(
 }
 
 /**
- * Composable that renders all events for the week view.
- * Manages event positioning and handles event collections.
- */
-@Composable
-fun EventsCompose(
-    events: List<Event.Single>,
-    days: List<DayOfWeek>,
-    startTime: LocalTime,
-    endTime: LocalTime,
-    rowHeightDp: Dp,
-    columnWidthDp: Dp,
-    leftOffsetDp: Dp,
-    eventConfig: EventConfig,
-    weekViewConfig: WeekViewConfig,
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
-    modifier: Modifier = Modifier,
-) {
-    Box(modifier = modifier) {
-        // Group events by day and render each
-        events.forEach { event ->
-            val eventDayOfWeek = event.date.dayOfWeek
-            if (days.contains(eventDayOfWeek)) {
-                EventCompose(
-                    event = event,
-                    weekViewConfig = weekViewConfig,
-                    eventConfig = eventConfig,
-                    startTime = startTime,
-                    hourHeight = rowHeightDp,
-                    columnWidth = columnWidthDp,
-                    eventLayout = EventOverlapCalculator.EventLayout(1f, 0f, 0),
-                    onEventClick = onEventClick,
-                    onEventLongPress = onEventLongPress,
-                )
-            }
-        }
-    }
-}
-
-/**
  * Composable for rendering multiple events with overlap handling.
  * Calculates overlap layouts and renders each event with proper positioning.
  */
@@ -195,13 +155,10 @@ fun EventsWithOverlapHandling(
     eventConfig: EventConfig,
     startTime: LocalTime,
     endTime: LocalTime,
-    hourHeight: Dp,
     columnWidth: Dp,
-    dayColumnIndex: Int,
     modifier: Modifier = Modifier,
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
-    onEventContextMenu: ((eventId: Long) -> Unit)? = null,
 ) {
     // Filter events for the current day and time range
     val visibleEvents =
@@ -224,12 +181,10 @@ fun EventsWithOverlapHandling(
                     weekViewConfig = weekViewConfig,
                     eventConfig = eventConfig,
                     startTime = startTime,
-                    hourHeight = hourHeight,
                     columnWidth = columnWidth,
                     eventLayout = layout,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
-                    onEventContextMenu = onEventContextMenu,
                 )
             }
         }

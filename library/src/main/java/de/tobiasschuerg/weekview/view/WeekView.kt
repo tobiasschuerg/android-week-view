@@ -15,10 +15,10 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
-import de.tobiasschuerg.weekview.util.Animation
 import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.util.dipToPixelF
+import de.tobiasschuerg.weekview.view.util.Animation
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate

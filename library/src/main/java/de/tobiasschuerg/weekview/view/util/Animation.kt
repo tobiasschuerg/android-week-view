@@ -1,4 +1,4 @@
-package de.tobiasschuerg.weekview.util
+package de.tobiasschuerg.weekview.view.util
 
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation

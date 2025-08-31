@@ -15,11 +15,11 @@ import android.view.animation.ScaleAnimation
 import de.tobiasschuerg.weekview.BuildConfig
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.util.TextHelper
-import de.tobiasschuerg.weekview.util.ViewHelper
 import de.tobiasschuerg.weekview.util.dipToPixelF
 import de.tobiasschuerg.weekview.util.dipToPixelI
 import de.tobiasschuerg.weekview.util.toLocalString
+import de.tobiasschuerg.weekview.view.util.TextHelper
+import de.tobiasschuerg.weekview.view.util.ViewHelper
 import kotlin.math.roundToInt
 
 /** this view is only constructed during runtime. */

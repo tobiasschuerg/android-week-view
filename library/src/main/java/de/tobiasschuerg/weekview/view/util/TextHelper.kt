@@ -1,4 +1,4 @@
-package de.tobiasschuerg.weekview.util
+package de.tobiasschuerg.weekview.view.util
 
 import android.graphics.Paint
 import android.graphics.Rect

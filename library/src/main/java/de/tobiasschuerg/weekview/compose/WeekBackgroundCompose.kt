@@ -207,7 +207,7 @@ fun WeekBackgroundCompose(
                         if (days.contains(today)) {
                             val todayColumnIndex = days.indexOf(today)
                             val left = todayColumnIndex * columnWidth
-                            val right = left + columnWidth
+                            left + columnWidth
                             drawRect(
                                 color = todayHighlightColor,
                                 topLeft = Offset(left, 0f),
@@ -230,7 +230,6 @@ fun WeekBackgroundCompose(
 
                     // Render events with overlap handling for each day column
                     days.forEachIndexed { dayIndex, day ->
-                        val dayDate = LocalDate.now().with(day) // You might want to pass actual dates
                         val eventsForDay = events.filter { it.date.dayOfWeek == day }
 
                         if (eventsForDay.isNotEmpty()) {
@@ -246,9 +245,7 @@ fun WeekBackgroundCompose(
                                     eventConfig = eventConfig,
                                     startTime = startTime,
                                     endTime = effectiveEndTime,
-                                    hourHeight = rowHeightDp,
                                     columnWidth = dynamicColumnWidthDp,
-                                    dayColumnIndex = dayIndex,
                                     onEventClick = onEventClick,
                                     onEventLongPress = onEventLongPress,
                                 )
