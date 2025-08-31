@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
@@ -21,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.WeekViewConfig
+import java.util.Locale
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -87,17 +90,42 @@ fun WeekBackgroundCompose(
         // Scrollable area: time labels (left) and grid (right)
         Row(modifier = Modifier.weight(1f)) {
             // Time labels (scrollable vertically)
-            Column(
+            Box(
                 modifier = Modifier
-                    .verticalScroll(scrollState)
                     .width(leftOffsetDp)
                     .height(gridHeightDp)
             ) {
-                for (i in timeLabels.indices) {
-                    Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
+                // Reguläre Zeitlabels (Stunden)
+                Column(
+                    modifier = Modifier.verticalScroll(scrollState)
+                ) {
+                    for (timeLabel in timeLabels) {
+                        Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
+                            Text(
+                                text = timeLabel.toString(),
+                                style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = Color.Gray),
+                                modifier = Modifier
+                            )
+                        }
+                    }
+                }
+
+                // Now-Indikator Zeit Label (HH:mm)
+                if (showNowIndicator && now.isAfter(startTime) && now.isBefore(endTime)) {
+                    val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
+                    val nowPositionDp = (nowPositionFloat * rowHeightDp.value).dp
+                    Box(
+                        modifier = Modifier
+                            .offset(y = nowPositionDp - scrollState.value.dp)
+                            .width(leftOffsetDp)
+                    ) {
                         Text(
-                            text = timeLabels[i].toString(),
-                            style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = Color.Gray),
+                            text = String.format(Locale.getDefault(), "%02d:%02d", now.hour, now.minute),
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontSize = 11.sp,
+                                color = nowIndicatorColor,
+                                fontWeight = FontWeight.Bold
+                            ),
                             modifier = Modifier
                         )
                     }
