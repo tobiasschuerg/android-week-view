@@ -68,10 +68,12 @@ fun EventCompose(
 
     // Calculate horizontal position within the grid (no leftOffsetDp since we're in grid area)
     val gridLinePadding = 1.dp
-    val xOffsetDp = (dayIndex * columnWidthDp.value).dp + gridLinePadding
+    // Use a fixed margin to avoid overlapping grid lines and keep events visually inside the column
+    val eventMarginDp = 4.dp
+    val xOffsetDp = (dayIndex * columnWidthDp.value).dp + eventMarginDp
 
     // Calculate event width to fit exactly between grid lines
-    val eventWidthDp = columnWidthDp - (gridLinePadding * 2)
+    val eventWidthDp = columnWidthDp - (eventMarginDp * 2)
 
     // Event content
     Box(

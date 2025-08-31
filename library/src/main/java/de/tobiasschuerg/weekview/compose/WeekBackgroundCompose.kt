@@ -68,10 +68,25 @@ fun WeekBackgroundCompose(
     val leftOffsetDp = 48.dp
     val topOffsetDp = 32.dp
     val rowHeightDp = 60.dp * weekViewConfig.scalingFactor
-    val hourCount = endTime.hour - startTime.hour
-    val timeLabels = (startTime.hour..endTime.hour).map { LocalTime.of(it, 0) }
+
+    // Calculate the latest event end and round up to the next full hour
+    val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
+    val roundedEventEnd = if (latestEventEnd.minute > 0 || latestEventEnd.second > 0) latestEventEnd.plusHours(1).withMinute(0).withSecond(0) else latestEventEnd
+    // Use the maximum of configured endTime and rounded event end
+    var effectiveEndTime = if (roundedEventEnd.isAfter(endTime)) roundedEventEnd else endTime
+    var hourCount = effectiveEndTime.hour - startTime.hour
+    // Calculate grid height
+    var gridHeightDp = rowHeightDp * hourCount
+    // Ensure grid fills the viewport if there is extra space
+    val minGridHeightDp = 400.dp // fallback: can be replaced by actual viewport height if available
+    if (gridHeightDp < minGridHeightDp) {
+        val extraHours = ((minGridHeightDp.value - gridHeightDp.value) / rowHeightDp.value).toInt() + 1
+        hourCount += extraHours
+        effectiveEndTime = effectiveEndTime.plusHours(extraHours.toLong())
+        gridHeightDp = rowHeightDp * hourCount
+    }
+    val timeLabels = (startTime.hour..effectiveEndTime.hour).map { LocalTime.of(it, 0) }
     val scrollState = androidx.compose.foundation.rememberScrollState()
-    val gridHeightDp = rowHeightDp * hourCount
 
     var now by remember { mutableStateOf(LocalTime.now()) }
     LaunchedEffect(Unit) {
@@ -84,6 +99,8 @@ fun WeekBackgroundCompose(
     Column(modifier = modifier.fillMaxSize()) {
         // Day labels (fixed at top)
         Row {
+    val scrollState = androidx.compose.foundation.rememberScrollState()
+
             Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp)) // Empty top-left corner
             for (day in days) {
                 Box(
@@ -194,7 +211,7 @@ fun WeekBackgroundCompose(
                     }
                     // Now indicator - always draw when time is in range
                     if (showNowIndicator) {
-                        if (now.isAfter(startTime) && now.isBefore(endTime)) {
+                        if (now.isAfter(startTime) && now.isBefore(effectiveEndTime)) {
                             val y = ((now.hour + now.minute / 60f) - startTime.hour) * rowHeightPx
                             drawLine(
                                 color = nowIndicatorColor,
@@ -205,14 +222,12 @@ fun WeekBackgroundCompose(
                         }
                     }
                 }
-
                 // Events overlay within the scrollable grid
-                // Ensure events are placed inside the scrollable area and use Modifier.matchParentSize for correct layout
                 EventsCompose(
                     events = events,
                     days = days,
                     startTime = startTime,
-                    endTime = endTime,
+                    endTime = effectiveEndTime,
                     rowHeightDp = rowHeightDp,
                     columnWidthDp = 80.dp,
                     leftOffsetDp = 0.dp, // No left offset needed since we're already in the grid area
