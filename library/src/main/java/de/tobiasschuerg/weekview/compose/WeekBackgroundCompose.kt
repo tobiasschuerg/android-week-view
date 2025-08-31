@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -26,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.tobiasschuerg.weekview.data.Event
+import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
@@ -36,7 +40,7 @@ import java.util.Locale
 /**
  * Composable that renders the background grid for the week view.
  * This includes the day columns, hour rows, day labels, time labels,
- * today highlight, and optional now indicator.
+ * today highlight, optional now indicator, and events.
  */
 @Composable
 fun WeekBackgroundCompose(
@@ -53,6 +57,9 @@ fun WeekBackgroundCompose(
     startTime: LocalTime = LocalTime.of(8, 0),
     endTime: LocalTime = LocalTime.of(18, 0),
     showNowIndicator: Boolean = true,
+    events: List<Event.Single> = emptyList(),
+    eventConfig: EventConfig = EventConfig(),
+    onEventClick: ((eventId: Long) -> Unit)? = null,
 ) {
     val todayHighlightColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
     val nowIndicatorColor = MaterialTheme.colorScheme.error
@@ -79,7 +86,10 @@ fun WeekBackgroundCompose(
         Row {
             Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp)) // Empty top-left corner
             for (day in days) {
-                Box(modifier = Modifier.size(80.dp, topOffsetDp)) {
+                Box(
+                    modifier = Modifier.size(80.dp, topOffsetDp),
+                    contentAlignment = Alignment.Center,
+                ) {
                     val shortName = day.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
                     Text(
                         text = shortName,
@@ -89,7 +99,7 @@ fun WeekBackgroundCompose(
                 }
             }
         }
-        // Scrollable area: time labels (left) and grid (right)
+        // Scrollable area: time labels (left) and grid with events (right)
         Row(modifier = Modifier.weight(1f)) {
             // Time labels (scrollable vertically)
             Box(
@@ -132,12 +142,15 @@ fun WeekBackgroundCompose(
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.End,
                                 ),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 4.dp),
                         )
                     }
                 }
             }
-            // Grid (scrollable vertically)
+            // Grid with events (scrollable vertically)
             Box(
                 modifier =
                     Modifier
@@ -145,9 +158,9 @@ fun WeekBackgroundCompose(
                         .width((days.size * 80).dp)
                         .height(gridHeightDp),
             ) {
+                // Background grid canvas
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val columnWidth = size.width / columnCount
-                    // Calculate row height in pixels from Dp to match the time label boxes exactly
                     val rowHeightPx = with(this@Canvas) { rowHeightDp.toPx() }
                     // Vertical lines (day columns)
                     for (i in 0..columnCount) {
@@ -192,6 +205,21 @@ fun WeekBackgroundCompose(
                         }
                     }
                 }
+
+                // Events overlay within the scrollable grid
+                EventsCompose(
+                    events = events,
+                    days = days,
+                    startTime = startTime,
+                    endTime = endTime,
+                    rowHeightDp = rowHeightDp,
+                    columnWidthDp = 80.dp,
+                    leftOffsetDp = 0.dp, // No left offset needed since we're already in the grid area
+                    eventConfig = eventConfig,
+                    weekViewConfig = weekViewConfig,
+                    onEventClick = onEventClick,
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
         }
     }

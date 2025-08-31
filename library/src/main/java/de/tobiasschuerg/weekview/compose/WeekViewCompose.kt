@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -40,28 +39,16 @@ fun WeekViewCompose(
         )
 
     Box(modifier = modifier) {
-        // Render the background grid
+        // Render the background grid with integrated events
         WeekBackgroundCompose(
             weekViewConfig = weekViewConfig,
             modifier = Modifier.fillMaxSize(),
             days = days,
             startTime = startTime,
             endTime = endTime,
-        )
-
-        // Render events on top of the background
-        EventsCompose(
             events = weekData.getSingleEvents(),
-            days = days,
-            startTime = startTime,
-            endTime = endTime,
-            rowHeightDp = 60.dp * weekViewConfig.scalingFactor,
-            columnWidthDp = 80.dp,
-            leftOffsetDp = 48.dp,
             eventConfig = eventConfig,
-            weekViewConfig = weekViewConfig,
             onEventClick = onEventClick,
-            modifier = Modifier.fillMaxSize(),
         )
     }
 }

@@ -54,25 +54,21 @@ fun EventCompose(
         return
     }
 
-    // Calculate vertical position based on start time with proper alignment
+    // Calculate vertical position based on start time (no topOffset needed in scrollable grid)
     val startOffsetHours =
         maxOf(
             0f,
             (event.timeSpan.start.hour + event.timeSpan.start.minute / 60f) - startTime.hour,
         )
-    // Add topOffsetDp to account for the day labels at the top of the grid
-    val topOffsetDp = 32.dp
-    val yOffsetDp = topOffsetDp + (startOffsetHours * rowHeightDp.value).dp
+    val yOffsetDp = (startOffsetHours * rowHeightDp.value).dp
 
     // Calculate event height based on duration
     val durationHours = event.timeSpan.duration.toMinutes() / 60f
     val eventHeightDp = maxOf(8.dp, (durationHours * rowHeightDp.value).dp) // Minimum height
 
-    // Calculate horizontal position to match grid exactly
-    // Grid draws columns at: timeLabelWidth + (i * columnWidth)
-    // We need to position events between grid lines with 1dp padding (half of 2dp grid line)
+    // Calculate horizontal position within the grid (no leftOffsetDp since we're in grid area)
     val gridLinePadding = 1.dp
-    val xOffsetDp = leftOffsetDp + (dayIndex * columnWidthDp.value).dp + gridLinePadding
+    val xOffsetDp = (dayIndex * columnWidthDp.value).dp + gridLinePadding
 
     // Calculate event width to fit exactly between grid lines
     val eventWidthDp = columnWidthDp - (gridLinePadding * 2)
