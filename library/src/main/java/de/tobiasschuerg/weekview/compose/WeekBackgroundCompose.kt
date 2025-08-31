@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -62,6 +61,7 @@ fun WeekBackgroundCompose(
     events: List<Event.Single> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
     onEventClick: ((eventId: Long) -> Unit)? = null,
+    onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
     val todayHighlightColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
     val nowIndicatorColor = MaterialTheme.colorScheme.error
@@ -73,7 +73,14 @@ fun WeekBackgroundCompose(
 
     // Calculate the latest event end and round up to the next full hour
     val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
-    val roundedEventEnd = if (latestEventEnd.minute > 0 || latestEventEnd.second > 0) latestEventEnd.plusHours(1).withMinute(0).withSecond(0) else latestEventEnd
+    val roundedEventEnd =
+        if (latestEventEnd.minute > 0 || latestEventEnd.second > 0) {
+            latestEventEnd.plusHours(
+                1,
+            ).withMinute(0).withSecond(0)
+        } else {
+            latestEventEnd
+        }
     // Use the maximum of configured endTime and rounded event end
     val effectiveEndTime = if (roundedEventEnd.isAfter(endTime)) roundedEventEnd else endTime
     val hourCount = effectiveEndTime.hour - startTime.hour
@@ -166,7 +173,7 @@ fun WeekBackgroundCompose(
                         .verticalScroll(scrollState)
                         .width((days.size * 80).dp)
                         .height(gridHeightDp)
-                        .fillMaxSize(), // Always fill viewport, but gridHeightDp is stable
+                        .fillMaxSize(),
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val columnWidth = size.width / columnCount
@@ -222,11 +229,14 @@ fun WeekBackgroundCompose(
                     endTime = effectiveEndTime,
                     rowHeightDp = rowHeightDp,
                     columnWidthDp = 80.dp,
-                    leftOffsetDp = 0.dp, // No left offset needed since we're already in the grid area
+                    // No left offset needed since we're already in the grid area
+                    leftOffsetDp = 0.dp,
                     eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
                     onEventClick = onEventClick,
-                    modifier = Modifier.matchParentSize(), // Ensures events overlay matches grid size
+                    onEventLongPress = onEventLongPress,
+                    // Ensures events overlay matches grid size
+                    modifier = Modifier.matchParentSize(),
                 )
             }
         }

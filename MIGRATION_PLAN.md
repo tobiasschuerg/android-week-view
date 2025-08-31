@@ -31,9 +31,10 @@ migration.
     - Background grid ends before the last event
     - Event width is still too large [✔] (Event width is now reduced by a fixed margin, ensuring events are visually inside the column and do not overlap grid lines.)
     - Weekday titles need centering [✔] (Weekday titles are now horizontally and vertically centered using Modifier.fillMaxWidth and textAlign = TextAlign.Center.)
+17. Add click listeners and implement them in sample app [open]
     - Add event click feedback in sample app
-    - Add long press to remove events
-17. Add interactions (click, context menu, scaling) in Compose [open]
+    - Add long press to remove event in sample app [✔] (Long-pressing an event removes it from the view and shows a Toast with the event ID. The event list is managed as Compose state for correct UI updates. Wichtig: Die Event-Liste wird mit `rememberSaveable` gehalten, damit sie bei Recomposition und Konfigurationsänderungen erhalten bleibt und die UI zuverlässig aktualisiert wird.)
+17. Add interactions for scaling [open]
 18. Testing and validation [open]
 19. Documentation and README update [open]
 

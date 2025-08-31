@@ -1,7 +1,7 @@
 package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -43,6 +44,7 @@ fun EventCompose(
     eventConfig: EventConfig,
     weekViewConfig: WeekViewConfig,
     onEventClick: ((eventId: Long) -> Unit)? = null,
+    onEventLongPress: ((eventId: Long) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     // Calculate event position and dimensions
@@ -84,7 +86,12 @@ fun EventCompose(
                 .height(eventHeightDp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(Color(event.backgroundColor))
-                .clickable { onEventClick?.invoke(event.id) }
+                .pointerInput(onEventClick, onEventLongPress) {
+                    detectTapGestures(
+                        onTap = { onEventClick?.invoke(event.id) },
+                        onLongPress = { onEventLongPress?.invoke(event.id) },
+                    )
+                }
                 .padding(horizontal = 2.dp, vertical = 1.dp),
     ) {
         Column {
@@ -167,6 +174,7 @@ fun EventsCompose(
     eventConfig: EventConfig,
     weekViewConfig: WeekViewConfig,
     onEventClick: ((eventId: Long) -> Unit)? = null,
+    onEventLongPress: ((eventId: Long) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
@@ -186,6 +194,7 @@ fun EventsCompose(
                     eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
                     onEventClick = onEventClick,
+                    onEventLongPress = onEventLongPress,
                 )
             }
         }

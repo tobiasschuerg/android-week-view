@@ -21,6 +21,7 @@ fun WeekViewCompose(
     modifier: Modifier = Modifier,
     eventConfig: EventConfig = EventConfig(),
     onEventClick: ((eventId: Long) -> Unit)? = null,
+    onEventLongPress: ((eventId: Long) -> Unit)? = null,
     onEventContextMenu: ((eventId: Long) -> Unit)? = null,
 ) {
     // Determine time range from weekData or use defaults
@@ -49,6 +50,7 @@ fun WeekViewCompose(
             events = weekData.getSingleEvents(),
             eventConfig = eventConfig,
             onEventClick = onEventClick,
+            onEventLongPress = onEventLongPress,
         )
     }
 }
