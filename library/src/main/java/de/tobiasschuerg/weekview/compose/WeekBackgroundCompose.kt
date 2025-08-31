@@ -207,6 +207,7 @@ fun WeekBackgroundCompose(
                 }
 
                 // Events overlay within the scrollable grid
+                // Ensure events are placed inside the scrollable area and use Modifier.matchParentSize for correct layout
                 EventsCompose(
                     events = events,
                     days = days,
@@ -218,7 +219,7 @@ fun WeekBackgroundCompose(
                     eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
                     onEventClick = onEventClick,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.matchParentSize(), // Ensures events overlay matches grid size
                 )
             }
         }

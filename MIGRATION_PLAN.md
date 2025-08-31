@@ -27,7 +27,7 @@ migration.
 14. Add current time display with minutes in time column [✔]
 15. Implement event rendering in Compose [✔]
 16. Fix event rendering issues [open]
-    - Events do not scroll with the grid
+    - Events do not scroll with the grid [✔] (Events and grid now share the same scrollable area and ScrollState. Modifier.matchParentSize ensures correct overlay and synchronized scrolling.)
     - Background grid ends before the last event
     - Event width is still too large
     - Weekday titles need centering
