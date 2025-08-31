@@ -25,10 +25,17 @@ migration.
 12. Add dynamic now indicator with automatic time progression [✔]
 13. Ensure scaling factor compatibility and proper alignment [✔]
 14. Add current time display with minutes in time column [✔]
-15. Implement event rendering in Compose [open]
-16. Add interactions (click, context menu, scaling) in Compose [open]
-17. Testing and validation [open]
-18. Documentation and README update [open]
+15. Implement event rendering in Compose [✔]
+16. Fix event rendering issues [open]
+    - Events do not scroll with the grid
+    - Background grid ends before the last event
+    - Event width is still too large
+    - Weekday titles need centering
+    - Add event click feedback in sample app
+    - Add long press to remove events
+17. Add interactions (click, context menu, scaling) in Compose [open]
+18. Testing and validation [open]
+19. Documentation and README update [open]
 
 ## Continuous Rules
 

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
@@ -133,10 +132,7 @@ fun WeekBackgroundCompose(
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.End,
                                 ),
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(end = 4.dp),
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }
