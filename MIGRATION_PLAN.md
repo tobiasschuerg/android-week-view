@@ -20,10 +20,11 @@ migration.
 7. Fix label positioning issues (boxSize, Dp conversion) [✔]
 8. Clean up code quality issues and implement proper component separation [✔]
 9. Fine-tune the UI (proper margins, label positioning) [✔]
-10. Implement event rendering in Compose [open]
-11. Add interactions (click, context menu, scaling) in Compose [open]
-12. Testing and validation [open]
-13. Documentation and README update [open]
+10. Make time labels scroll vertically with the grid [✔]
+11. Implement event rendering in Compose [open]
+12. Add interactions (click, context menu, scaling) in Compose [open]
+13. Testing and validation [open]
+14. Documentation and README update [open]
 
 ## Continuous Rules
 
@@ -37,23 +38,17 @@ migration.
 - [✔] done
 - [open] to do
 
-## Recent Completed Work (Step 9)
+## Recent Completed Work (Step 10)
 
-### UI Layout Improvements
+### Scrollable Time Labels
 
-- **Fixed margin handling**: Time labels now appear in dedicated 48dp left margin instead of overlapping first column
-- **Proper grid boundaries**: Canvas drawing starts from margin offsets, not screen edges
-- **Classic layout parity**: Compose implementation now matches the visual structure of the classic view
-- **Label positioning**: Day labels in 32dp top margin, time labels in left margin with proper centering
-
-### Technical Fixes
-
-- All compilation errors resolved
-- Proper parameter passing to WeekLabels component
-- Margin calculations correctly applied to all grid elements (lines, highlights, indicators)
+- Time labels now scroll vertically together with the grid, always staying aligned
+- Day labels remain fixed at the top
+- The grid and time labels use a shared vertical scroll state
+- "Now" indicator is only shown if today is among the visible columns
 
 ---
 
-The Compose week view now has a professional layout with proper label positioning that matches the classic implementation. Ready to proceed with event rendering implementation.
+The Compose week view now has synchronized vertical scrolling for time labels and grid, matching professional calendar behavior. Ready to proceed with event rendering implementation.
 
 Please update this plan after every step to keep progress transparent.

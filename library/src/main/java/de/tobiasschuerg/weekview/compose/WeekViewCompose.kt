@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
+import java.time.LocalTime
 
 /**
  * Main Composable for the WeekView component.
@@ -27,5 +28,7 @@ fun WeekViewCompose(
     WeekBackgroundCompose(
         weekViewConfig = weekViewConfig,
         modifier = modifier,
+        startTime = LocalTime.of(6,0),
+        endTime = LocalTime.of(20,0),
     )
 }
