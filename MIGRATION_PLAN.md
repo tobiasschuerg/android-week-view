@@ -21,10 +21,14 @@ migration.
 8. Clean up code quality issues and implement proper component separation [✔]
 9. Fine-tune the UI (proper margins, label positioning) [✔]
 10. Make time labels scroll vertically with the grid [✔]
-11. Implement event rendering in Compose [open]
-12. Add interactions (click, context menu, scaling) in Compose [open]
-13. Testing and validation [open]
-14. Documentation and README update [open]
+11. Implement horizontal grid lines spanning full width including time column [✔]
+12. Add dynamic now indicator with automatic time progression [✔]
+13. Ensure scaling factor compatibility and proper alignment [✔]
+14. Add current time display with minutes in time column [✔]
+15. Implement event rendering in Compose [open]
+16. Add interactions (click, context menu, scaling) in Compose [open]
+17. Testing and validation [open]
+18. Documentation and README update [open]
 
 ## Continuous Rules
 
@@ -38,17 +42,55 @@ migration.
 - [✔] done
 - [open] to do
 
-## Recent Completed Work (Step 10)
+## Recent Completed Work (Steps 11-15)
 
-### Scrollable Time Labels
+### Enhanced Grid and Now Indicator Features (Steps 11-14)
 
-- Time labels now scroll vertically together with the grid, always staying aligned
-- Day labels remain fixed at the top
-- The grid and time labels use a shared vertical scroll state
-- "Now" indicator is only shown if today is among the visible columns
+- **Horizontal Grid Lines**: Fixed grid lines to span the full width including the time column
+- **Dynamic Now Indicator**: 
+  - Always visible when current time is within the displayed time range
+  - Automatically updates every second showing live time progression
+  - Synchronized horizontal line across the entire grid width
+- **Scaling Factor Compatibility**: Ensured all time labels and grid elements respect the scaling factor
+- **Current Time Display**: 
+  - Added HH:mm format current time display in the time column
+  - Right-aligned with appropriate padding for better visual appearance
+  - Updates dynamically as time progresses
+  - Bold styling and error color to match the now indicator line
+
+### Event Rendering Implementation (Step 15)
+
+- **Event Rendering Architecture**: Created dedicated `EventCompose.kt` component following clean separation principles
+- **Single Event Support**: Full implementation of `Event.Single` rendering with:
+  - Time-based positioning and sizing calculations
+  - Proper day column placement
+  - Duration-based height scaling
+  - Visibility filtering for events outside time range
+- **Event Styling**: Complete visual styling with:
+  - Background and text colors from event data
+  - Rounded corners and appropriate padding
+  - Text overflow handling with ellipsis
+  - Support for title, subtitle, time display, and custom text fields
+- **Configuration Integration**: Respects both `EventConfig` and `WeekViewConfig` settings:
+  - Short vs full titles
+  - Optional subtitle display
+  - Optional time end display
+  - Scaling factor compatibility
+- **Interactive Foundation**: Click event support prepared for user interactions
+- **WeekView Integration**: Updated main component to overlay events on background grid
+
+### Technical Achievements
+
+- Proper synchronization between time labels and grid scrolling
+- Accurate positioning calculations respecting scaling factors
+- Clean English comments throughout the codebase
+- Robust time handling with automatic updates
+- Professional calendar-like behavior with fixed day labels and scrollable content
+- Event rendering system with proper layering and positioning
+- Component separation following clean architecture principles
 
 ---
 
-The Compose week view now has synchronized vertical scrolling for time labels and grid, matching professional calendar behavior. Ready to proceed with event rendering implementation.
+The Compose week view now has functional event rendering capabilities, bringing it to near feature parity with the classic view. Events are properly positioned, styled, and integrated with the existing grid system. Ready to proceed with interaction implementation.
 
 Please update this plan after every step to keep progress transparent.
