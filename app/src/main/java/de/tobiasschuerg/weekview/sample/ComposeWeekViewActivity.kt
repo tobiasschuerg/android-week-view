@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,14 +34,14 @@ class ComposeWeekViewActivity : AppCompatActivity() {
                 weekData = WeekData().apply { events.forEach { this.add(it) } },
                 eventConfig = EventConfig(),
                 weekViewConfig = weekViewConfig,
-                modifier = Modifier,
+                modifier = Modifier.fillMaxSize(),
                 onEventClick = { eventId ->
                     val event: Event.Single = events.single { it.id == eventId }
-                    Toast.makeText(this, "Clicked event ${event.title}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ComposeWeekViewActivity, "Clicked event ${event.title}", Toast.LENGTH_SHORT).show()
                 },
                 onEventLongPress = { eventId ->
                     events = events.filterNot { it.id == eventId }
-                    Toast.makeText(this, "Removed event $eventId", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ComposeWeekViewActivity, "Removed event $eventId", Toast.LENGTH_SHORT).show()
                 },
             )
         }
