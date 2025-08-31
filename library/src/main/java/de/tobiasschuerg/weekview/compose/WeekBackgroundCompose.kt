@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -34,13 +33,14 @@ import java.time.LocalTime
 fun WeekBackgroundCompose(
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
-    days: List<DayOfWeek> = listOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-    ),
+    days: List<DayOfWeek> =
+        listOf(
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+        ),
     startTime: LocalTime = LocalTime.of(8, 0),
     endTime: LocalTime = LocalTime.of(18, 0),
     showNowIndicator: Boolean = true,
@@ -49,13 +49,13 @@ fun WeekBackgroundCompose(
     val nowIndicatorColor = MaterialTheme.colorScheme.error
     val columnCount = days.size
     val today = LocalDate.now().dayOfWeek
-    val timeLabels = (startTime.hour..endTime.hour).map { LocalTime.of(it, 0) }
     val leftOffsetDp = 48.dp
     val topOffsetDp = 32.dp
-    val density = LocalDensity.current
-    val scrollState = rememberScrollState()
+    val rowHeightDp = 60.dp * weekViewConfig.scalingFactor
     val hourCount = endTime.hour - startTime.hour
-    val gridHeightDp: Dp = (hourCount * 60 * weekViewConfig.scalingFactor).dp
+    val timeLabels = (startTime.hour..endTime.hour).map { LocalTime.of(it, 0) }
+    val scrollState = androidx.compose.foundation.rememberScrollState()
+    val gridHeightDp = rowHeightDp * hourCount
 
     Column(modifier = modifier.fillMaxSize()) {
         // Day labels (fixed at top)
@@ -67,7 +67,7 @@ fun WeekBackgroundCompose(
                     Text(
                         text = shortName,
                         style = androidx.compose.ui.text.TextStyle(fontSize = 14.sp, color = Color.Gray),
-                        modifier = Modifier
+                        modifier = Modifier,
                     )
                 }
             }
@@ -82,7 +82,7 @@ fun WeekBackgroundCompose(
                     .height(gridHeightDp)
             ) {
                 for (i in timeLabels.indices) {
-                    Box(modifier = Modifier.size(leftOffsetDp, 60.dp * weekViewConfig.scalingFactor)) {
+                    Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
                         Text(
                             text = timeLabels[i].toString(),
                             style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = Color.Gray),
@@ -95,13 +95,13 @@ fun WeekBackgroundCompose(
             Box(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .size((days.size * 80).dp, gridHeightDp)
+                    .width((days.size * 80).dp)
+                    .height(gridHeightDp)
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val columnWidth = size.width / columnCount
-                    val hourHeightPx = size.height / hourCount
-                    val scaledHourHeight = hourHeightPx * weekViewConfig.scalingFactor
-                    // Draw vertical lines (day columns)
+                    val rowHeightPx = size.height / hourCount
+                    // Vertikale Linien (Tag-Spalten)
                     for (i in 0..columnCount) {
                         val x = i * columnWidth
                         drawLine(
@@ -111,9 +111,9 @@ fun WeekBackgroundCompose(
                             strokeWidth = 2f,
                         )
                     }
-                    // Draw horizontal lines (hour rows)
+                    // Horizontale Linien (Stunden) - volle Breite
                     for (i in 0..hourCount) {
-                        val y = i * scaledHourHeight
+                        val y = i * rowHeightPx
                         drawLine(
                             color = Color.LightGray,
                             start = Offset(0f, y),
@@ -121,7 +121,7 @@ fun WeekBackgroundCompose(
                             strokeWidth = 2f,
                         )
                     }
-                    // Highlight today's column
+                    // Heute-Spalte hervorheben
                     val todayIndex = days.indexOf(today)
                     if (todayIndex >= 0) {
                         val left = todayIndex * columnWidth
@@ -131,11 +131,11 @@ fun WeekBackgroundCompose(
                             size = androidx.compose.ui.geometry.Size(columnWidth, size.height),
                         )
                     }
-                    // Draw now indicator only if today is visible
-                    if (showNowIndicator && todayIndex >= 0) {
+                    // Now-Indicator immer zeichnen
+                    if (showNowIndicator) {
                         val now = LocalTime.now()
                         if (now.isAfter(startTime) && now.isBefore(endTime)) {
-                            val y = ((now.hour + now.minute / 60f) - startTime.hour) * scaledHourHeight
+                            val y = ((now.hour + now.minute / 60f) - startTime.hour) * rowHeightPx
                             drawLine(
                                 color = nowIndicatorColor,
                                 start = Offset(0f, y),

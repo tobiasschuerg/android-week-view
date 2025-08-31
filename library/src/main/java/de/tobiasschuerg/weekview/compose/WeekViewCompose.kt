@@ -28,7 +28,7 @@ fun WeekViewCompose(
     WeekBackgroundCompose(
         weekViewConfig = weekViewConfig,
         modifier = modifier,
-        startTime = LocalTime.of(6,0),
-        endTime = LocalTime.of(20,0),
+        startTime = LocalTime.of(6, 0),
+        endTime = LocalTime.of(20, 0),
     )
 }
