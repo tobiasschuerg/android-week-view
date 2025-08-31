@@ -34,6 +34,11 @@ object EventCreator {
                         startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
                     }
                 }
+
+            // add some random events so that we get duplicates
+            repeat(10) {
+                this.add(createRandomEvent())
+            }
         }
     }
 

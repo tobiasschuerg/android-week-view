@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import de.tobiasschuerg.weekview.compose.WeekViewCompose
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 
 class ComposeWeekViewActivity : AppCompatActivity() {
@@ -26,11 +27,10 @@ class ComposeWeekViewActivity : AppCompatActivity() {
         weekViewConfig.scalingFactor = 1f
 
         composeView.setContent {
-            val data = EventCreator.weekData
-            var events by remember { mutableStateOf(data.getSingleEvents()) }
+            var events by remember { mutableStateOf(EventCreator.weekData.getSingleEvents()) }
 
             WeekViewCompose(
-                weekData = data,
+                weekData = WeekData().apply { events.forEach { this.add(it) } },
                 eventConfig = EventConfig(),
                 weekViewConfig = weekViewConfig,
                 modifier = Modifier,
