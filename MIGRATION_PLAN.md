@@ -30,7 +30,7 @@ migration.
     - Events do not scroll with the grid [✔] (Events and grid now share the same scrollable area and ScrollState. Modifier.matchParentSize ensures correct overlay and synchronized scrolling.)
     - Background grid ends before the last event
     - Event width is still too large [✔] (Event width is now reduced by a fixed margin, ensuring events are visually inside the column and do not overlap grid lines.)
-    - Weekday titles need centering
+    - Weekday titles need centering [✔] (Weekday titles are now horizontally and vertically centered using Modifier.fillMaxWidth and textAlign = TextAlign.Center.)
     - Add event click feedback in sample app
     - Add long press to remove events
 17. Add interactions (click, context menu, scaling) in Compose [open]

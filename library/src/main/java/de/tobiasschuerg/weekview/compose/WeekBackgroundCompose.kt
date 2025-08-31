@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -73,18 +75,9 @@ fun WeekBackgroundCompose(
     val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
     val roundedEventEnd = if (latestEventEnd.minute > 0 || latestEventEnd.second > 0) latestEventEnd.plusHours(1).withMinute(0).withSecond(0) else latestEventEnd
     // Use the maximum of configured endTime and rounded event end
-    var effectiveEndTime = if (roundedEventEnd.isAfter(endTime)) roundedEventEnd else endTime
-    var hourCount = effectiveEndTime.hour - startTime.hour
-    // Calculate grid height
-    var gridHeightDp = rowHeightDp * hourCount
-    // Ensure grid fills the viewport if there is extra space
-    val minGridHeightDp = 400.dp // fallback: can be replaced by actual viewport height if available
-    if (gridHeightDp < minGridHeightDp) {
-        val extraHours = ((minGridHeightDp.value - gridHeightDp.value) / rowHeightDp.value).toInt() + 1
-        hourCount += extraHours
-        effectiveEndTime = effectiveEndTime.plusHours(extraHours.toLong())
-        gridHeightDp = rowHeightDp * hourCount
-    }
+    val effectiveEndTime = if (roundedEventEnd.isAfter(endTime)) roundedEventEnd else endTime
+    val hourCount = effectiveEndTime.hour - startTime.hour
+    val gridHeightDp = rowHeightDp * hourCount
     val timeLabels = (startTime.hour..effectiveEndTime.hour).map { LocalTime.of(it, 0) }
     val scrollState = androidx.compose.foundation.rememberScrollState()
 
@@ -99,8 +92,6 @@ fun WeekBackgroundCompose(
     Column(modifier = modifier.fillMaxSize()) {
         // Day labels (fixed at top)
         Row {
-    val scrollState = androidx.compose.foundation.rememberScrollState()
-
             Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp)) // Empty top-left corner
             for (day in days) {
                 Box(
@@ -168,14 +159,15 @@ fun WeekBackgroundCompose(
                 }
             }
             // Grid with events (scrollable vertically)
+            val density = LocalDensity.current
             Box(
                 modifier =
                     Modifier
                         .verticalScroll(scrollState)
                         .width((days.size * 80).dp)
-                        .height(gridHeightDp),
+                        .height(gridHeightDp)
+                        .fillMaxSize(), // Always fill viewport, but gridHeightDp is stable
             ) {
-                // Background grid canvas
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val columnWidth = size.width / columnCount
                     val rowHeightPx = with(this@Canvas) { rowHeightDp.toPx() }
