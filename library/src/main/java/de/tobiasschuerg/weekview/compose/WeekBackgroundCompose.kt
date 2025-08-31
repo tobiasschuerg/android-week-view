@@ -2,14 +2,25 @@ package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import java.time.DayOfWeek
@@ -41,7 +52,15 @@ fun WeekBackgroundCompose(
     val today = LocalDate.now().dayOfWeek
     val timeLabels = (startTime.hour..endTime.hour).map { LocalTime.of(it, 0) }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    val density = LocalDensity.current
+    var boxSize by remember { mutableStateOf(IntSize.Zero) }
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .onGloballyPositioned { coordinates ->
+                boxSize = coordinates.size
+            }
+    ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
@@ -92,22 +111,36 @@ fun WeekBackgroundCompose(
                 }
             }
         }
-        // Draw day labels
-        for ((i, day) in days.withIndex()) {
-            val shortName = day.getDisplayName(SHORT, Locale.getDefault())
-            androidx.compose.material3.Text(
-                text = shortName,
-                style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                modifier = Modifier.align(Alignment.TopStart),
-            )
-        }
-        // Draw time labels (left side)
-        for ((i, time) in timeLabels.withIndex()) {
-            androidx.compose.material3.Text(
-                text = time.toString(),
-                style = TextStyle(fontSize = 12.sp, color = Color.Gray),
-                modifier = Modifier.align(Alignment.TopStart),
-            )
+        // Nur Labels anzeigen, wenn Größe bekannt
+        if (boxSize.width > 0 && boxSize.height > 0) {
+            val columnWidthPx = boxSize.width / columnCount
+            val hourCount = endTime.hour - startTime.hour
+            val hourHeightPx = boxSize.height / hourCount
+            val dayLabelPaddingDp = 8.dp
+            val timeLabelPaddingDp = 4.dp
+            // Tagesnamen korrekt positionieren (zentriert über Spalte)
+            for ((i, day) in days.withIndex()) {
+                val shortName = day.getDisplayName(SHORT, Locale.getDefault())
+                val xPx = (i * columnWidthPx + columnWidthPx / 2).toFloat()
+                val xDp = with(density) { xPx.toDp() }
+                val yDp = dayLabelPaddingDp
+                androidx.compose.material3.Text(
+                    text = shortName,
+                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
+                    modifier = Modifier.absoluteOffset(x = xDp, y = yDp)
+                )
+            }
+            // Zeitlabels korrekt positionieren (links, vertikal mittig)
+            for ((i, time) in timeLabels.withIndex()) {
+                val yPx = (i * hourHeightPx + hourHeightPx / 2).toFloat()
+                val yDp = with(density) { yPx.toDp() }
+                val xDp = timeLabelPaddingDp
+                androidx.compose.material3.Text(
+                    text = time.toString(),
+                    style = TextStyle(fontSize = 12.sp, color = Color.Gray),
+                    modifier = Modifier.absoluteOffset(x = xDp, y = yDp)
+                )
+            }
         }
     }
 }
