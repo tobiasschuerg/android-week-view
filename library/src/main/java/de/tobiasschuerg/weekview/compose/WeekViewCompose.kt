@@ -2,8 +2,8 @@ package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 
 /**
@@ -26,6 +26,6 @@ fun WeekViewCompose(
     // Render the background grid
     WeekBackgroundCompose(
         weekViewConfig = weekViewConfig,
-        modifier = modifier
+        modifier = modifier,
     )
 }

@@ -28,7 +28,7 @@ fun WeekLabels(
     leftOffsetDp: Dp,
     topOffsetDp: Dp,
     density: Density,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val columnCount = days.size
     val hourCount = timeLabels.size
@@ -50,7 +50,7 @@ fun WeekLabels(
         Text(
             text = shortName,
             style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-            modifier = modifier.absoluteOffset(x = xDp, y = yDp)
+            modifier = modifier.absoluteOffset(x = xDp, y = yDp),
         )
     }
 
@@ -64,7 +64,7 @@ fun WeekLabels(
         Text(
             text = time.toString(),
             style = TextStyle(fontSize = 12.sp, color = Color.Gray),
-            modifier = modifier.absoluteOffset(x = xDp, y = yDp)
+            modifier = modifier.absoluteOffset(x = xDp, y = yDp),
         )
     }
 }

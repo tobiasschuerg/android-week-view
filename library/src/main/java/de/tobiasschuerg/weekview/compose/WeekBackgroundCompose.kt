@@ -30,13 +30,14 @@ import java.time.LocalTime
 fun WeekBackgroundCompose(
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
-    days: List<DayOfWeek> = listOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-    ),
+    days: List<DayOfWeek> =
+        listOf(
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+        ),
     startTime: LocalTime = LocalTime.of(8, 0),
     endTime: LocalTime = LocalTime.of(18, 0),
     showNowIndicator: Boolean = true,
@@ -50,18 +51,19 @@ fun WeekBackgroundCompose(
     val timeLabels = (startTime.hour..endTime.hour).map { LocalTime.of(it, 0) }
 
     // Layout constants matching classic implementation
-    val leftOffsetDp = 48.dp  // Space for time labels
-    val topOffsetDp = 32.dp   // Space for day labels
+    val leftOffsetDp = 48.dp // Space for time labels
+    val topOffsetDp = 32.dp // Space for day labels
 
     val density = LocalDensity.current
     var boxSize by remember { mutableStateOf(IntSize.Zero) }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .onGloballyPositioned { coordinates ->
-                boxSize = coordinates.size
-            }
+        modifier =
+            modifier
+                .fillMaxSize()
+                .onGloballyPositioned { coordinates ->
+                    boxSize = coordinates.size
+                },
     ) {
         // Draw the background grid using Canvas
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -136,7 +138,7 @@ fun WeekBackgroundCompose(
                 boxSize = boxSize,
                 leftOffsetDp = leftOffsetDp,
                 topOffsetDp = topOffsetDp,
-                density = density
+                density = density,
             )
         }
     }
