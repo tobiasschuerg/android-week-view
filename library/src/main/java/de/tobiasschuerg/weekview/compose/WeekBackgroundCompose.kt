@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
@@ -27,11 +28,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.WeekViewConfig
-import java.util.Locale
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 /**
  * Composable that renders the background grid for the week view.
@@ -93,20 +94,21 @@ fun WeekBackgroundCompose(
         Row(modifier = Modifier.weight(1f)) {
             // Time labels (scrollable vertically)
             Box(
-                modifier = Modifier
-                    .width(leftOffsetDp)
-                    .height(gridHeightDp)
+                modifier =
+                    Modifier
+                        .width(leftOffsetDp)
+                        .height(gridHeightDp),
             ) {
                 // Regular time labels (hours)
                 Column(
-                    modifier = Modifier.verticalScroll(scrollState)
+                    modifier = Modifier.verticalScroll(scrollState),
                 ) {
                     for (timeLabel in timeLabels) {
                         Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
                             Text(
                                 text = timeLabel.toString(),
                                 style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = Color.Gray),
-                                modifier = Modifier
+                                modifier = Modifier,
                             )
                         }
                     }
@@ -117,29 +119,35 @@ fun WeekBackgroundCompose(
                     val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
                     val nowPositionDp = (nowPositionFloat * rowHeightDp.value).dp
                     Box(
-                        modifier = Modifier
-                            .offset(y = nowPositionDp - scrollState.value.dp)
-                            .width(leftOffsetDp)
+                        modifier =
+                            Modifier
+                                .offset(y = nowPositionDp - scrollState.value.dp)
+                                .width(leftOffsetDp),
                     ) {
                         Text(
                             text = String.format(Locale.getDefault(), "%02d:%02d", now.hour, now.minute),
-                            style = androidx.compose.ui.text.TextStyle(
-                                fontSize = 11.sp,
-                                color = nowIndicatorColor,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.End
-                            ),
-                            modifier = Modifier.fillMaxWidth()
+                            style =
+                                androidx.compose.ui.text.TextStyle(
+                                    fontSize = 11.sp,
+                                    color = nowIndicatorColor,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.End,
+                                ),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 4.dp),
                         )
                     }
                 }
             }
             // Grid (scrollable vertically)
             Box(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .width((days.size * 80).dp)
-                    .height(gridHeightDp)
+                modifier =
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .width((days.size * 80).dp)
+                        .height(gridHeightDp),
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val columnWidth = size.width / columnCount
