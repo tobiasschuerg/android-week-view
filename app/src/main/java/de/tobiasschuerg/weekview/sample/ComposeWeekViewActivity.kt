@@ -18,7 +18,7 @@ class ComposeWeekViewActivity : AppCompatActivity() {
         setContentView(FrameLayout(this).apply { id = android.R.id.content })
         val composeView = ComposeView(this)
 
-        weekViewConfig.scalingFactor = 1.5f
+        weekViewConfig.scalingFactor = 1f
 
         composeView.setContent {
             WeekViewCompose(
