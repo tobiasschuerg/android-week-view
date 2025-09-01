@@ -79,6 +79,17 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         scaleGestureDetector.onTouchEvent(event)
+
+        // Handle click detection for accessibility
+        when (event.action) {
+            MotionEvent.ACTION_UP -> {
+                // If this was a simple tap (not a scale gesture), trigger performClick
+                if (!scaleGestureDetector.isInProgress) {
+                    performClick()
+                }
+            }
+        }
+
         return super.onTouchEvent(event)
     }
 
@@ -92,7 +103,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         for (childId in 0 until childCount) {
             val child: View = getChildAt(childId)
             if (child is EventView) {
-                child.setTransitionName(transitionName)
+                child.transitionName = transitionName
             }
         }
     }
@@ -304,8 +315,8 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
     override fun removeAllViews() = super.removeAllViews()
 
     override fun performClick(): Boolean {
-        super.performClick()
-        return true
+        // Call the superclass method to ensure accessibility events are fired
+        return super.performClick()
     }
 
     companion object {

@@ -55,6 +55,10 @@ class ClassicWeekViewActivity : AppCompatActivity() {
                 textColor = Color.WHITE,
             )
         weekView.addEvent(nowEvent)
+
+        // Set transition name for shared element transitions
+        weekView.setEventTransitionName("event_transition")
+
         weekView.setEventClickListener {
             Toast.makeText(applicationContext, "Removing " + it.event.title, Toast.LENGTH_SHORT).show()
             weekView.removeView(it)
