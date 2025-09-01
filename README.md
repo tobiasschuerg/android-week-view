@@ -9,6 +9,8 @@ Initially created for [Schedule Deluxe](https://play.google.com/store/apps/detai
 
 <img alt="" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400">
 
+<img alt="" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/Screenshot_20250901_212606.png" height="400">
+
 ## 🏗️ Implementation Options
 
 ### Option 1: Modern Compose Implementation
