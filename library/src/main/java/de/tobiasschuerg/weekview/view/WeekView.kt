@@ -25,6 +25,24 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * Classic View-based WeekView component for displaying weekly schedules.
+ *
+ * @deprecated This View-based implementation is deprecated in favor of the modern Compose-based WeekViewCompose.
+ * Consider migrating to WeekViewCompose for better performance, modern UI patterns, and future support.
+ * This class will be maintained for backwards compatibility but new features will primarily target the Compose version.
+ *
+ * @see de.tobiasschuerg.weekview.compose.WeekViewCompose
+ */
+@Deprecated(
+    message = "Use WeekViewCompose instead for better performance and modern UI patterns",
+    replaceWith =
+        ReplaceWith(
+            "WeekViewCompose",
+            "de.tobiasschuerg.weekview.compose.WeekViewCompose",
+        ),
+    level = DeprecationLevel.WARNING,
+)
 class WeekView(context: Context, attributeSet: AttributeSet) :
     RelativeLayout(context, attributeSet) {
     private val backgroundView: WeekBackgroundView

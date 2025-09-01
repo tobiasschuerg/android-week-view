@@ -89,7 +89,7 @@ class SampleActivity : ComponentActivity() {
                                 .height(56.dp),
                     ) {
                         Text(
-                            text = "Classic WeekView",
+                            text = "Legacy View-based WeekView (Deprecated)",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                         )
@@ -107,7 +107,7 @@ class SampleActivity : ComponentActivity() {
                                 .height(56.dp),
                     ) {
                         Text(
-                            text = "Compose WeekView",
+                            text = "Modern Compose WeekView (Recommended)",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                         )

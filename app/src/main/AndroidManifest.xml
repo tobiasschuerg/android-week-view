@@ -11,6 +11,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".SampleActivity"
+            android:label="WeekView Demo - Choose Implementation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,9 +20,11 @@
         </activity>
         <activity
             android:name=".ClassicWeekViewActivity"
+            android:label="Legacy View-based WeekView (Deprecated)"
             android:exported="true" />
         <activity
             android:name=".ComposeWeekViewActivity"
+            android:label="Modern Compose WeekView (Recommended)"
             android:exported="true"
             android:theme="@style/Theme.App.NoActionBar" />
     </application>
