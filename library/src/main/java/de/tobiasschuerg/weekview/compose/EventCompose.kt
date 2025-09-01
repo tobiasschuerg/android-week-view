@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -36,13 +35,13 @@ import java.time.format.DateTimeFormatter
  */
 @Composable
 fun EventCompose(
+    modifier: Modifier = Modifier,
     event: Event.Single,
-    weekViewConfig: WeekViewConfig,
+    scalingFactor: Float,
     eventConfig: EventConfig,
     startTime: LocalTime,
     columnWidth: Dp,
     eventLayout: EventOverlapCalculator.EventLayout,
-    modifier: Modifier = Modifier,
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
@@ -55,8 +54,8 @@ fun EventCompose(
     val durationMinutes = event.timeSpan.duration.toMinutes().toInt()
 
     // Calculate dimensions with scaling factor
-    val topOffset = with(density) { (startMinutes * weekViewConfig.scalingFactor).dp }
-    val eventHeight = with(density) { (durationMinutes * weekViewConfig.scalingFactor).dp }
+    val topOffset = with(density) { (startMinutes * scalingFactor).dp }
+    val eventHeight = with(density) { (durationMinutes * scalingFactor).dp }
 
     // Apply overlap layout calculations
     val eventWidth = columnWidth * eventLayout.widthFraction
@@ -150,13 +149,13 @@ fun EventCompose(
  */
 @Composable
 fun EventsWithOverlapHandling(
+    modifier: Modifier = Modifier,
+    scalingFactor: Float = 1f,
     events: List<Event.Single>,
-    weekViewConfig: WeekViewConfig,
     eventConfig: EventConfig,
     startTime: LocalTime,
     endTime: LocalTime,
     columnWidth: Dp,
-    modifier: Modifier = Modifier,
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
@@ -174,11 +173,11 @@ fun EventsWithOverlapHandling(
 
     Box(modifier = modifier) {
         visibleEvents.forEach { event ->
-            val layout = eventLayouts[event.id]
+            val layout: EventOverlapCalculator.EventLayout? = eventLayouts[event.id]
             if (layout != null) {
                 EventCompose(
                     event = event,
-                    weekViewConfig = weekViewConfig,
+                    scalingFactor = scalingFactor,
                     eventConfig = eventConfig,
                     startTime = startTime,
                     columnWidth = columnWidth,

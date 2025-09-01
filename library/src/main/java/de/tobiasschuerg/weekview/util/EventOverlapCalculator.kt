@@ -35,7 +35,7 @@ object EventOverlapCalculator {
         // Group events by date for separate overlap calculation per day
         val eventsByDate = events.groupBy { it.date }
 
-        eventsByDate.forEach { (date, dayEvents) ->
+        eventsByDate.forEach { (_, dayEvents) ->
             calculateOverlapsForDay(dayEvents, layoutMap)
         }
 

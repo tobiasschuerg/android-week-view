@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.data.WeekViewConfig
+import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -46,16 +46,9 @@ import java.util.Locale
  */
 @Composable
 fun WeekBackgroundCompose(
-    weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
-    days: List<DayOfWeek> =
-        listOf(
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY,
-            DayOfWeek.FRIDAY,
-        ),
+    scalingFactor: Float = 1f,
+    days: List<DayOfWeek> = DayOfWeekUtil.createList(),
     startTime: LocalTime = LocalTime.of(8, 0),
     endTime: LocalTime = LocalTime.of(18, 0),
     showNowIndicator: Boolean = true,
@@ -70,7 +63,7 @@ fun WeekBackgroundCompose(
     val today = LocalDate.now().dayOfWeek
     val leftOffsetDp = 48.dp
     val topOffsetDp = 32.dp
-    val rowHeightDp = 60.dp * weekViewConfig.scalingFactor
+    val rowHeightDp = 60.dp * scalingFactor
 
     // Calculate the latest event end and round up to the next full hour
     val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
@@ -241,7 +234,7 @@ fun WeekBackgroundCompose(
                             ) {
                                 EventsWithOverlapHandling(
                                     events = eventsForDay,
-                                    weekViewConfig = weekViewConfig,
+                                    scalingFactor = scalingFactor,
                                     eventConfig = eventConfig,
                                     startTime = startTime,
                                     endTime = effectiveEndTime,
