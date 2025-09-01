@@ -2,14 +2,12 @@ package de.tobiasschuerg.weekview.view
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.RelativeLayout
-import androidx.annotation.RequiresApi
 import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -89,7 +87,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         return scaleGestureDetector.onTouchEvent(event)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setEventTransitionName(transitionName: String) {
         this.eventTransitionName = transitionName
         for (childId in 0 until childCount) {
@@ -176,9 +173,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
 
         lv.setOnClickListener { clickListener?.invoke(lv) }
         lv.setOnCreateContextMenuListener(contextMenuListener)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            lv.transitionName = eventTransitionName
-        }
+        lv.transitionName = eventTransitionName
 
         addView(lv)
     }
@@ -227,7 +222,7 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
             if (column < 0) {
                 // should not be necessary as wrong days get filtered before.
                 Log.v(TAG, "Removing view for event $eventView")
-                childView.setVisibility(View.GONE)
+                childView.visibility = GONE
                 removeView(childView)
                 continue
             }
@@ -307,6 +302,11 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
         replaceWith = ReplaceWith("removeAllEvents()"),
     )
     override fun removeAllViews() = super.removeAllViews()
+
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
+    }
 
     companion object {
         private const val TAG = "WeekView"

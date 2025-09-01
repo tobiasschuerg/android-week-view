@@ -64,6 +64,9 @@ class ClassicWeekViewActivity : AppCompatActivity() {
                 1 -> {
                     Log.d("Scroll", "1-pointer touch")
                     v.parent.requestDisallowInterceptTouchEvent(false)
+                    if (event.action == android.view.MotionEvent.ACTION_UP) {
+                        v.performClick()
+                    }
                 }
                 2 -> {
                     Log.d("Zoom", "2-pointer touch")
