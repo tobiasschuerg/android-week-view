@@ -15,7 +15,6 @@ import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import java.time.LocalTime
-import kotlin.time.Duration.Companion.days
 
 /**
  * Main Composable for the WeekView component.

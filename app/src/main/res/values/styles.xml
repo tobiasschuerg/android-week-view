@@ -15,7 +15,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- Status bar configuration -->
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-        <item name="android:windowLightStatusBar">false</item>
     </style>
 
 </resources>

@@ -123,12 +123,7 @@ fun EventCompose(
             // Time information (if enabled)
             if (eventConfig.showTimeEnd) {
                 val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-                val timeText =
-                    if (eventConfig.showTimeEnd) {
-                        "${event.timeSpan.start.format(timeFormatter)} - ${event.timeSpan.endExclusive.format(timeFormatter)}"
-                    } else {
-                        event.timeSpan.start.format(timeFormatter)
-                    }
+                val timeText = "${event.timeSpan.start.format(timeFormatter)} - ${event.timeSpan.endExclusive.format(timeFormatter)}"
 
                 Text(
                     text = timeText,
