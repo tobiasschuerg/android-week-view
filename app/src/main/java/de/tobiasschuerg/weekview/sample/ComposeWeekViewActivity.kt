@@ -34,9 +34,10 @@ class ComposeWeekViewActivity : ComponentActivity() {
 
         // Configure edge-to-edge with proper status bar
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(
-                scrim = Color.Transparent.toArgb()
-            )
+            statusBarStyle =
+                SystemBarStyle.dark(
+                    scrim = Color.Transparent.toArgb(),
+                ),
         )
 
         val prefs = getSharedPreferences("weekview_prefs", MODE_PRIVATE)
@@ -50,10 +51,11 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 topBar = {
                     TopAppBar(
                         title = { Text("WeekView Demo") },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
                     )
                 },
             ) { paddingValues ->

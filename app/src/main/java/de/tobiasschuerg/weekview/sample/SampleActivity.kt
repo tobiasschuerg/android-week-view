@@ -2,47 +2,118 @@ package de.tobiasschuerg.weekview.sample
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
-import kotlin.jvm.java
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-class SampleActivity : AppCompatActivity() {
+class SampleActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val layout =
-            LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                val classicBtn =
-                    Button(context).apply {
-                        text = "Classic WeekView"
-                        setOnClickListener {
-                            startActivity(Intent(context, ClassicWeekViewActivity::class.java))
-                        }
+
+        // Configure edge-to-edge with proper status bar for Compose
+        enableEdgeToEdge(
+            statusBarStyle =
+                SystemBarStyle.dark(
+                    scrim = Color.Transparent.toArgb(),
+                ),
+        )
+
+        setContent {
+            val context = LocalContext.current
+
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                "WeekView Demo",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        },
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                    )
+                },
+            ) { paddingValues ->
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(horizontal = 32.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "Choose a WeekView Implementation",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(bottom = 32.dp),
+                    )
+
+                    Button(
+                        onClick = {
+                            context.startActivity(Intent(context, ClassicWeekViewActivity::class.java))
+                        },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                    ) {
+                        Text(
+                            text = "Classic WeekView",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
                     }
-                val composeBtn =
-                    Button(context).apply {
-                        text = "Compose WeekView"
-                        setOnClickListener {
-                            startActivity(Intent(context, ComposeWeekViewActivity::class.java))
-                        }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            context.startActivity(Intent(context, ComposeWeekViewActivity::class.java))
+                        },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                    ) {
+                        Text(
+                            text = "Compose WeekView",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
                     }
-                addView(classicBtn)
-                addView(composeBtn)
+                }
             }
-        ViewCompat.setOnApplyWindowInsetsListener(layout) { v, insets ->
-            val systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(
-                top = systemInsets.top,
-                bottom = systemInsets.bottom,
-                left = systemInsets.left,
-                right = systemInsets.right,
-            )
-            insets
         }
-        setContentView(layout)
     }
 }

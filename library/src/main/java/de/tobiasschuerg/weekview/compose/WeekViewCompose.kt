@@ -13,8 +13,9 @@ import androidx.compose.ui.Modifier
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
-import java.time.DayOfWeek
+import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import java.time.LocalTime
+import kotlin.time.Duration.Companion.days
 
 /**
  * Main Composable for the WeekView component.
@@ -35,18 +36,6 @@ fun WeekViewCompose(
     val startTime = timeSpan?.start ?: LocalTime.of(6, 0)
     val endTime = timeSpan?.endExclusive ?: LocalTime.of(20, 0)
 
-    // Define the visible days for the week view
-    val days =
-        listOf(
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY,
-            DayOfWeek.FRIDAY,
-            DayOfWeek.SATURDAY,
-            DayOfWeek.SUNDAY,
-        )
-
     var scale: Float by remember { mutableFloatStateOf(1f) }
     val transformableState =
         rememberTransformableState { zoomChange, _, _ ->
@@ -63,7 +52,7 @@ fun WeekViewCompose(
         WeekBackgroundCompose(
             scalingFactor = scale,
             modifier = Modifier.fillMaxSize(),
-            days = days,
+            days = DayOfWeekUtil.createList().take(5),
             startTime = startTime,
             endTime = endTime,
             events = weekData.getSingleEvents(),
