@@ -9,6 +9,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
@@ -25,6 +28,17 @@ class ClassicWeekViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
+        val root = findViewById<View>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(
+                top = systemInsets.top,
+                bottom = systemInsets.bottom,
+                left = systemInsets.left,
+                right = systemInsets.right
+            )
+            insets
+        }
         val config = EventConfig(showSubtitle = false, showTimeEnd = false)
         weekView.eventConfig = config
         weekView.setShowNowIndicator(true)
