@@ -18,8 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ClassicWeekViewActivity" android:exported="true" />
-        <activity android:name=".ComposeWeekViewActivity" android:exported="true" />
+        <activity
+            android:name=".ClassicWeekViewActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ComposeWeekViewActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
     </application>
 
 </manifest>

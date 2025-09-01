@@ -39,7 +39,7 @@ class SampleActivity : AppCompatActivity() {
                 top = systemInsets.top,
                 bottom = systemInsets.bottom,
                 left = systemInsets.left,
-                right = systemInsets.right
+                right = systemInsets.right,
             )
             insets
         }

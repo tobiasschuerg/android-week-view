@@ -62,7 +62,7 @@ fun WeekBackgroundCompose(
     val columnCount = days.size
     val today = LocalDate.now().dayOfWeek
     val leftOffsetDp = 48.dp
-    val topOffsetDp = 32.dp
+    val topOffsetDp = 24.dp
     val rowHeightDp = 60.dp * scalingFactor
 
     // Calculate the latest event end and round up to the next full hour
@@ -97,16 +97,24 @@ fun WeekBackgroundCompose(
         Column(modifier = Modifier.fillMaxSize()) {
             // Day labels (fixed at top)
             Row {
-                Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp)) // Empty top-left corner
+                Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
                 for (day in days) {
                     Box(
-                        modifier = Modifier.size(dynamicColumnWidthDp, topOffsetDp),
+                        modifier =
+                            Modifier
+                                .size(dynamicColumnWidthDp, topOffsetDp)
+                                .padding(vertical = 2.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         val shortName = day.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
                         Text(
                             text = shortName,
-                            style = androidx.compose.ui.text.TextStyle(fontSize = 14.sp, color = Color.Gray),
+                            style =
+                                androidx.compose.ui.text.TextStyle(
+                                    fontSize = 13.sp,
+                                    color = Color.LightGray,
+                                    fontWeight = FontWeight.Medium,
+                                ),
                             modifier = Modifier,
                         )
                     }
