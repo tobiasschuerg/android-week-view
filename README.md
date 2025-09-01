@@ -7,9 +7,12 @@ Modern Android library for displaying weekly schedules and events with both **Co
 
 Initially created for [Schedule Deluxe](https://play.google.com/store/apps/details?id=com.tobiasschuerg.stundenplan), this library provides a flexible week view component that's perfect for calendar apps, timetables, and schedule management.
 
-<img alt="" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400">
+## 📱 Screenshots
 
-<img alt="" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/Screenshot_20250901_212606.png" height="400">
+|                                                                 View-based Implementation                                                                  | Compose Implementation |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------:|
+| <img alt="Legacy View-based WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400"> | <img alt="Modern Compose WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/Screenshot_20250901_212606.png" height="400"> |
+|                                                                     ⚠️ **Deprecated**                                                                      | ✅ **Recommended** |
 
 ## 🏗️ Implementation Options
 
