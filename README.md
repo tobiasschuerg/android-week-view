@@ -3,42 +3,78 @@
 
 # Android Week View
 
-Android library for displaying an overview of events for a week
-like in a schedule(us) or timetable(uk).
+Modern Android library for displaying weekly schedules and events with both **Compose** and **Classic View** implementations.
 
-It's the week view initially used in Schedule
-Deluxe (https://play.google.com/store/apps/details?id=com.tobiasschuerg.stundenplan),
-which is now outsourced in favor of a better modularization.
+Initially created for [Schedule Deluxe](https://play.google.com/store/apps/details?id=com.tobiasschuerg.stundenplan), this library provides a flexible week view component that's perfect for calendar apps, timetables, and schedule management.
 
-<img src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400">
+<img alt="" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400">
 
-## Usage:
+## 🏗️ Implementation Options
 
-See `SampleActivity.kt` for how to use the week view.
+### Option 1: Modern Compose Implementation
 
-### In short:
+The modern, performant implementation built with Jetpack Compose.
 
-1. Attach the view to your layout:
+#### Add to your Compose UI:
+
+```kotlin
+@Composable
+fun MyWeekView() {
+    val weekData = remember { WeekData() }
+    val eventConfig = remember { EventConfig() }
+    val weekViewConfig = remember { WeekViewConfig() }
+
+    WeekViewCompose(
+        weekData = weekData,
+        eventConfig = eventConfig,
+        weekViewConfig = weekViewConfig,
+        onEventClick = { eventId ->
+            // Handle event click
+        }
+    )
+}
+```
+
+#### Create and add events:
+
+```kotlin
+val event = Event.Single(
+    id = 1L,
+    date = LocalDate.now(),
+    title = "Team Meeting",
+    shortTitle = "Meeting",
+    timeSpan = TimeSpan.of(LocalTime.of(10, 0), Duration.ofHours(1)),
+    backgroundColor = Color.Blue,
+    textColor = Color.White
+)
+
+weekData.add(event)
+```
+
+### Option 2: Legacy View Implementation (⚠️ Deprecated)
+
+> **⚠️ Warning**: The View-based implementation is deprecated. Please migrate to the Compose version for better performance, modern UI patterns, and future support.
+
+#### Add to your XML layout:
 
 ```xml
 
-<de.tobiasschuerg.weekview.view.WeekView android:id="@+id/week_view"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    app:accent_color="@color/colorAccent" app:start_hour="8" app:end_hour="15" />
+<de.tobiasschuerg.weekview.view.WeekView android:id="@+id/week_view" android:layout_width="match_parent" android:layout_height="wrap_content" app:accent_color="@color/colorAccent" app:start_hour="8" app:end_hour="18" />
 ```
 
-2. Configure how events are displayed (optional):
+#### Configure in your Activity:
 
 ```kotlin
+// ⚠️ DEPRECATED - Use WeekViewCompose instead
 val config = EventConfig(showSubtitle = false, showTimeEnd = false)
 weekView.eventConfig = config
 weekView.setShowNowIndicator(true)
-```
 
-3Add events:
+weekView.setEventClickListener { eventView ->
+    // Handle event click
+}
 
-```kotlin
-val nowEvent = Event.Single(
+val event = Event.Single(
     id = 1337,
     date = LocalDate.now(),
     title = "Dentist Appointment",
@@ -47,31 +83,174 @@ val nowEvent = Event.Single(
     backgroundColor = Color.RED,
     textColor = Color.WHITE
 )
-weekView.addEvent(nowEvent)
+weekView.addEvent(event)
 ```
 
-## Desugaring:
+## 🎨 Customization
 
-Starting from version 1.8.0, Android Week View has switched from JakeWharton's ThreeTen Backport
-to desugaring for `java.time`-API.
+### Event Configuration
 
-## Get it
+```kotlin
+val eventConfig = EventConfig(
+    showSubtitle = true,
+    showTimeEnd = true
+)
+```
 
-1. Add it in your root build.gradle at the end of repositories:
+### Week View Configuration
+
+```kotlin
+val weekViewConfig = WeekViewConfig().apply {
+    scalingFactor = 1.2f
+}
+```
+
+### Available Event Types
+
+```kotlin
+// Single event with specific time (fully supported)
+val meeting = Event.Single(
+    id = 1L,
+    date = LocalDate.of(2024, 1, 15),
+    title = "Project Review",
+    shortTitle = "Review",
+    timeSpan = TimeSpan.of(LocalTime.of(14, 0), Duration.ofHours(2)),
+    backgroundColor = Color.Blue,
+    textColor = Color.White
+)
+
+// All-day event (data model available)
+val holiday = Event.AllDay(
+    id = 2L,
+    date = LocalDate.of(2024, 1, 16),
+    title = "National Holiday",
+    shortTitle = "Holiday"
+)
+
+// Multi-day event (data model available)
+val conference = Event.MultiDay(
+    id = 3L,
+    date = LocalDate.of(2024, 1, 20),
+    title = "Tech Conference",
+    shortTitle = "Conf",
+    lastDate = LocalDate.of(2024, 1, 22)
+)
+```
+
+> **Note**: Currently, only `Event.Single` is fully implemented in the view rendering. `Event.AllDay` and `Event.MultiDay` have data models but no view implementation yet.
+
+## 📦 Installation
+
+### Step 1: Add JitPack repository
+
+Add this to your **root** `build.gradle` file:
 
 ```gradle
 allprojects {
-  repositories {
-  ...
-  maven { url 'https://jitpack.io' }
-  }
+    repositories {
+        // ... other repositories
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
-2. Step 2. Add the dependency
+### Step 2: Add the dependency
+
+Add this to your **app** `build.gradle` file:
 
 ```gradle
 dependencies {
-  compile 'com.github.tobiasschuerg:android-week-view:-SNAPSHOT'
+    implementation 'com.github.tobiasschuerg:android-week-view:2.0.0'
+    
+    // Required for Compose implementation
+    implementation platform('androidx.compose:compose-bom:2025.08.01')
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.material3:material3'
+    
+    // Required for java.time API support on older Android versions
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
 ```
+
+### Step 3: Enable desugaring (required)
+
+In your **app** `build.gradle`:
+
+```gradle
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
+}
+```
+
+## 🔄 Migration Guide
+
+### Migrating from View-based to Compose
+
+**Before (Deprecated):**
+
+```koltin
+// XML Layout
+<de.tobiasschuerg.weekview.view.WeekView android : id ="@+id/week_view" ... />
+
+// Activity
+weekView.addEvent(event)
+weekView.setEventClickListener { ... }
+```
+
+**After (Recommended):**
+
+```kotlin
+// Compose
+WeekViewCompose(
+    weekData = weekData.apply { add(event) },
+    onEventClick = { eventId -> TODO }
+)
+```
+
+## 📱 Sample App
+
+The included sample app demonstrates both implementations:
+
+- **Modern Compose WeekView**
+- **Legacy View-based WeekView**
+
+Run the sample app to see all features in action and choose the implementation that fits your needs.
+
+## 📋 API Documentation
+
+### Migration Notes
+
+Starting from version **2.0.0**:
+
+- ✅ **Compose implementation** is the recommended approach
+- ⚠️ **View-based implementation** is deprecated but maintained for compatibility
+
+Starting from version **1.8.0**:
+
+- Switched from ThreeTen Backport to core library desugaring
+- Requires `coreLibraryDesugaring` to be enabled
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Run `./gradlew ktlintFormat` before committing
+4. Add tests for new functionality
+5. Update documentation
+6. Submit a pull request
+
+## 🔗 Links
+
+- **JitPack**: https://jitpack.io/#tobiasschuerg/android-week-view
+- **Sample App**: See `app/` module in this repository
+- **Issues**: https://github.com/tobiasschuerg/android-week-view/issues
+
+---
+
+⭐ **Don't forget to star this repository if you find it useful!**
