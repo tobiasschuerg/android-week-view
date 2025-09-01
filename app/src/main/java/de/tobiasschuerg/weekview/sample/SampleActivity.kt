@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import kotlin.jvm.java
 
 class SampleActivity : AppCompatActivity() {
@@ -30,6 +33,16 @@ class SampleActivity : AppCompatActivity() {
                 addView(classicBtn)
                 addView(composeBtn)
             }
+        ViewCompat.setOnApplyWindowInsetsListener(layout) { v, insets ->
+            val systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(
+                top = systemInsets.top,
+                bottom = systemInsets.bottom,
+                left = systemInsets.left,
+                right = systemInsets.right
+            )
+            insets
+        }
         setContentView(layout)
     }
 }
