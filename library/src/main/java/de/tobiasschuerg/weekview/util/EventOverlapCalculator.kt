@@ -53,7 +53,7 @@ object EventOverlapCalculator {
         val sortedEvents = dayEvents.sortedBy { it.timeSpan.start }
         val eventCount = sortedEvents.size
         val visited = BooleanArray(eventCount)
-        val eventIndices = sortedEvents.mapIndexed { idx, event -> event.id to idx }.toMap()
+        sortedEvents.mapIndexed { idx, event -> event.id to idx }.toMap()
         var groupIndex = 0
 
         // Build overlap graph (adjacency list)
