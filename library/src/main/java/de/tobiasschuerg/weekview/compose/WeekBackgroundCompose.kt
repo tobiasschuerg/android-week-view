@@ -242,6 +242,7 @@ fun WeekBackgroundCompose(
                                 modifier =
                                     Modifier
                                         .offset(x = dayIndex * dynamicColumnWidthDp)
+                                        .padding(top = topOffsetDp) // Padding unter Kopfzeile
                                         .size(dynamicColumnWidthDp, gridHeightDp),
                             ) {
                                 EventsWithOverlapHandling(

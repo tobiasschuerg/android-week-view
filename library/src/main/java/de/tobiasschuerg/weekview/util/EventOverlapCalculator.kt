@@ -51,53 +51,51 @@ object EventOverlapCalculator {
     ) {
         // Sort events by start time for consistent processing
         val sortedEvents = dayEvents.sortedBy { it.timeSpan.start }
-
-        // Track which events have been processed
-        val processedEvents = mutableSetOf<Long>()
+        val eventCount = sortedEvents.size
+        val visited = BooleanArray(eventCount)
+        val eventIndices = sortedEvents.mapIndexed { idx, event -> event.id to idx }.toMap()
         var groupIndex = 0
 
-        for (event in sortedEvents) {
-            if (event.id in processedEvents) continue
-
-            // Find all events that overlap with this event
-            val overlappingEvents = findOverlappingEvents(event, sortedEvents)
-
-            if (overlappingEvents.size == 1) {
-                // No overlaps - event takes full width
-                layoutMap[event.id] =
-                    EventLayout(
-                        widthFraction = 1.0f,
-                        offsetFraction = 0.0f,
-                        overlapGroup = groupIndex++,
-                    )
-                processedEvents.add(event.id)
-            } else {
-                // Multiple overlapping events - divide the width
-                val widthPerEvent = 1.0f / overlappingEvents.size
-
-                overlappingEvents.forEachIndexed { index, overlappingEvent ->
-                    layoutMap[overlappingEvent.id] =
-                        EventLayout(
-                            widthFraction = widthPerEvent,
-                            offsetFraction = index * widthPerEvent,
-                            overlapGroup = groupIndex,
-                        )
-                    processedEvents.add(overlappingEvent.id)
+        // Build overlap graph (adjacency list)
+        val adjacency = Array(eventCount) { mutableListOf<Int>() }
+        for (i in 0 until eventCount) {
+            for (j in i + 1 until eventCount) {
+                if (eventsOverlap(sortedEvents[i], sortedEvents[j])) {
+                    adjacency[i].add(j)
+                    adjacency[j].add(i)
                 }
-                groupIndex++
             }
         }
-    }
 
-    /**
-     * Finds all events that overlap with the given event, including the event itself.
-     */
-    private fun findOverlappingEvents(
-        targetEvent: Event.Single,
-        allEvents: List<Event.Single>,
-    ): List<Event.Single> {
-        return allEvents.filter { event ->
-            event.date == targetEvent.date && eventsOverlap(targetEvent, event)
+        // Find connected components (overlap groups)
+        for (i in 0 until eventCount) {
+            if (visited[i]) continue
+            val group = mutableListOf<Int>()
+            val queue = ArrayDeque<Int>()
+            queue.add(i)
+            visited[i] = true
+            while (queue.isNotEmpty()) {
+                val current = queue.removeFirst()
+                group.add(current)
+                for (neighbor in adjacency[current]) {
+                    if (!visited[neighbor]) {
+                        visited[neighbor] = true
+                        queue.add(neighbor)
+                    }
+                }
+            }
+            // Assign layout for all events in this group
+            val widthPerEvent = 1.0f / group.size
+            group.forEachIndexed { idx, eventIdx ->
+                val event = sortedEvents[eventIdx]
+                layoutMap[event.id] =
+                    EventLayout(
+                        widthFraction = widthPerEvent,
+                        offsetFraction = idx * widthPerEvent,
+                        overlapGroup = groupIndex,
+                    )
+            }
+            groupIndex++
         }
     }
 

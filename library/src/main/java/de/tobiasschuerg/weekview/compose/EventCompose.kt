@@ -2,7 +2,6 @@ package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -78,6 +78,7 @@ fun EventCompose(
     Box(
         modifier =
             modifier
+                .testTag("EventView_${event.id}")
                 .padding(1.dp)
                 .offset(x = horizontalOffset, y = topOffset)
                 .size(width = eventWidth, height = eventHeight)
@@ -94,8 +95,8 @@ fun EventCompose(
         Column(
             modifier =
                 Modifier
-                    .fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
+                    .fillMaxSize()
+                    .testTag("EventViewInner_${event.id}"),
         ) {
             // Main title
             Text(
