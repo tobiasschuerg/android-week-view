@@ -52,8 +52,7 @@ fun WeekBackgroundCompose(
     modifier: Modifier = Modifier,
     scalingFactor: Float = 1f,
     dateRange: LocalDateRange,
-    startTime: LocalTime = LocalTime.of(8, 0),
-    endTime: LocalTime = LocalTime.of(18, 0),
+    timeRange: TimeSpan = TimeSpan(LocalTime.of(8, 0), LocalTime.of(18, 0)),
     showNowIndicator: Boolean = true,
     events: List<Event.Single> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
@@ -70,7 +69,7 @@ fun WeekBackgroundCompose(
     val rowHeightDp = 60.dp * scalingFactor
 
     // Calculate the latest event end.
-    val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
+    val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: timeRange.endExclusive
 
     // Determine the grid end time by rounding up to the next hour, clamping at the end of the day.
     val gridEndTime =
@@ -82,15 +81,16 @@ fun WeekBackgroundCompose(
             LocalTime.MAX
         }
 
-    // The effective end time is the later of the provided endTime and the calculated grid end time.
+    // The effective end time is the later of the provided timeRange.endExclusive and the calculated grid end time.
     // This ensures the grid always extends to show all events.
-    val effectiveEndTime = if (gridEndTime.isAfter(endTime)) gridEndTime else endTime
+    val effectiveEndTime = if (gridEndTime.isAfter(timeRange.endExclusive)) gridEndTime else timeRange.endExclusive
 
     // Create a TimeSpan for the visible time range
-    val visibleTimeSpan = TimeSpan(startTime, effectiveEndTime)
+    val visibleTimeSpan = TimeSpan(timeRange.start, effectiveEndTime)
 
-    val totalHours = visibleTimeSpan.duration.toHours().toFloat() +
-        (visibleTimeSpan.duration.toMinutesPart() / 60f)
+    val totalHours =
+        visibleTimeSpan.duration.toHours().toFloat() +
+            (visibleTimeSpan.duration.toMinutesPart() / 60f)
     val gridHeightDp = rowHeightDp * totalHours
 
     // Generate time labels using the elegant TimeSpan API
@@ -166,8 +166,8 @@ fun WeekBackgroundCompose(
                     }
 
                     // Current time indicator label (HH:mm)
-                    if (showNowIndicator && now.isAfter(startTime) && now.isBefore(endTime)) {
-                        val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
+                    if (showNowIndicator && now.isAfter(timeRange.start) && now.isBefore(timeRange.endExclusive)) {
+                        val nowPositionFloat = ((now.hour + now.minute / 60f) - timeRange.start.hour)
                         val nowPositionDp = (nowPositionFloat * rowHeightDp.value).dp
                         Box(
                             modifier =
@@ -238,8 +238,8 @@ fun WeekBackgroundCompose(
                         }
 
                         // Now indicator line (full width)
-                        if (showNowIndicator && now.isAfter(startTime) && now.isBefore(effectiveEndTime)) {
-                            val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
+                        if (showNowIndicator && now.isAfter(timeRange.start) && now.isBefore(effectiveEndTime)) {
+                            val nowPositionFloat = ((now.hour + now.minute / 60f) - timeRange.start.hour)
                             val nowY = nowPositionFloat * rowHeightPx
                             drawLine(
                                 color = nowIndicatorColor,
@@ -264,7 +264,7 @@ fun WeekBackgroundCompose(
                                     events = eventsForDay,
                                     scalingFactor = scalingFactor,
                                     eventConfig = eventConfig,
-                                    startTime = startTime,
+                                    startTime = timeRange.start,
                                     endTime = effectiveEndTime,
                                     columnWidth = dynamicColumnWidthDp,
                                     onEventClick = onEventClick,
