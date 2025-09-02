@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
+import de.tobiasschuerg.weekview.util.EventPositionUtil
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -47,15 +48,13 @@ fun EventCompose(
 ) {
     val density = LocalDensity.current
 
-    // Calculate event positioning based on time
-    val startMinutes =
-        (event.timeSpan.start.hour - startTime.hour) * 60 +
-            (event.timeSpan.start.minute - startTime.minute)
-    val durationMinutes = event.timeSpan.duration.toMinutes().toInt()
-
-    // Calculate dimensions with scaling factor
-    val topOffset = with(density) { (startMinutes * scalingFactor).dp }
-    val eventHeight = with(density) { (durationMinutes * scalingFactor).dp }
+    val (topOffset, eventHeight) =
+        EventPositionUtil.calculateVerticalOffsets(
+            event = event,
+            startTime = startTime,
+            scalingFactor = scalingFactor,
+            density = density,
+        )
 
     // Apply overlap layout calculations
     val eventWidth = columnWidth * eventLayout.widthFraction
@@ -79,7 +78,6 @@ fun EventCompose(
         modifier =
             modifier
                 .testTag("EventView_${event.id}")
-                .padding(1.dp)
                 .offset(x = horizontalOffset, y = topOffset)
                 .size(width = eventWidth, height = eventHeight)
                 .clip(RoundedCornerShape(cornerRadius))

@@ -29,10 +29,9 @@ fun WeekViewCompose(
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
-    // Determine time range from weekData or use defaults
-    val timeSpan = weekData.getTimeSpan()
-    val startTime = timeSpan?.start ?: LocalTime.of(6, 0)
-    val endTime = timeSpan?.endExclusive ?: LocalTime.of(20, 0)
+    // Fester Spaltenstart unabhängig von den Events
+    val startTime = LocalTime.of(8, 0)
+    val endTime = LocalTime.of(20, 0)
 
     var scale: Float by remember { mutableFloatStateOf(1f) }
     val transformableState =

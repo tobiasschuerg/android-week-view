@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.sample
 
 import android.graphics.Color
+import androidx.core.graphics.toColorInt
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekData
@@ -29,7 +30,7 @@ object EventCreator {
             var startTime: LocalTime
             for (date in weekRange) {
                 startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
-                while (startTime.isBefore(LocalTime.of(15, 0))) {
+                while (startTime.isBefore(LocalTime.of(14, 0))) {
                     val endTime = startTime.plusMinutes(MIN_EVENT_LENGTH + random.nextInt(MAX_EVENT_LENGTH - MIN_EVENT_LENGTH).toLong())
                     this.add(createSampleEntry(date, startTime, endTime))
                     startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
@@ -39,6 +40,20 @@ object EventCreator {
             repeat(10) {
                 this.add(createRandomEvent())
             }
+
+            // add just a single event at 9:00
+            this.add(
+                Event.Single(
+                    id = random.nextLong(),
+                    date = today,
+                    title = "Single Event",
+                    shortTitle = "Single Event",
+                    subTitle = null,
+                    timeSpan = TimeSpan(LocalTime.of(15, 0), LocalTime.of(15, 59)),
+                    textColor = Color.WHITE,
+                    backgroundColor = "#FF0000".toColorInt(),
+                ),
+            )
         }
     }
 
