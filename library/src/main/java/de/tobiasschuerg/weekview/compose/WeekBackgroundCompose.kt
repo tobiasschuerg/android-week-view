@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.times
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
+import de.tobiasschuerg.weekview.util.TimeSpan
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalTime
@@ -51,8 +52,7 @@ fun WeekBackgroundCompose(
     modifier: Modifier = Modifier,
     scalingFactor: Float = 1f,
     dateRange: LocalDateRange,
-    startTime: LocalTime = LocalTime.of(8, 0),
-    endTime: LocalTime = LocalTime.of(18, 0),
+    timeRange: TimeSpan = TimeSpan(LocalTime.of(8, 0), LocalTime.of(18, 0)),
     showNowIndicator: Boolean = true,
     events: List<Event.Single> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
@@ -65,22 +65,37 @@ fun WeekBackgroundCompose(
     val columnCount = days.size
     val today = LocalDate.now()
     val leftOffsetDp = 48.dp
-    val topOffsetDp = 36.dp // Erhöht, damit die Tageszahl nicht abgeschnitten wird
+    val topOffsetDp = 36.dp
     val rowHeightDp = 60.dp * scalingFactor
 
-    // Calculate the latest event end and round up to the next full hour
-    val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
-    val roundedEventEnd =
-        if (latestEventEnd.minute > 0 || latestEventEnd.second > 0) {
-            latestEventEnd.plusHours(1).withMinute(0).withSecond(0)
+    // Calculate the latest event end.
+    val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: timeRange.endExclusive
+
+    // Determine the grid end time by rounding up to the next hour, clamping at the end of the day.
+    val gridEndTime =
+        if (latestEventEnd.hour < 23) {
+            // Round up to the next full hour.
+            LocalTime.of(latestEventEnd.hour + 1, 0)
         } else {
-            latestEventEnd
+            // If the latest event is at 23:xx, clamp to the end of the day.
+            LocalTime.MAX
         }
-    // Use the maximum of configured endTime and rounded event end
-    val effectiveEndTime = if (roundedEventEnd.isAfter(endTime)) roundedEventEnd else endTime
-    val hourCount = effectiveEndTime.hour - startTime.hour
-    val gridHeightDp = rowHeightDp * hourCount
-    val timeLabels = (startTime.hour..effectiveEndTime.hour).map { LocalTime.of(it, 0) }
+
+    // The effective end time is the later of the provided timeRange.endExclusive and the calculated grid end time.
+    // This ensures the grid always extends to show all events.
+    val effectiveEndTime = if (gridEndTime.isAfter(timeRange.endExclusive)) gridEndTime else timeRange.endExclusive
+
+    // Create a TimeSpan for the visible time range
+    val visibleTimeSpan = TimeSpan(timeRange.start, effectiveEndTime)
+
+    val totalHours =
+        visibleTimeSpan.duration.toHours().toFloat() +
+            (visibleTimeSpan.duration.toMinutesPart() / 60f)
+    val gridHeightDp = rowHeightDp * totalHours
+
+    // Generate time labels using the elegant TimeSpan API
+    val timeLabels = visibleTimeSpan.hourlyTimes().toList()
+
     val scrollState = androidx.compose.foundation.rememberScrollState()
 
     var now by remember { mutableStateOf(LocalTime.now()) }
@@ -151,8 +166,8 @@ fun WeekBackgroundCompose(
                     }
 
                     // Current time indicator label (HH:mm)
-                    if (showNowIndicator && now.isAfter(startTime) && now.isBefore(endTime)) {
-                        val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
+                    if (showNowIndicator && now.isAfter(timeRange.start) && now.isBefore(timeRange.endExclusive)) {
+                        val nowPositionFloat = ((now.hour + now.minute / 60f) - timeRange.start.hour)
                         val nowPositionDp = (nowPositionFloat * rowHeightDp.value).dp
                         Box(
                             modifier =
@@ -200,7 +215,8 @@ fun WeekBackgroundCompose(
                             )
                         }
                         // Horizontal lines (hours) - full width
-                        for (i in 0..hourCount) {
+                        val hourLineCount = kotlin.math.ceil(totalHours).toInt()
+                        for (i in 0..hourLineCount) {
                             val y = i * rowHeightPx
                             drawLine(
                                 color = Color.LightGray,
@@ -222,8 +238,8 @@ fun WeekBackgroundCompose(
                         }
 
                         // Now indicator line (full width)
-                        if (showNowIndicator && now.isAfter(startTime) && now.isBefore(effectiveEndTime)) {
-                            val nowPositionFloat = ((now.hour + now.minute / 60f) - startTime.hour)
+                        if (showNowIndicator && now.isAfter(timeRange.start) && now.isBefore(effectiveEndTime)) {
+                            val nowPositionFloat = ((now.hour + now.minute / 60f) - timeRange.start.hour)
                             val nowY = nowPositionFloat * rowHeightPx
                             drawLine(
                                 color = nowIndicatorColor,
@@ -248,7 +264,7 @@ fun WeekBackgroundCompose(
                                     events = eventsForDay,
                                     scalingFactor = scalingFactor,
                                     eventConfig = eventConfig,
-                                    startTime = startTime,
+                                    startTime = timeRange.start,
                                     endTime = effectiveEndTime,
                                     columnWidth = dynamicColumnWidthDp,
                                     onEventClick = onEventClick,

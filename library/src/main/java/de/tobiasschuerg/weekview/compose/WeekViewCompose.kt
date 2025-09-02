@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
+import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalTime
 
 /**
@@ -29,11 +30,12 @@ fun WeekViewCompose(
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
-    // Fester Spaltenstart unabhängig von den Events
+    // Set a fixed start time and a default end time.
+    // The grid will automatically extend beyond this end time if events are present.
     val startTime = LocalTime.of(8, 0)
-    val endTime = LocalTime.of(20, 0)
+    val endTime = LocalTime.of(18, 0)
 
-    var scale: Float by remember { mutableFloatStateOf(1f) }
+    var scale: Float by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
     val transformableState =
         rememberTransformableState { zoomChange, _, _ ->
             scale = (scale * zoomChange).coerceIn(0.5f, 2f)
@@ -50,8 +52,7 @@ fun WeekViewCompose(
             scalingFactor = scale,
             modifier = Modifier.fillMaxSize(),
             dateRange = weekData.dateRange,
-            startTime = startTime,
-            endTime = endTime,
+            timeRange = TimeSpan(startTime, endTime),
             events = weekData.getSingleEvents(),
             eventConfig = eventConfig,
             onEventClick = onEventClick,
