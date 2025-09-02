@@ -45,7 +45,8 @@ class ComposeWeekViewActivity : ComponentActivity() {
         weekViewConfig.scalingFactor = 1f
 
         setContent {
-            var events by remember { mutableStateOf(EventCreator.weekData.getSingleEvents()) }
+            val weekData = EventCreator.weekData
+            var events by remember { mutableStateOf(weekData.getSingleEvents()) }
 
             Scaffold(
                 topBar = {
@@ -60,7 +61,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 },
             ) { paddingValues ->
                 WeekViewCompose(
-                    weekData = WeekData().apply { events.forEach { this.add(it) } },
+                    weekData = WeekData(weekData.dateRange).apply { events.forEach { this.add(it) } },
                     eventConfig = EventConfig(),
                     weekViewConfig = weekViewConfig,
                     modifier =

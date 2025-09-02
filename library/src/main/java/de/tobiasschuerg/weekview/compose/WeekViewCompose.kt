@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
-import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import java.time.LocalTime
 
 /**
@@ -51,7 +50,7 @@ fun WeekViewCompose(
         WeekBackgroundCompose(
             scalingFactor = scale,
             modifier = Modifier.fillMaxSize(),
-            days = DayOfWeekUtil.createList().take(5),
+            dateRange = weekData.dateRange,
             startTime = startTime,
             endTime = endTime,
             events = weekData.getSingleEvents(),

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,11 +33,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.util.DayOfWeekUtil
+import de.tobiasschuerg.weekview.data.LocalDateRange
 import kotlinx.coroutines.delay
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 
 /**
@@ -48,7 +50,7 @@ import java.util.Locale
 fun WeekBackgroundCompose(
     modifier: Modifier = Modifier,
     scalingFactor: Float = 1f,
-    days: List<DayOfWeek> = DayOfWeekUtil.createList(),
+    dateRange: LocalDateRange,
     startTime: LocalTime = LocalTime.of(8, 0),
     endTime: LocalTime = LocalTime.of(18, 0),
     showNowIndicator: Boolean = true,
@@ -59,10 +61,11 @@ fun WeekBackgroundCompose(
 ) {
     val todayHighlightColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
     val nowIndicatorColor = MaterialTheme.colorScheme.error
+    val days = dateRange.toList()
     val columnCount = days.size
-    val today = LocalDate.now().dayOfWeek
+    val today = LocalDate.now()
     val leftOffsetDp = 48.dp
-    val topOffsetDp = 24.dp
+    val topOffsetDp = 36.dp // Erhöht, damit die Tageszahl nicht abgeschnitten wird
     val rowHeightDp = 60.dp * scalingFactor
 
     // Calculate the latest event end and round up to the next full hour
@@ -98,7 +101,7 @@ fun WeekBackgroundCompose(
             // Day labels (fixed at top)
             Row {
                 Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
-                for (day in days) {
+                for (date in days) {
                     Box(
                         modifier =
                             Modifier
@@ -106,16 +109,19 @@ fun WeekBackgroundCompose(
                                 .padding(vertical = 2.dp),
                         contentAlignment = Alignment.Center,
                     ) {
-                        val shortName = day.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
+                        val shortName = date.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
+                        val shortDate =
+                            date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
                         Text(
-                            text = shortName,
+                            text = shortName + "\n" + shortDate,
                             style =
-                                androidx.compose.ui.text.TextStyle(
+                                TextStyle(
                                     fontSize = 13.sp,
                                     color = Color.LightGray,
                                     fontWeight = FontWeight.Medium,
+                                    textAlign = TextAlign.Center,
                                 ),
-                            modifier = Modifier,
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }
@@ -137,7 +143,7 @@ fun WeekBackgroundCompose(
                             Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
                                 Text(
                                     text = timeLabel.toString(),
-                                    style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = Color.Gray),
+                                    style = TextStyle(fontSize = 12.sp, color = Color.Gray),
                                     modifier = Modifier,
                                 )
                             }
@@ -157,7 +163,7 @@ fun WeekBackgroundCompose(
                             Text(
                                 text = String.format(Locale.getDefault(), "%02d:%02d", now.hour, now.minute),
                                 style =
-                                    androidx.compose.ui.text.TextStyle(
+                                    TextStyle(
                                         fontSize = 11.sp,
                                         color = nowIndicatorColor,
                                         fontWeight = FontWeight.Bold,
@@ -208,7 +214,6 @@ fun WeekBackgroundCompose(
                         if (days.contains(today)) {
                             val todayColumnIndex = days.indexOf(today)
                             val left = todayColumnIndex * columnWidth
-                            left + columnWidth
                             drawRect(
                                 color = todayHighlightColor,
                                 topLeft = Offset(left, 0f),
@@ -230,9 +235,8 @@ fun WeekBackgroundCompose(
                     }
 
                     // Render events with overlap handling for each day column
-                    days.forEachIndexed { dayIndex, day ->
-                        val eventsForDay = events.filter { it.date.dayOfWeek == day }
-
+                    days.forEachIndexed { dayIndex, date ->
+                        val eventsForDay = events.filter { it.date == date }
                         if (eventsForDay.isNotEmpty()) {
                             Box(
                                 modifier =
