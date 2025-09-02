@@ -35,6 +35,7 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import kotlinx.coroutines.delay
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -68,19 +69,51 @@ fun WeekBackgroundCompose(
     val topOffsetDp = 36.dp // Erhöht, damit die Tageszahl nicht abgeschnitten wird
     val rowHeightDp = 60.dp * scalingFactor
 
-    // Calculate the latest event end and round up to the next full hour
+    // Calculate the latest event end.
     val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: endTime
-    val roundedEventEnd =
-        if (latestEventEnd.minute > 0 || latestEventEnd.second > 0) {
-            latestEventEnd.plusHours(1).withMinute(0).withSecond(0)
+
+    // Determine the grid end time by rounding up to the next hour, clamping at the end of the day.
+    val gridEndTime =
+        if (latestEventEnd.hour < 23) {
+            // Round up to the next full hour.
+            latestEventEnd.withMinute(0).withSecond(0).withNano(0).plusHours(
+                if (latestEventEnd.minute > 0 || latestEventEnd.second > 0 || latestEventEnd.nano > 0) 1 else 0,
+            )
         } else {
-            latestEventEnd
+            // If the latest event is at 23:xx, clamp to the end of the day.
+            LocalTime.MAX
         }
-    // Use the maximum of configured endTime and rounded event end
-    val effectiveEndTime = if (roundedEventEnd.isAfter(endTime)) roundedEventEnd else endTime
-    val hourCount = effectiveEndTime.hour - startTime.hour
-    val gridHeightDp = rowHeightDp * hourCount
-    val timeLabels = (startTime.hour..effectiveEndTime.hour).map { LocalTime.of(it, 0) }
+
+    // The effective end time is the later of the provided endTime and the calculated grid end time.
+    // This ensures the grid always extends to show all events.
+    val effectiveEndTime = if (gridEndTime.isAfter(endTime)) gridEndTime else endTime
+
+    // Calculate grid height in minutes.
+    // We need to handle the case where the time range crosses midnight (e.g., 8:00 to 2:00).
+    val totalMinutes =
+        if (effectiveEndTime.isAfter(startTime)) {
+            Duration.between(startTime, effectiveEndTime).toMinutes()
+        } else {
+            // Handles overnight ranges
+            Duration.between(startTime, LocalTime.MAX).toMinutes() + 1 + Duration.between(LocalTime.MIDNIGHT, effectiveEndTime).toMinutes()
+        }
+
+    val totalHours = totalMinutes / 60f
+    val gridHeightDp = rowHeightDp * totalHours
+
+    // Generate time labels for each hour in the visible range, handling overnight ranges.
+    val timeLabels = mutableListOf<LocalTime>()
+    var currentLabelTime = startTime
+    while (true) {
+        timeLabels.add(currentLabelTime)
+        val nextLabelTime = currentLabelTime.plusHours(1)
+        // Stop if we've passed the effective end time or wrapped around past midnight.
+        if (nextLabelTime.isBefore(currentLabelTime) || nextLabelTime.isAfter(effectiveEndTime)) {
+            break
+        }
+        currentLabelTime = nextLabelTime
+    }
+
     val scrollState = androidx.compose.foundation.rememberScrollState()
 
     var now by remember { mutableStateOf(LocalTime.now()) }
@@ -200,7 +233,8 @@ fun WeekBackgroundCompose(
                             )
                         }
                         // Horizontal lines (hours) - full width
-                        for (i in 0..hourCount) {
+                        val hourLineCount = kotlin.math.ceil(totalHours).toInt()
+                        for (i in 0..hourLineCount) {
                             val y = i * rowHeightPx
                             drawLine(
                                 color = Color.LightGray,

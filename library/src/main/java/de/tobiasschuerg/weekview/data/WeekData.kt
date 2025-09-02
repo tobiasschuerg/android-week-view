@@ -14,11 +14,12 @@ class WeekData(val dateRange: LocalDateRange) {
     private var latestEnd: LocalTime? = null
 
     fun getTimeSpan(): TimeSpan? {
-        return if (earliestStart != null && latestEnd != null) {
-            TimeSpan(earliestStart!!, latestEnd!!)
-        } else {
-            null
-        }
+        val start = earliestStart ?: return null
+        val end = latestEnd ?: return null
+        // The TimeSpan constructor already validates that the span is not overnight.
+        // Since individual events cannot be overnight, the combined span for a day won't be either,
+        // unless an event ends exactly at midnight (00:00), which is handled as the end of the day.
+        return TimeSpan(start, end)
     }
 
     fun add(item: Event.AllDay) {

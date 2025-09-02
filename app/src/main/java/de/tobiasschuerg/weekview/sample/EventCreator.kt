@@ -49,7 +49,7 @@ object EventCreator {
                     title = "Single Event",
                     shortTitle = "Single Event",
                     subTitle = null,
-                    timeSpan = TimeSpan(LocalTime.of(15, 0), LocalTime.of(15, 59)),
+                    timeSpan = TimeSpan(LocalTime.of(21, 0), LocalTime.of(23, 20)),
                     textColor = Color.WHITE,
                     backgroundColor = "#FF0000".toColorInt(),
                 ),
