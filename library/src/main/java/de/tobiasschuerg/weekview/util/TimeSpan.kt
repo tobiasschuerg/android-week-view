@@ -24,19 +24,20 @@ data class TimeSpan(
      *
      * Example: TimeSpan from 08:30 to 12:15 would return [08:00, 09:00, 10:00, 11:00, 12:00]
      */
-    fun hourlyTimes(): Sequence<LocalTime> = sequence {
-        var currentHour = start.hour
-        val endHour = endExclusive.hour
+    fun hourlyTimes(): Sequence<LocalTime> =
+        sequence {
+            var currentHour = start.hour
+            val endHour = endExclusive.hour
 
-        // Always yield the starting hour
-        yield(LocalTime.of(currentHour, 0))
-
-        // Generate subsequent hours until we reach the end
-        while (currentHour < endHour) {
-            currentHour++
+            // Always yield the starting hour
             yield(LocalTime.of(currentHour, 0))
+
+            // Generate subsequent hours until we reach the end
+            while (currentHour < endHour) {
+                currentHour++
+                yield(LocalTime.of(currentHour, 0))
+            }
         }
-    }
 
     companion object {
         fun of(
