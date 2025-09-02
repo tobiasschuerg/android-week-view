@@ -29,11 +29,12 @@ fun WeekViewCompose(
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
-    // Fester Spaltenstart unabhängig von den Events
+    // Set a fixed start time and a default end time.
+    // The grid will automatically extend beyond this end time if events are present.
     val startTime = LocalTime.of(8, 0)
     val endTime = LocalTime.of(20, 0)
 
-    var scale: Float by remember { mutableFloatStateOf(1f) }
+    var scale: Float by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
     val transformableState =
         rememberTransformableState { zoomChange, _, _ ->
             scale = (scale * zoomChange).coerceIn(0.5f, 2f)
