@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -72,12 +73,18 @@ fun EventCompose(
     val cornerRadius = 4.dp
     val eventPadding = 4.dp
 
-    // Determine which title to show based on config
+    // Determine which title to show based on config and orientation
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
     val displayTitle =
-        if (eventConfig.useShortNames && event.shortTitle.isNotBlank()) {
-            event.shortTitle
-        } else {
+        if (eventConfig.alwaysUseFullName) {
             event.title
+        } else {
+            if (isPortrait) {
+                event.shortTitle.ifBlank { event.title }
+            } else {
+                event.title
+            }
         }
 
     Box(
@@ -190,7 +197,7 @@ fun PreviewEventCompose() {
             EventConfig(
                 showSubtitle = true,
                 showTimeEnd = true,
-                useShortNames = false,
+                alwaysUseFullName = false,
                 showTimeStart = true,
                 showUpperText = true,
                 showLowerText = true,

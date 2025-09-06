@@ -46,7 +46,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
 
         val eventConfig =
             EventConfig(
-                useShortNames = false,
+                alwaysUseFullName = false,
                 showTimeStart = true,
                 showUpperText = true,
                 showSubtitle = true,

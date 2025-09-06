@@ -36,7 +36,7 @@ class EventView(
 
     private val textPaint: Paint by lazy { Paint().apply { isAntiAlias = true } }
 
-    private val eventName: String by lazy { if (config.useShortNames) event.shortTitle else event.title }
+    private val eventName: String by lazy { if (config.alwaysUseFullName) event.title else event.shortTitle }
 
     private val textBounds: Rect = Rect()
 
