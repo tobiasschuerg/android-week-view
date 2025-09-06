@@ -16,7 +16,7 @@ class WeekDataTest {
 
     @Before
     fun setUp() {
-        weekData = WeekData(dateRange)
+        weekData = WeekData(dateRange, start = LocalTime.of(9, 0), end = LocalTime.of(9, 0))
     }
 
     @Test
