@@ -4,8 +4,8 @@ import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalTime
 
 /**
- * Container für Events einer Woche bzw. eines beliebigen Datumsbereichs.
- * Nur Events innerhalb des dateRange werden aufgenommen.
+ * Container for events of a week or any date range.
+ * Only events within the dateRange are accepted.
  */
 class WeekData(val dateRange: LocalDateRange) {
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
@@ -28,19 +28,32 @@ class WeekData(val dateRange: LocalDateRange) {
     }
 
     fun add(item: Event.Single) {
-        if (!dateRange.contains(
-                item.date,
-            )
-        ) {
+        if (!dateRange.contains(item.date)) {
             throw IllegalArgumentException("Event date ${item.date} is outside the allowed range: $dateRange")
         }
         singleEvents.add(item)
-        // Update earliestStart and latestEnd
-        if (earliestStart == null || item.timeSpan.start.isBefore(earliestStart)) {
-            earliestStart = item.timeSpan.start
+
+        // Automatically adjust TimeSpan to accommodate the new event
+        updateTimeSpanForEvent(item)
+    }
+
+    /**
+     * Updates the earliest start and latest end times to accommodate the given event.
+     * This ensures that the TimeSpan automatically expands when events are added
+     * that fall outside the current time range.
+     */
+    private fun updateTimeSpanForEvent(event: Event.Single) {
+        val eventStart = event.timeSpan.start
+        val eventEnd = event.timeSpan.endExclusive
+
+        // Update earliest start if this event starts earlier
+        if (earliestStart == null || eventStart.isBefore(earliestStart)) {
+            earliestStart = eventStart
         }
-        if (latestEnd == null || item.timeSpan.endExclusive.isAfter(latestEnd)) {
-            latestEnd = item.timeSpan.endExclusive
+
+        // Update latest end if this event ends later
+        if (latestEnd == null || eventEnd.isAfter(latestEnd)) {
+            latestEnd = eventEnd
         }
     }
 
