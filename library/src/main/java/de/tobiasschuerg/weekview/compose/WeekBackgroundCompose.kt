@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,6 +20,8 @@ import de.tobiasschuerg.weekview.compose.components.EventsPane
 import de.tobiasschuerg.weekview.compose.components.GridCanvas
 import de.tobiasschuerg.weekview.compose.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.compose.state.rememberWeekViewMetrics
+import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
+import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
@@ -44,6 +45,7 @@ fun WeekBackgroundCompose(
     eventConfig: EventConfig = EventConfig(),
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, scalingFactor)
     val scrollState = rememberScrollState()
@@ -56,9 +58,6 @@ fun WeekBackgroundCompose(
         }
     }
 
-    val todayHighlightColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-    val nowIndicatorColor = MaterialTheme.colorScheme.error
-
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val availableWidth = maxWidth - metrics.leftOffsetDp
         val dynamicColumnWidthDp = if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
@@ -69,6 +68,7 @@ fun WeekBackgroundCompose(
                 leftOffsetDp = metrics.leftOffsetDp,
                 topOffsetDp = metrics.topOffsetDp,
                 columnWidth = dynamicColumnWidthDp,
+                style = style,
             )
 
             Row(modifier = Modifier.weight(1f)) {
@@ -82,7 +82,7 @@ fun WeekBackgroundCompose(
                     leftOffsetDp = metrics.leftOffsetDp,
                     scrollState = scrollState,
                     showNowIndicator = showNowIndicator,
-                    nowIndicatorColor = nowIndicatorColor,
+                    style = style,
                 )
 
                 // Scrollable Grid Area (Canvas + Events)
@@ -90,9 +90,7 @@ fun WeekBackgroundCompose(
                     modifier =
                         Modifier
                             .verticalScroll(scrollState)
-                            // Fill remaining width
                             .weight(1f)
-                            // Match the height of the time axis
                             .height(metrics.gridHeightDp),
                 ) {
                     GridCanvas(
@@ -102,12 +100,11 @@ fun WeekBackgroundCompose(
                         totalHours = metrics.totalHours,
                         days = metrics.days,
                         today = metrics.today,
-                        todayHighlightColor = todayHighlightColor,
                         showNowIndicator = showNowIndicator,
                         now = now,
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,
-                        nowIndicatorColor = nowIndicatorColor,
+                        style = style,
                     )
                     EventsPane(
                         days = metrics.days,
@@ -120,6 +117,7 @@ fun WeekBackgroundCompose(
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,
                         scalingFactor = scalingFactor,
+                        style = style,
                     )
                 }
             }

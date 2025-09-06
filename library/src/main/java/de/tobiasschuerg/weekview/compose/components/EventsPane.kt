@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
 import de.tobiasschuerg.weekview.compose.EventsWithOverlapHandling
+import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
+import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import java.time.LocalDate
@@ -25,6 +27,7 @@ internal fun EventsPane(
     gridStartTime: LocalTime,
     effectiveEndTime: LocalTime,
     scalingFactor: Float,
+    style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     days.forEachIndexed { dayIndex, date ->
         val eventsForDay = events.filter { it.date == date }
@@ -45,6 +48,7 @@ internal fun EventsPane(
                     columnWidth = columnWidth,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
+                    // style = style // Pass style to EventsWithOverlapHandling if it needs it in the future
                 )
             }
         }

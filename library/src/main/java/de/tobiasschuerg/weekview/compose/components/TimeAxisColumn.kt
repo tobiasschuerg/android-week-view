@@ -13,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
+import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -36,7 +37,7 @@ internal fun TimeAxisColumn(
     leftOffsetDp: Dp,
     scrollState: ScrollState,
     showNowIndicator: Boolean,
-    nowIndicatorColor: Color,
+    style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     Box(
         modifier =
@@ -51,7 +52,7 @@ internal fun TimeAxisColumn(
                 Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
                     Text(
                         text = timeLabel.toString(),
-                        style = TextStyle(fontSize = 12.sp, color = Color.Gray),
+                        style = TextStyle(fontSize = 12.sp, color = style.colors.timeLabelTextColor),
                         modifier = Modifier,
                     )
                 }
@@ -75,7 +76,7 @@ internal fun TimeAxisColumn(
                     style =
                         TextStyle(
                             fontSize = 11.sp,
-                            color = nowIndicatorColor,
+                            color = style.colors.nowIndicator,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
                         ),
