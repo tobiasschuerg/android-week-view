@@ -7,15 +7,15 @@ import java.time.LocalTime
  * Container for events of a week or any date range.
  * Only events within the dateRange are accepted.
  */
-class WeekData(val dateRange: LocalDateRange) {
+class WeekData(val dateRange: LocalDateRange, val start: LocalTime, val end: LocalTime) {
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
-    private var earliestStart: LocalTime? = null
-    private var latestEnd: LocalTime? = null
+    private var earliestStart: LocalTime = start
+    private var latestEnd: LocalTime = end
 
     fun getTimeSpan(): TimeSpan? {
-        val start = earliestStart ?: return null
-        val end = latestEnd ?: return null
+        val start = earliestStart
+        val end = latestEnd
         // The TimeSpan constructor already validates that the span is not overnight.
         // Since individual events cannot be overnight, the combined span for a day won't be either,
         // unless an event ends exactly at midnight (00:00), which is handled as the end of the day.
@@ -47,12 +47,12 @@ class WeekData(val dateRange: LocalDateRange) {
         val eventEnd = event.timeSpan.endExclusive
 
         // Update earliest start if this event starts earlier
-        if (earliestStart == null || eventStart.isBefore(earliestStart)) {
+        if (eventStart.isBefore(earliestStart)) {
             earliestStart = eventStart
         }
 
         // Update latest end if this event ends later
-        if (latestEnd == null || eventEnd.isAfter(latestEnd)) {
+        if (eventEnd.isAfter(latestEnd)) {
             latestEnd = eventEnd
         }
     }
@@ -66,7 +66,7 @@ class WeekData(val dateRange: LocalDateRange) {
     fun clear() {
         singleEvents.clear()
         allDays.clear()
-        earliestStart = null
-        latestEnd = null
+        earliestStart = start
+        latestEnd = end
     }
 }

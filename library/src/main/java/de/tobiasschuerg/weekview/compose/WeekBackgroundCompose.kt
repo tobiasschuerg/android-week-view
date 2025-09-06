@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,6 +41,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 /**
@@ -52,7 +54,7 @@ fun WeekBackgroundCompose(
     modifier: Modifier = Modifier,
     scalingFactor: Float = 1f,
     dateRange: LocalDateRange,
-    timeRange: TimeSpan = TimeSpan(LocalTime.of(8, 0), LocalTime.of(18, 0)),
+    timeRange: TimeSpan,
     showNowIndicator: Boolean = true,
     events: List<Event.Single> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
@@ -66,6 +68,12 @@ fun WeekBackgroundCompose(
     val today = LocalDate.now()
     val leftOffsetDp = 48.dp
     val topOffsetDp = 36.dp
+    // Calculate the earliest event start to potentially extend the visible range
+    val earliestEventStart = events.minOfOrNull { it.timeSpan.start } ?: timeRange.start
+
+    // Determine the effective start time (earlier of timeRange.start and earliest event)
+    val effectiveStartTime = if (earliestEventStart.isBefore(timeRange.start)) earliestEventStart else timeRange.start
+
     val rowHeightDp = 60.dp * scalingFactor
 
     // Calculate the latest event end.
@@ -84,9 +92,9 @@ fun WeekBackgroundCompose(
     // The effective end time is the later of the provided timeRange.endExclusive and the calculated grid end time.
     // This ensures the grid always extends to show all events.
     val effectiveEndTime = if (gridEndTime.isAfter(timeRange.endExclusive)) gridEndTime else timeRange.endExclusive
-
-    // Create a TimeSpan for the visible time range
-    val visibleTimeSpan = TimeSpan(timeRange.start, effectiveEndTime)
+    // For time labels, we'll start from the truncated hour, but for event positioning we use the actual start
+    val gridStartTime = effectiveStartTime.truncatedTo(ChronoUnit.HOURS)
+    val visibleTimeSpan = TimeSpan(gridStartTime, effectiveEndTime)
 
     val totalHours =
         visibleTimeSpan.duration.toHours().toFloat() +
@@ -96,7 +104,7 @@ fun WeekBackgroundCompose(
     // Generate time labels using the elegant TimeSpan API
     val timeLabels = visibleTimeSpan.hourlyTimes().toList()
 
-    val scrollState = androidx.compose.foundation.rememberScrollState()
+    val scrollState = rememberScrollState()
 
     var now by remember { mutableStateOf(LocalTime.now()) }
     LaunchedEffect(Unit) {
@@ -264,7 +272,7 @@ fun WeekBackgroundCompose(
                                     events = eventsForDay,
                                     scalingFactor = scalingFactor,
                                     eventConfig = eventConfig,
-                                    startTime = timeRange.start,
+                                    startTime = gridStartTime,
                                     endTime = effectiveEndTime,
                                     columnWidth = dynamicColumnWidthDp,
                                     onEventClick = onEventClick,

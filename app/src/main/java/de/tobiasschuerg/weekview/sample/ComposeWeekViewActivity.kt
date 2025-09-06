@@ -71,7 +71,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 },
             ) { paddingValues ->
                 WeekViewCompose(
-                    weekData = WeekData(weekData.dateRange).apply { events.forEach { this.add(it) } },
+                    weekData = WeekData(weekData.dateRange, weekData.start, weekData.end).apply { events.forEach { this.add(it) } },
                     eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
                     modifier =

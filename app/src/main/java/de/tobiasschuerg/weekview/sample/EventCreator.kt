@@ -14,7 +14,7 @@ import java.util.Random
 object EventCreator {
     private val random = Random()
     private val titles = listOf("Title", "Event", "Android", "Sport", "Yoga", "Shopping", "Meeting")
-    private val subTitles = listOf("City Center", "@Home", "urgent", "New York", null)
+    private val subTitles = listOf("City Center", "@Home", "Office", "New York", null)
 
     private const val MIN_EVENT_LENGTH = 30
     private const val MAX_EVENT_LENGTH = 90
@@ -26,37 +26,42 @@ object EventCreator {
     private val weekRange = LocalDateRange(startOfWeek, endOfWeek)
 
     val weekData: WeekData by lazy {
-        WeekData(weekRange).apply {
-            var startTime: LocalTime
-            for (date in weekRange) {
-                startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
-                while (startTime.isBefore(LocalTime.of(14, 0))) {
-                    val endTime = startTime.plusMinutes(MIN_EVENT_LENGTH + random.nextInt(MAX_EVENT_LENGTH - MIN_EVENT_LENGTH).toLong())
-                    this.add(createSampleEntry(date, startTime, endTime))
-                    startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
+        WeekData(
+            dateRange = weekRange,
+            start = LocalTime.of(9, 0),
+            end = LocalTime.of(15, 0),
+        )
+            .apply {
+                var startTime: LocalTime
+                for (date in weekRange) {
+                    startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
+                    while (startTime.isBefore(LocalTime.of(14, 0))) {
+                        val endTime = startTime.plusMinutes(MIN_EVENT_LENGTH + random.nextInt(MAX_EVENT_LENGTH - MIN_EVENT_LENGTH).toLong())
+                        this.add(createSampleEntry(date, startTime, endTime))
+                        startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
+                    }
                 }
-            }
-            // add some random events so that we get duplicates
-            repeat(10) {
-                this.add(createRandomEvent())
-            }
+                // add some random events so that we get duplicates
+                repeat(10) {
+                    this.add(createRandomEvent())
+                }
 
-            // add just a single event at 9:00
-            this.add(
-                Event.Single(
-                    id = random.nextLong(),
-                    date = endOfWeek,
-                    title = "Single Event",
-                    shortTitle = "SE",
-                    subTitle = "subtitle",
-                    timeSpan = TimeSpan(LocalTime.of(21, 0), LocalTime.of(23, 20)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#FF0000".toColorInt(),
-                    upperText = "upper",
-                    lowerText = "lower",
-                ),
-            )
-        }
+                // add just a single event at 9:00
+                this.add(
+                    Event.Single(
+                        id = random.nextLong(),
+                        date = endOfWeek,
+                        title = "Single Event",
+                        shortTitle = "SE",
+                        subTitle = "subtitle",
+                        timeSpan = TimeSpan(LocalTime.of(21, 0), LocalTime.of(23, 20)),
+                        textColor = Color.WHITE,
+                        backgroundColor = "#FF0000".toColorInt(),
+                        upperText = "upper",
+                        lowerText = "lower",
+                    ),
+                )
+            }
     }
 
     fun createRandomEvent(): Event.Single {
