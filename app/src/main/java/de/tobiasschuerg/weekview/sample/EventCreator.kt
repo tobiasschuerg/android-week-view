@@ -45,13 +45,15 @@ object EventCreator {
             this.add(
                 Event.Single(
                     id = random.nextLong(),
-                    date = today,
+                    date = endOfWeek,
                     title = "Single Event",
-                    shortTitle = "Single Event",
-                    subTitle = null,
+                    shortTitle = "SE",
+                    subTitle = "subtitle",
                     timeSpan = TimeSpan(LocalTime.of(21, 0), LocalTime.of(23, 20)),
                     textColor = Color.WHITE,
                     backgroundColor = "#FF0000".toColorInt(),
+                    upperText = "upper",
+                    lowerText = "lower",
                 ),
             )
         }

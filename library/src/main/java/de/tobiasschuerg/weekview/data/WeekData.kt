@@ -28,7 +28,12 @@ class WeekData(val dateRange: LocalDateRange) {
     }
 
     fun add(item: Event.Single) {
-        if (!dateRange.contains(item.date)) throw IllegalArgumentException("Event date is outside the allowed range: ${item.date}")
+        if (!dateRange.contains(
+                item.date,
+            )
+        ) {
+            throw IllegalArgumentException("Event date ${item.date} is outside the allowed range: $dateRange")
+        }
         singleEvents.add(item)
         // Update earliestStart and latestEnd
         if (earliestStart == null || item.timeSpan.start.isBefore(earliestStart)) {

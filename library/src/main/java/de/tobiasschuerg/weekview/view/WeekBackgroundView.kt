@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit
 import java.util.Locale
 import kotlin.math.roundToInt
 
+@Deprecated("Migrate to Compose")
 internal class WeekBackgroundView(context: Context) : View(context) {
     private val accentPaint: Paint by lazy {
         Paint().apply { strokeWidth = DIVIDER_WIDTH_PX.toFloat() * 2 }

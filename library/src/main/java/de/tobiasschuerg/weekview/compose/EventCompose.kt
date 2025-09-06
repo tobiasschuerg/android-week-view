@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +22,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +30,9 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
 import de.tobiasschuerg.weekview.util.EventPositionUtil
+import de.tobiasschuerg.weekview.util.TimeSpan
+import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -133,53 +139,79 @@ fun EventCompose(
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
+
+            // Upper text (if enabled and available)
+            if (eventConfig.showUpperText && event.upperText?.isNotBlank() == true) {
+                Text(
+                    text = event.upperText,
+                    color = textColor.copy(alpha = 0.8f),
+                    fontSize = 8.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            // Lower text (if enabled and available)
+            if (eventConfig.showLowerText && event.lowerText?.isNotBlank() == true) {
+                Text(
+                    text = event.lowerText,
+                    color = textColor.copy(alpha = 0.8f),
+                    fontSize = 8.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }
 
-/**
- * Composable for rendering multiple events with overlap handling.
- * Calculates overlap layouts and renders each event with proper positioning.
- */
+@Preview(showBackground = true)
 @Composable
-fun EventsWithOverlapHandling(
-    modifier: Modifier = Modifier,
-    scalingFactor: Float = 1f,
-    events: List<Event.Single>,
-    eventConfig: EventConfig,
-    startTime: LocalTime,
-    endTime: LocalTime,
-    columnWidth: Dp,
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
-) {
-    // Filter events for the current day and time range
-    val visibleEvents =
-        events.filter { event ->
-            // Check if event is within the visible time range
-            event.timeSpan.start < endTime && event.timeSpan.endExclusive > startTime
-        }
+fun PreviewEventCompose() {
+    Column {
+        Text("Preview")
 
-    if (visibleEvents.isEmpty()) return
-
-    // Calculate overlap layouts for all visible events
-    val eventLayouts = EventOverlapCalculator.calculateEventLayouts(visibleEvents)
-
-    Box(modifier = modifier) {
-        visibleEvents.forEach { event ->
-            val layout: EventOverlapCalculator.EventLayout? = eventLayouts[event.id]
-            if (layout != null) {
-                EventCompose(
-                    event = event,
-                    scalingFactor = scalingFactor,
-                    eventConfig = eventConfig,
-                    startTime = startTime,
-                    columnWidth = columnWidth,
-                    eventLayout = layout,
-                    onEventClick = onEventClick,
-                    onEventLongPress = onEventLongPress,
-                )
-            }
-        }
+        val event =
+            Event.Single(
+                id = 1L,
+                date = LocalDate.now(),
+                title = "Full Title",
+                shortTitle = "Short Title",
+                subTitle = "Subtitle",
+                timeSpan = TimeSpan.of(LocalTime.of(8, 15), Duration.ofMinutes(45)),
+                backgroundColor = 0x00FF00,
+                textColor = 0xFF0000,
+                upperText = "Upper Text",
+                lowerText = "Lower Text",
+            )
+        val eventConfig =
+            EventConfig(
+                showSubtitle = true,
+                showTimeEnd = true,
+                useShortNames = false,
+                showTimeStart = true,
+                showUpperText = true,
+                showLowerText = true,
+            )
+        val eventLayout =
+            EventOverlapCalculator.EventLayout(
+                widthFraction = 1f,
+                offsetFraction = 0f,
+                overlapGroup = 0,
+            )
+        EventCompose(
+            modifier =
+                Modifier
+                    .width(200.dp)
+                    .height(200.dp),
+            event = event,
+            scalingFactor = 1f,
+            eventConfig = eventConfig,
+            startTime = LocalTime.of(8, 0),
+            columnWidth = 120.dp,
+            eventLayout = eventLayout,
+        )
     }
 }

@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.view.util
 
 import android.view.View
 
+@Deprecated("Not needed with Compose")
 internal object ViewHelper {
     fun debugMeasureSpec(spec: Int): String {
         val mode = View.MeasureSpec.getMode(spec)

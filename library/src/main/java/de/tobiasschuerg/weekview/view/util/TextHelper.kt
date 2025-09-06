@@ -3,6 +3,7 @@ package de.tobiasschuerg.weekview.view.util
 import android.graphics.Paint
 import android.graphics.Rect
 
+@Deprecated("Android has now an auto sizing Textview")
 internal object TextHelper {
     fun fitText(
         text: String,

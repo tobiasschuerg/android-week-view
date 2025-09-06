@@ -44,6 +44,16 @@ class ComposeWeekViewActivity : ComponentActivity() {
         val weekViewConfig = WeekViewConfig(prefs)
         weekViewConfig.scalingFactor = 1f
 
+        val eventConfig =
+            EventConfig(
+                useShortNames = false,
+                showTimeStart = true,
+                showUpperText = true,
+                showSubtitle = true,
+                showLowerText = true,
+                showTimeEnd = true,
+            )
+
         setContent {
             val weekData = EventCreator.weekData
             var events by remember { mutableStateOf(weekData.getSingleEvents()) }
@@ -62,7 +72,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
             ) { paddingValues ->
                 WeekViewCompose(
                     weekData = WeekData(weekData.dateRange).apply { events.forEach { this.add(it) } },
-                    eventConfig = EventConfig(),
+                    eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
                     modifier =
                         Modifier

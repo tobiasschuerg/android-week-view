@@ -24,6 +24,7 @@ import kotlin.math.roundToInt
 
 /** this view is only constructed during runtime. */
 @SuppressLint("ViewConstructor")
+@Deprecated("Migrate to Compose")
 class EventView(
     context: Context,
     val event: Event.Single,

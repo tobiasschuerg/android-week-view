@@ -16,10 +16,8 @@ import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.DayOfWeekUtil
 import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.util.dipToPixelF
-import de.tobiasschuerg.weekview.view.util.Animation
 import java.time.DayOfWeek
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.math.max
 import kotlin.math.min
@@ -191,14 +189,6 @@ class WeekView(context: Context, attributeSet: AttributeSet) :
 
         val lv = EventView(context, event, eventConfig, weekViewConfig.scalingFactor)
         backgroundView.updateTimes(event.timeSpan)
-
-        // mark active event
-        val now = LocalTime.now()
-        if (LocalDate.now().dayOfWeek == event.date.dayOfWeek && // this day
-            event.timeSpan.start < now && event.timeSpan.endExclusive > now
-        ) {
-            lv.animation = Animation.createBlinkAnimation()
-        }
 
         lv.setOnClickListener { clickListener?.invoke(lv) }
         lv.setOnCreateContextMenuListener(contextMenuListener)
