@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.sample
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -85,6 +86,12 @@ class ComposeWeekViewActivity : ComponentActivity() {
                     onEventLongPress = { eventId ->
                         events = events.filterNot { it.id == eventId }
                         Toast.makeText(this@ComposeWeekViewActivity, "Removed event $eventId", Toast.LENGTH_SHORT).show()
+                    },
+                    onSwipeLeft = {
+                        Log.d("WeekView", "Swiped left")
+                    },
+                    onSwipeRight = {
+                        Log.d("WeekView", "Swiped right")
                     },
                 )
             }

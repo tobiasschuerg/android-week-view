@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.compose
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -30,6 +32,8 @@ fun WeekViewCompose(
     eventConfig: EventConfig = EventConfig(),
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    onSwipeLeft: (() -> Unit)? = null,
+    onSwipeRight: (() -> Unit)? = null,
 ) {
     var scale: Float by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
     val transformableState =
@@ -38,7 +42,29 @@ fun WeekViewCompose(
             weekViewConfig.scalingFactor = scale
         }
 
-    Box(modifier = modifier.transformable(state = transformableState)) {
+    var offsetX by remember { mutableFloatStateOf(0f) }
+
+    Box(
+        modifier =
+            modifier
+                .transformable(state = transformableState)
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures(
+                        onHorizontalDrag = { change, dragAmount ->
+                            change.consume()
+                            offsetX += dragAmount
+                        },
+                        onDragEnd = {
+                            val threshold = size.width / 4
+                            when {
+                                offsetX > threshold -> onSwipeRight?.invoke()
+                                offsetX < -threshold -> onSwipeLeft?.invoke()
+                            }
+                            offsetX = 0f
+                        },
+                    )
+                },
+    ) {
         // Render the background grid with integrated events
         WeekBackgroundCompose(
             scalingFactor = scale,
