@@ -34,7 +34,7 @@ data class TimeSpan(
 
             // Generate subsequent hours until we reach the end
             // Use <= to include the hour containing the end time
-            while (currentHour <= endHour) {
+            while (currentHour < endHour) {
                 currentHour++
                 if (currentHour <= endHour) {
                     yield(LocalTime.of(currentHour, 0))
