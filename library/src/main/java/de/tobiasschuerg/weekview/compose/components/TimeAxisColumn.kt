@@ -24,8 +24,9 @@ import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 
 @Composable
 internal fun TimeAxisColumn(
@@ -52,9 +53,9 @@ internal fun TimeAxisColumn(
             timeLabels.forEach { timeLabel ->
                 Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
                     Text(
-                        text = timeLabel.toString(),
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                        text = timeLabel.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)),
                         style = TextStyle(fontSize = 12.sp, color = style.colors.timeLabelTextColor),
-                        modifier = Modifier,
                     )
                 }
             }
@@ -72,10 +73,10 @@ internal fun TimeAxisColumn(
                         .offset(y = nowPositionDp - (scrollState.value / density).dp - 12.dp)
                         .width(leftOffsetDp)
                         .height(24.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = String.format(Locale.getDefault(), "%02d:%02d", now.hour, now.minute),
+                    text = now.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)),
                     style =
                         TextStyle(
                             fontSize = 12.sp,
