@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.compose.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,12 +76,20 @@ internal fun DayHeaderRow(
                     date.dayOfWeek.getDisplayName(SHORT, Locale.getDefault())
                 }
             val shortDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
-            Box(
+            Column(
                 modifier = boxModifier,
-                contentAlignment = Alignment.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "$dayName\n$shortDate",
+                    text = dayName,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = textStyle,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Text(
+                    text = shortDate,
+                    maxLines = 1,
                     style = textStyle,
                     modifier = Modifier.fillMaxWidth(),
                 )
