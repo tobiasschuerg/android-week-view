@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -68,8 +69,10 @@ internal fun TimeAxisColumn(
             Box(
                 modifier =
                     Modifier
-                        .offset(y = nowPositionDp - (scrollState.value / density).dp) // Adjust for scroll
-                        .width(leftOffsetDp),
+                        .offset(y = nowPositionDp - (scrollState.value / density).dp - 12.dp)
+                        .width(leftOffsetDp)
+                        .height(24.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = String.format(Locale.getDefault(), "%02d:%02d", now.hour, now.minute),
