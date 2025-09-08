@@ -7,7 +7,11 @@ import java.time.LocalTime
  * Container for events of a week or any date range.
  * Only events within the dateRange are accepted.
  */
-class WeekData(val dateRange: LocalDateRange, val start: LocalTime, val end: LocalTime) {
+class WeekData(
+    val dateRange: LocalDateRange,
+    val start: LocalTime,
+    val end: LocalTime,
+) {
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
     private var earliestStart: LocalTime = start

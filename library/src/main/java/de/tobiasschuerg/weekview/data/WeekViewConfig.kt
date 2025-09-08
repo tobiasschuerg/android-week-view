@@ -9,7 +9,9 @@ import androidx.core.content.edit
  *
  * Created by Tobias Schürg on 01.03.2018.
  */
-class WeekViewConfig(private val prefs: SharedPreferences) {
+class WeekViewConfig(
+    private val prefs: SharedPreferences,
+) {
     var scalingFactor: Float = prefs.getFloat(PREFS_KEY_SCALING_FACTOR, 1f)
         set(value) {
             field = value

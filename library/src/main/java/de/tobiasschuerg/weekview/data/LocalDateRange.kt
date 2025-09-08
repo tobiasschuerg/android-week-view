@@ -8,7 +8,8 @@ import java.time.LocalDate
 data class LocalDateRange(
     override val start: LocalDate,
     override val endInclusive: LocalDate,
-) : ClosedRange<LocalDate>, Iterable<LocalDate> {
+) : ClosedRange<LocalDate>,
+    Iterable<LocalDate> {
     override fun contains(value: LocalDate): Boolean = value >= start && value <= endInclusive
 
     override fun iterator(): Iterator<LocalDate> =

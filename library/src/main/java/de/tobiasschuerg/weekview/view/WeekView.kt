@@ -41,8 +41,10 @@ import kotlin.math.roundToInt
         ),
     level = DeprecationLevel.WARNING,
 )
-class WeekView(context: Context, attributeSet: AttributeSet) :
-    RelativeLayout(context, attributeSet) {
+class WeekView(
+    context: Context,
+    attributeSet: AttributeSet,
+) : RelativeLayout(context, attributeSet) {
     private val backgroundView: WeekBackgroundView
     private val overlapsWith = ArrayList<EventView>()
 

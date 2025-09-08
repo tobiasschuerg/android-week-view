@@ -205,5 +205,7 @@ class EventView(
         return LessonViewContextInfo(event)
     }
 
-    data class LessonViewContextInfo(var event: Event.Single) : ContextMenuInfo
+    data class LessonViewContextInfo(
+        var event: Event.Single,
+    ) : ContextMenuInfo
 }

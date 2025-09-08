@@ -14,6 +14,10 @@ tab_width = 4
 ktlint_standard_function-naming = disabled
 # Allow PascalCase for Composable functions
 ktlint_standard_composing-properties = disabled
+#
+ktlint_standard_chain-method-continuation = disabled
+#Rewrites a function body only containing a return or throw expression to an expression body.
+ktlint_standard_function-expression-body = disabled
 
 [*.{json,webmanifest}]
 indent_size = 2
