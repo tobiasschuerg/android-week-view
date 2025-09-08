@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,11 +41,11 @@ fun WeekViewCompose(
     onSwipeLeft: (() -> Unit)? = null,
     onSwipeRight: (() -> Unit)? = null,
 ) {
-    var scale: Float by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
+    var activeWeekConfig by remember { mutableStateOf(weekViewConfig) }
     val transformableState =
         rememberTransformableState { zoomChange, _, _ ->
-            scale = (scale * zoomChange).coerceIn(0.5f, 2f)
-            weekViewConfig.scalingFactor = scale
+            val newScalingFactor = (activeWeekConfig.scalingFactor * zoomChange).coerceIn(0.5f, 2f)
+            activeWeekConfig = activeWeekConfig.copy(scalingFactor = newScalingFactor)
         }
 
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -69,7 +70,6 @@ fun WeekViewCompose(
     ) {
         // Render the background grid with integrated events
         WeekBackgroundCompose(
-            scalingFactor = scale,
             modifier = Modifier.fillMaxSize(),
             dateRange = weekData.dateRange,
             timeRange =
@@ -81,7 +81,7 @@ fun WeekViewCompose(
             eventConfig = eventConfig,
             onEventClick = onEventClick,
             onEventLongPress = onEventLongPress,
-            weekViewConfig = weekViewConfig,
+            weekViewConfig = activeWeekConfig,
         )
 
         val dragOffset = if (animatingOffsetX != 0f) animatingOffsetX else offsetX

@@ -57,7 +57,7 @@ class WeekView(
     private val accentColor: Int
 
     private val scaleGestureDetector: ScaleGestureDetector
-    private val weekViewConfig: WeekViewConfig
+    private var weekViewConfig: WeekViewConfig
 
     var eventConfig = EventConfig()
 
@@ -68,8 +68,7 @@ class WeekView(
         val end = arr.getInt(R.styleable.WeekView_end_hour, 14)
         arr.recycle() // Do this when done.
 
-        val prefs = context.getSharedPreferences("ts_week_view", Context.MODE_PRIVATE)
-        weekViewConfig = WeekViewConfig(prefs)
+        weekViewConfig = WeekViewConfig()
 
         backgroundView = WeekBackgroundView(context)
         backgroundView.defaultTimeSpan = TimeSpan(LocalTime.of(start, 0), LocalTime.of(end, 0))
@@ -86,7 +85,7 @@ class WeekView(
             val factor = weekViewConfig.scalingFactor * detector.scaleFactor
             // Don't let the object get too small or too large.
             val scaleFactor = max(0.25f, min(factor, 3.0f))
-            weekViewConfig.scalingFactor = scaleFactor
+            weekViewConfig = weekViewConfig.copy(scalingFactor = scaleFactor)
             backgroundView.scalingFactor = scaleFactor
             Log.d(TAG, "Scale factor is $scaleFactor")
             invalidate()

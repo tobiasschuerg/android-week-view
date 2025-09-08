@@ -38,7 +38,6 @@ import java.time.LocalTime
 @Composable
 fun WeekBackgroundCompose(
     modifier: Modifier = Modifier,
-    scalingFactor: Float = 1f,
     dateRange: LocalDateRange,
     timeRange: TimeSpan,
     events: List<Event.Single> = emptyList(),
@@ -48,7 +47,7 @@ fun WeekBackgroundCompose(
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
-    val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, scalingFactor)
+    val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)
     val scrollState = rememberScrollState()
     var now by remember { mutableStateOf(LocalTime.now()) }
 
@@ -120,7 +119,7 @@ fun WeekBackgroundCompose(
                         gridHeightDp = metrics.gridHeightDp,
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,
-                        scalingFactor = scalingFactor,
+                        scalingFactor = weekViewConfig.scalingFactor,
                         style = style,
                     )
                 }
