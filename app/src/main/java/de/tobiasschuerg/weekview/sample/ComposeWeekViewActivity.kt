@@ -73,7 +73,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text("WeekView Demo") },
+                        title = { Text("WeekView Compose Demo") },
                         colors =
                             TopAppBarDefaults.topAppBarColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
