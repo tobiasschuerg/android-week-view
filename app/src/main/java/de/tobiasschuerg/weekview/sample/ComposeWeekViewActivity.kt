@@ -25,7 +25,9 @@ import androidx.compose.ui.graphics.toArgb
 import de.tobiasschuerg.weekview.compose.WeekViewCompose
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekViewConfig
+import java.time.LocalDate
 
 class ComposeWeekViewActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +52,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
 
         val eventConfig =
             EventConfig(
-                alwaysUseFullName = false,
+                alwaysUseFullName = true,
                 showTimeStart = true,
                 showUpperText = true,
                 showSubtitle = true,
@@ -59,18 +61,11 @@ class ComposeWeekViewActivity : ComponentActivity() {
             )
 
         setContent {
-            // Initialisiere die aktuelle Woche (Montag bis Freitag)
-            val today = java.time.LocalDate.now()
+            // initialize the week from monday to friday
+            val today = LocalDate.now()
             val initialStartOfWeek = today.with(java.time.DayOfWeek.MONDAY)
             val initialEndOfWeek = today.with(java.time.DayOfWeek.FRIDAY)
-            var currentDateRange by remember {
-                mutableStateOf(
-                    de.tobiasschuerg.weekview.data.LocalDateRange(
-                        initialStartOfWeek,
-                        initialEndOfWeek,
-                    ),
-                )
-            }
+            var currentDateRange by remember { mutableStateOf(LocalDateRange(initialStartOfWeek, initialEndOfWeek)) }
             var weekData by remember { mutableStateOf(EventCreator.createWeekData(currentDateRange)) }
             var events by remember { mutableStateOf(weekData.getSingleEvents()) }
 
@@ -103,19 +98,19 @@ class ComposeWeekViewActivity : ComponentActivity() {
                         Toast.makeText(this@ComposeWeekViewActivity, "Removed event $eventId", Toast.LENGTH_SHORT).show()
                     },
                     onSwipeLeft = {
-                        // Nächste Woche
+                        // Next week
                         val nextStart = currentDateRange.start.plusWeeks(1)
                         val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
-                        currentDateRange = de.tobiasschuerg.weekview.data.LocalDateRange(nextStart, nextEnd)
+                        currentDateRange = LocalDateRange(nextStart, nextEnd)
                         weekData = EventCreator.createWeekData(currentDateRange)
                         events = weekData.getSingleEvents()
                         Log.d("WeekView", "Swiped left: $currentDateRange")
                     },
                     onSwipeRight = {
-                        // Vorherige Woche
+                        // Previous week
                         val prevStart = currentDateRange.start.minusWeeks(1)
                         val prevEnd = currentDateRange.endInclusive.minusWeeks(1)
-                        currentDateRange = de.tobiasschuerg.weekview.data.LocalDateRange(prevStart, prevEnd)
+                        currentDateRange = LocalDateRange(prevStart, prevEnd)
                         weekData = EventCreator.createWeekData(currentDateRange)
                         events = weekData.getSingleEvents()
                         Log.d("WeekView", "Swiped right: $currentDateRange")

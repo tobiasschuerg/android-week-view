@@ -18,9 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.data.EventConfig
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle.*
 import java.util.Locale
 
 @Composable
@@ -31,6 +33,7 @@ internal fun DayHeaderRow(
     columnWidth: Dp,
     style: WeekViewStyle = defaultWeekViewStyle(),
     highlightCurrentDay: Boolean = true,
+    eventConfig: EventConfig = EventConfig(),
 ) {
     Row {
         Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
@@ -63,14 +66,19 @@ internal fun DayHeaderRow(
                         textAlign = TextAlign.Center,
                     )
                 }
+            val dayName =
+                if (eventConfig.alwaysUseFullName) {
+                    date.dayOfWeek.getDisplayName(FULL, Locale.getDefault())
+                } else {
+                    date.dayOfWeek.getDisplayName(SHORT, Locale.getDefault())
+                }
+            val shortDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
             Box(
                 modifier = boxModifier,
                 contentAlignment = Alignment.Center,
             ) {
-                val shortName = date.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
-                val shortDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
                 Text(
-                    text = "$shortName\n$shortDate",
+                    text = "$dayName\n$shortDate",
                     style = textStyle,
                     modifier = Modifier.fillMaxWidth(),
                 )

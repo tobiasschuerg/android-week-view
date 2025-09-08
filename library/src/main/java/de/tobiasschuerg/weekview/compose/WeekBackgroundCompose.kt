@@ -71,6 +71,7 @@ fun WeekBackgroundCompose(
                 columnWidth = dynamicColumnWidthDp,
                 style = style,
                 highlightCurrentDay = highlightCurrentDay,
+                eventConfig = eventConfig,
             )
 
             Row(modifier = Modifier.weight(1f)) {
