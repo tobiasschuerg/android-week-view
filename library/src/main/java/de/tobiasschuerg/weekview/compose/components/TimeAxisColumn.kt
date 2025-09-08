@@ -75,7 +75,7 @@ internal fun TimeAxisColumn(
                     text = String.format(Locale.getDefault(), "%02d:%02d", now.hour, now.minute),
                     style =
                         TextStyle(
-                            fontSize = 11.sp,
+                            fontSize = 12.sp,
                             color = style.colors.nowIndicator,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
@@ -83,7 +83,7 @@ internal fun TimeAxisColumn(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(end = 4.dp),
+                            .padding(end = 8.dp),
                 )
             }
         }

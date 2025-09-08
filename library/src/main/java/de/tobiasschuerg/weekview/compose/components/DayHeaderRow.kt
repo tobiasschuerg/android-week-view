@@ -22,7 +22,8 @@ import de.tobiasschuerg.weekview.data.EventConfig
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.time.format.TextStyle.*
+import java.time.format.TextStyle.FULL
+import java.time.format.TextStyle.SHORT
 import java.util.Locale
 
 @Composable

@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,7 +49,7 @@ fun WeekViewCompose(
 
     var offsetX by remember { mutableFloatStateOf(0f) }
     var animatingOffsetX by remember { mutableFloatStateOf(0f) }
-    var containerWidth by remember { mutableStateOf(0) }
+    var containerWidth by remember { mutableIntStateOf(0) }
 
     Box(
         modifier =
@@ -77,12 +77,11 @@ fun WeekViewCompose(
                     LocalTime.of(6, 0),
                     Duration.ofHours(12),
                 ),
-            showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
-            highlightCurrentDay = weekViewConfig.highlightCurrentDay,
             events = weekData.getSingleEvents(),
             eventConfig = eventConfig,
             onEventClick = onEventClick,
             onEventLongPress = onEventLongPress,
+            weekViewConfig = weekViewConfig,
         )
 
         val dragOffset = if (animatingOffsetX != 0f) animatingOffsetX else offsetX

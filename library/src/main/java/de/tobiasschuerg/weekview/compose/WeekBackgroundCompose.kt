@@ -25,6 +25,7 @@ import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
+import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
 import kotlinx.coroutines.delay
 import java.time.LocalTime
@@ -40,10 +41,9 @@ fun WeekBackgroundCompose(
     scalingFactor: Float = 1f,
     dateRange: LocalDateRange,
     timeRange: TimeSpan,
-    showNowIndicator: Boolean = true,
-    highlightCurrentDay: Boolean = true,
     events: List<Event.Single> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
+    weekViewConfig: WeekViewConfig,
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
@@ -55,7 +55,7 @@ fun WeekBackgroundCompose(
     LaunchedEffect(Unit) {
         while (true) {
             now = LocalTime.now()
-            delay(1000) // update every second
+            delay(1000)
         }
     }
 
@@ -70,7 +70,7 @@ fun WeekBackgroundCompose(
                 topOffsetDp = metrics.topOffsetDp,
                 columnWidth = dynamicColumnWidthDp,
                 style = style,
-                highlightCurrentDay = highlightCurrentDay,
+                highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
             )
 
@@ -84,7 +84,7 @@ fun WeekBackgroundCompose(
                     gridHeightDp = metrics.gridHeightDp,
                     leftOffsetDp = metrics.leftOffsetDp,
                     scrollState = scrollState,
-                    showNowIndicator = showNowIndicator,
+                    showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
                     style = style,
                 )
 
@@ -102,8 +102,9 @@ fun WeekBackgroundCompose(
                         rowHeightDp = metrics.rowHeightDp,
                         totalHours = metrics.totalHours,
                         days = metrics.days,
-                        showNowIndicator = showNowIndicator,
-                        highlightCurrentDay = highlightCurrentDay,
+                        showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
+                        highlightCurrentDay = weekViewConfig.highlightCurrentDay,
+                        currentTimeLineOnlyToday = weekViewConfig.currentTimeLineOnlyToday,
                         now = now,
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,
