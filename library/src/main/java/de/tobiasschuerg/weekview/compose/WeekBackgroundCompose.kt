@@ -41,6 +41,7 @@ fun WeekBackgroundCompose(
     dateRange: LocalDateRange,
     timeRange: TimeSpan,
     showNowIndicator: Boolean = true,
+    highlightCurrentDay: Boolean = true,
     events: List<Event.Single> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
     onEventClick: ((eventId: Long) -> Unit)? = null,
@@ -69,6 +70,7 @@ fun WeekBackgroundCompose(
                 topOffsetDp = metrics.topOffsetDp,
                 columnWidth = dynamicColumnWidthDp,
                 style = style,
+                highlightCurrentDay = highlightCurrentDay,
             )
 
             Row(modifier = Modifier.weight(1f)) {
@@ -99,8 +101,8 @@ fun WeekBackgroundCompose(
                         rowHeightDp = metrics.rowHeightDp,
                         totalHours = metrics.totalHours,
                         days = metrics.days,
-                        today = metrics.today,
                         showNowIndicator = showNowIndicator,
+                        highlightCurrentDay = highlightCurrentDay,
                         now = now,
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,

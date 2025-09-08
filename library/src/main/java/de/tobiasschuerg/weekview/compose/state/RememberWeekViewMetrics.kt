@@ -6,7 +6,6 @@ import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.util.TimeSpan
-import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -20,7 +19,6 @@ internal fun rememberWeekViewMetrics(
     return remember(dateRange, timeRange, events, scalingFactor) {
         val days = dateRange.toList()
         val columnCount = days.size
-        val today = LocalDate.now()
         val leftOffsetDp = 48.dp
         val topOffsetDp = 36.dp
 
@@ -48,7 +46,6 @@ internal fun rememberWeekViewMetrics(
         WeekViewMetrics(
             days = days,
             columnCount = columnCount,
-            today = today,
             leftOffsetDp = leftOffsetDp,
             topOffsetDp = topOffsetDp,
             effectiveStartTime = effectiveStartTime,

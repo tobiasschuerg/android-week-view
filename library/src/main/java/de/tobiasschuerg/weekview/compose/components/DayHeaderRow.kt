@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.compose.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,28 +30,48 @@ internal fun DayHeaderRow(
     topOffsetDp: Dp,
     columnWidth: Dp,
     style: WeekViewStyle = defaultWeekViewStyle(),
+    highlightCurrentDay: Boolean = true,
 ) {
     Row {
-        Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp)) // Spacer for time column
+        Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
         days.forEach { date ->
-            Box(
-                modifier =
+            val isToday = date == LocalDate.now()
+            val boxModifier =
+                if (highlightCurrentDay && isToday) {
                     Modifier
                         .size(columnWidth, topOffsetDp)
-                        .padding(vertical = 2.dp),
+                        .background(style.colors.currentDayBackground)
+                        .padding(vertical = 2.dp)
+                } else {
+                    Modifier
+                        .size(columnWidth, topOffsetDp)
+                        .padding(vertical = 2.dp)
+                }
+            val textStyle =
+                if (highlightCurrentDay && isToday) {
+                    TextStyle(
+                        fontSize = 13.sp,
+                        color = style.colors.currentDayText,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                } else {
+                    TextStyle(
+                        fontSize = 13.sp,
+                        color = style.colors.dayHeaderText,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            Box(
+                modifier = boxModifier,
                 contentAlignment = Alignment.Center,
             ) {
                 val shortName = date.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
                 val shortDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
                 Text(
                     text = "$shortName\n$shortDate",
-                    style =
-                        TextStyle(
-                            fontSize = 13.sp,
-                            color = style.colors.dayHeaderText,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
-                        ),
+                    style = textStyle,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

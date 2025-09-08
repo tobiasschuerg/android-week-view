@@ -10,7 +10,6 @@ import java.time.LocalTime
 internal data class WeekViewMetrics(
     val days: List<LocalDate>,
     val columnCount: Int,
-    val today: LocalDate,
     val leftOffsetDp: Dp,
     val topOffsetDp: Dp,
     val effectiveStartTime: LocalTime,

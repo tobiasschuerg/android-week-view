@@ -41,8 +41,12 @@ class ComposeWeekViewActivity : ComponentActivity() {
         )
 
         val prefs = getSharedPreferences("weekview_prefs", MODE_PRIVATE)
-        val weekViewConfig = WeekViewConfig(prefs)
-        weekViewConfig.scalingFactor = 1f
+        val weekViewConfig =
+            WeekViewConfig(prefs).apply {
+                scalingFactor = 1f
+                showCurrentTimeIndicator = true
+                highlightCurrentDay = true
+            }
 
         val eventConfig =
             EventConfig(

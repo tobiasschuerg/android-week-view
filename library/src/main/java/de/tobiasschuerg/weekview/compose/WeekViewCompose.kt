@@ -77,6 +77,8 @@ fun WeekViewCompose(
                     LocalTime.of(6, 0),
                     Duration.ofHours(12),
                 ),
+            showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
+            highlightCurrentDay = weekViewConfig.highlightCurrentDay,
             events = weekData.getSingleEvents(),
             eventConfig = eventConfig,
             onEventClick = onEventClick,
