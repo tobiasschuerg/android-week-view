@@ -2,10 +2,10 @@ package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
@@ -71,7 +73,6 @@ fun EventCompose(
     val backgroundColor = Color(event.backgroundColor)
     val textColor = Color(event.textColor)
     val cornerRadius = 4.dp
-    val eventPadding = 4.dp
 
     // Determine which title to show based on config and orientation
     val configuration = LocalConfiguration.current
@@ -101,13 +102,15 @@ fun EventCompose(
                         onLongPress = { onEventLongPress?.invoke(event.id) },
                     )
                 }
-                .padding(eventPadding),
+                .padding(start = 4.dp, top = 4.dp, end = 4.dp),
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .testTag("EventViewInner_${event.id}"),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
         ) {
             // Main title
             Text(
@@ -117,7 +120,6 @@ fun EventCompose(
                 fontWeight = FontWeight.Medium,
                 maxLines = if (eventConfig.showSubtitle || eventConfig.showTimeEnd) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth(),
             )
 
             // Subtitle (if enabled and available)
@@ -128,7 +130,6 @@ fun EventCompose(
                     fontSize = 10.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -143,7 +144,6 @@ fun EventCompose(
                     fontSize = 9.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -155,7 +155,6 @@ fun EventCompose(
                     fontSize = 8.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -167,7 +166,6 @@ fun EventCompose(
                     fontSize = 8.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -177,7 +175,11 @@ fun EventCompose(
 @Preview(showBackground = true)
 @Composable
 fun PreviewEventCompose() {
-    Column {
+    Column(
+        Modifier
+            .height(400.dp)
+            .width(400.dp),
+    ) {
         Text("Preview")
 
         val event =
@@ -188,8 +190,8 @@ fun PreviewEventCompose() {
                 shortTitle = "Short Title",
                 subTitle = "Subtitle",
                 timeSpan = TimeSpan.of(LocalTime.of(8, 15), Duration.ofMinutes(45)),
-                backgroundColor = 0x00FF00,
-                textColor = 0xFF0000,
+                backgroundColor = "#90323D".toColorInt(),
+                textColor = "#dddddd".toColorInt(),
                 upperText = "Upper Text",
                 lowerText = "Lower Text",
             )
@@ -211,8 +213,8 @@ fun PreviewEventCompose() {
         EventCompose(
             modifier =
                 Modifier
-                    .width(200.dp)
-                    .height(200.dp),
+                    .width(150.dp)
+                    .height(50.dp),
             event = event,
             scalingFactor = 1f,
             eventConfig = eventConfig,
