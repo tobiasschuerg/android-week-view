@@ -25,49 +25,51 @@ object EventCreator {
     private val endOfWeek = today.with(DayOfWeek.FRIDAY)
     private val weekRange = LocalDateRange(startOfWeek, endOfWeek)
 
-    val weekData: WeekData by lazy {
-        WeekData(
-            dateRange = weekRange,
-            start = LocalTime.of(9, 0),
-            end = LocalTime.of(15, 0),
-        )
-            .apply {
-                var startTime: LocalTime
-                for (date in weekRange) {
-                    startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
-                    while (startTime.isBefore(LocalTime.of(14, 0))) {
-                        val endTime = startTime.plusMinutes(MIN_EVENT_LENGTH + random.nextInt(MAX_EVENT_LENGTH - MIN_EVENT_LENGTH).toLong())
-                        this.add(createSampleEntry(date, startTime, endTime))
-                        startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
-                    }
-                }
-                // add some random events so that we get duplicates
-                repeat(10) {
-                    this.add(createRandomEvent())
-                }
-
-                // add just a single event at 9:00
-                this.add(
-                    Event.Single(
-                        id = random.nextLong(),
-                        date = endOfWeek,
-                        title = "Single Event",
-                        shortTitle = "SE",
-                        subTitle = "subtitle",
-                        timeSpan = TimeSpan(LocalTime.of(21, 0), LocalTime.of(23, 20)),
-                        textColor = Color.WHITE,
-                        backgroundColor = "#FF0000".toColorInt(),
-                        upperText = "upper",
-                        lowerText = "lower",
-                    ),
-                )
+    // Entferne die weekData Property und erstelle stattdessen eine Funktion
+    fun createWeekData(dateRange: LocalDateRange): WeekData {
+        val random = Random()
+        val weekData =
+            WeekData(
+                dateRange = dateRange,
+                start = LocalTime.of(9, 0),
+                end = LocalTime.of(15, 0),
+            )
+        var startTime: LocalTime
+        for (date in dateRange) {
+            startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
+            while (startTime.isBefore(LocalTime.of(14, 0))) {
+                val endTime = startTime.plusMinutes(MIN_EVENT_LENGTH + random.nextInt(MAX_EVENT_LENGTH - MIN_EVENT_LENGTH).toLong())
+                weekData.add(createSampleEntry(date, startTime, endTime))
+                startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
             }
+        }
+        repeat(10) {
+            weekData.add(createRandomEvent(dateRange))
+        }
+        // add just a single event at 9:00
+        val endOfWeek = dateRange.endInclusive
+        weekData.add(
+            Event.Single(
+                id = random.nextLong(),
+                date = endOfWeek,
+                title = "Single Event",
+                shortTitle = "SE",
+                subTitle = "subtitle",
+                timeSpan = TimeSpan(LocalTime.of(21, 0), LocalTime.of(23, 20)),
+                textColor = Color.WHITE,
+                backgroundColor = "#FF0000".toColorInt(),
+                upperText = "upper",
+                lowerText = "lower",
+            ),
+        )
+        return weekData
     }
 
-    fun createRandomEvent(): Event.Single {
+    fun createRandomEvent(dateRange: LocalDateRange): Event.Single {
+        val random = Random()
         val startTime = LocalTime.of(8 + random.nextInt(8), random.nextInt(60))
         val endTime = startTime.plusMinutes((30 + random.nextInt(60)).toLong())
-        val date = weekRange.toList().random()
+        val date = dateRange.toList().random()
         return createSampleEntry(date, startTime, endTime)
     }
 

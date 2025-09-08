@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.util.TimeSpan
 import de.tobiasschuerg.weekview.view.EventView
 import de.tobiasschuerg.weekview.view.WeekView
@@ -23,6 +24,7 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 class ClassicWeekViewActivity : AppCompatActivity() {
+    private val dateRange = LocalDateRange(LocalDate.now(), LocalDate.now().plusDays(7))
     private val weekView: WeekView by lazy { findViewById(R.id.week_view) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +45,7 @@ class ClassicWeekViewActivity : AppCompatActivity() {
         val config = EventConfig(showSubtitle = false, showTimeEnd = false)
         weekView.eventConfig = config
         weekView.setShowNowIndicator(true)
-        weekView.addEvents(EventCreator.weekData)
+        weekView.addEvents(EventCreator.createWeekData(dateRange))
         val nowEvent =
             Event.Single(
                 id = 1337,
@@ -73,6 +75,7 @@ class ClassicWeekViewActivity : AppCompatActivity() {
                         v.performClick()
                     }
                 }
+
                 2 -> {
                     Log.d("Zoom", "2-pointer touch")
                     v.parent.requestDisallowInterceptTouchEvent(true)
@@ -105,8 +108,9 @@ class ClassicWeekViewActivity : AppCompatActivity() {
         when (item.title) {
             "Add" -> {
                 Log.i(TAG, "add option clicked")
-                weekView.addEvent(EventCreator.createRandomEvent())
+                weekView.addEvent(EventCreator.createRandomEvent(dateRange))
             }
+
             "Clear" -> {
                 Log.i(TAG, "clear option clicked")
                 weekView.removeAllEvents()
