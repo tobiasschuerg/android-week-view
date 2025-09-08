@@ -75,6 +75,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     // Core library desugaring for java.time API
+    // This is needed for Android API levels below 26 (Android O)
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.5"
 
     // Test dependencies
