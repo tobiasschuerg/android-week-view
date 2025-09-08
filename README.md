@@ -11,7 +11,7 @@ Initially created for [Schedule Deluxe](https://play.google.com/store/apps/detai
 
 |                                                                 View-based Implementation                                                                  | Compose Implementation |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------:|
-| <img alt="Legacy View-based WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400"> | <img alt="Modern Compose WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/Screenshot_20250901_212606.png" height="400"> |
+| <img alt="Legacy View-based WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/device-2018-02-24-121341.png" height="400"> | <img alt="Modern Compose WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/Screenshot_20250908_205312.png" height="400"> |
 |                                                                     ⚠️ **Deprecated**                                                                      | ✅ **Recommended** |
 
 ## 🏗️ Implementation Options
