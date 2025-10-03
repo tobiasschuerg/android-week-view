@@ -45,6 +45,19 @@ Before making any changes:
 - Keep components in separate files (avoid large files)
 - Follow existing patterns for event handling and configuration
 
+**Commit Message Standards**:
+Use conventional commits format for all commits:
+```
+<type>: <summary>
+
+Examples:
+feat: add swipe gesture support to Compose WeekView
+fix: resolve event overlap calculation in legacy view
+docs: update README with new Compose API examples
+refactor: extract time calculation utilities
+test: add unit tests for event positioning
+```
+
 ### 3. Making Changes
 
 **Before Coding**:
