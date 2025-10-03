@@ -9,10 +9,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
+import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -48,11 +50,9 @@ class WeekBackgroundComposeEventDisplayTest {
                         EventConfig(
                             showSubtitle = true,
                             showTimeEnd = false,
-                            useShortNames = false,
                         ),
-                    startTime = LocalTime.of(8, 0),
-                    endTime = LocalTime.of(12, 0),
-                    scalingFactor = 2.0f,
+                    timeRange = event.timeSpan,
+                    weekViewConfig = WeekViewConfig(),
                 )
             }
         }
@@ -94,11 +94,9 @@ class WeekBackgroundComposeEventDisplayTest {
                         EventConfig(
                             showSubtitle = false,
                             showTimeEnd = false,
-                            useShortNames = false,
                         ),
-                    startTime = LocalTime.of(9, 0),
-                    endTime = LocalTime.of(13, 0),
-                    scalingFactor = 2.0f,
+                    timeRange = event.timeSpan,
+                    weekViewConfig = WeekViewConfig(),
                 )
             }
         }
@@ -150,11 +148,9 @@ class WeekBackgroundComposeEventDisplayTest {
                         EventConfig(
                             showSubtitle = false,
                             showTimeEnd = false,
-                            useShortNames = false,
                         ),
-                    startTime = LocalTime.of(8, 0),
-                    endTime = LocalTime.of(14, 0),
-                    scalingFactor = 2.0f,
+                    timeRange = TimeSpan.of(LocalTime.of(10, 0), Duration.ofHours(1)),
+                    weekViewConfig = WeekViewConfig(),
                 )
             }
         }
@@ -195,11 +191,9 @@ class WeekBackgroundComposeEventDisplayTest {
                         EventConfig(
                             showSubtitle = false,
                             showTimeEnd = false,
-                            useShortNames = true,
                         ),
-                    startTime = LocalTime.of(9, 0),
-                    endTime = LocalTime.of(13, 0),
-                    scalingFactor = 2.0f,
+                    timeRange = event.timeSpan,
+                    weekViewConfig = WeekViewConfig(),
                 )
             }
         }
@@ -236,9 +230,8 @@ class WeekBackgroundComposeEventDisplayTest {
                     dateRange = dateRange,
                     events = listOf(event),
                     eventConfig = EventConfig(),
-                    startTime = LocalTime.of(8, 0),
-                    endTime = LocalTime.of(13, 0),
-                    scalingFactor = 3.0f,
+                    timeRange = event.timeSpan,
+                    weekViewConfig = WeekViewConfig(),
                 )
             }
         }
