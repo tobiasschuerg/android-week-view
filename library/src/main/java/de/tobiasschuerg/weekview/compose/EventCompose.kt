@@ -34,6 +34,7 @@ import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
 import de.tobiasschuerg.weekview.util.EventPositionUtil
 import de.tobiasschuerg.weekview.util.TimeSpan
+import de.tobiasschuerg.weekview.util.toLocalString
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -135,8 +136,7 @@ fun EventCompose(
 
             // Time information (if enabled)
             if (eventConfig.showTimeEnd) {
-                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-                val timeText = "${event.timeSpan.start.format(timeFormatter)} - ${event.timeSpan.endExclusive.format(timeFormatter)}"
+                val timeText = "${event.timeSpan.start.toLocalString()} - ${event.timeSpan.endExclusive.toLocalString()}"
 
                 Text(
                     text = timeText,
