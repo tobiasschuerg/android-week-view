@@ -38,7 +38,6 @@ import de.tobiasschuerg.weekview.util.toLocalString
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 /**
  * Composable that renders individual events on the week view grid.
