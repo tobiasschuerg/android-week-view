@@ -7,15 +7,15 @@ import java.time.LocalTime
  * Container for events of a week or any date range.
  * Only events within the dateRange are accepted.
  */
-class WeekData(
+data class WeekData(
     val dateRange: LocalDateRange,
     val start: LocalTime,
     val end: LocalTime,
+    private val singleEvents: List<Event.Single> = emptyList(),
+    private val allDays: List<Event.AllDay> = emptyList(),
+    private val earliestStart: LocalTime = start,
+    private val latestEnd: LocalTime = end,
 ) {
-    private val singleEvents: MutableList<Event.Single> = mutableListOf()
-    private val allDays: MutableList<Event.AllDay> = mutableListOf()
-    private var earliestStart: LocalTime = start
-    private var latestEnd: LocalTime = end
 
     fun getTimeSpan(): TimeSpan? {
         val start = earliestStart
@@ -26,51 +26,39 @@ class WeekData(
         return TimeSpan(start, end)
     }
 
-    fun add(item: Event.AllDay) {
+    fun add(item: Event.AllDay): WeekData {
         if (!dateRange.contains(item.date)) throw IllegalArgumentException("Event date is outside the allowed range: ${item.date}")
-        allDays.add(item)
+        return copy(allDays = allDays + item)
     }
 
-    fun add(item: Event.Single) {
+    fun add(item: Event.Single): WeekData {
         if (!dateRange.contains(item.date)) {
             throw IllegalArgumentException("Event date ${item.date} is outside the allowed range: $dateRange")
         }
-        singleEvents.add(item)
+        
+        // Calculate new time bounds
+        val eventStart = item.timeSpan.start
+        val eventEnd = item.timeSpan.endExclusive
+        val newEarliestStart = if (eventStart.isBefore(earliestStart)) eventStart else earliestStart
+        val newLatestEnd = if (eventEnd.isAfter(latestEnd)) eventEnd else latestEnd
 
-        // Automatically adjust TimeSpan to accommodate the new event
-        updateTimeSpanForEvent(item)
+        return copy(
+            singleEvents = singleEvents + item,
+            earliestStart = newEarliestStart,
+            latestEnd = newLatestEnd
+        )
     }
 
-    /**
-     * Updates the earliest start and latest end times to accommodate the given event.
-     * This ensures that the TimeSpan automatically expands when events are added
-     * that fall outside the current time range.
-     */
-    private fun updateTimeSpanForEvent(event: Event.Single) {
-        val eventStart = event.timeSpan.start
-        val eventEnd = event.timeSpan.endExclusive
+    fun getSingleEvents(): List<Event.Single> = singleEvents
 
-        // Update earliest start if this event starts earlier
-        if (eventStart.isBefore(earliestStart)) {
-            earliestStart = eventStart
-        }
-
-        // Update latest end if this event ends later
-        if (eventEnd.isAfter(latestEnd)) {
-            latestEnd = eventEnd
-        }
-    }
-
-    fun getSingleEvents(): List<Event.Single> = singleEvents.toList()
-
-    fun getAllDayEvents(): List<Event.AllDay> = allDays.toList()
+    fun getAllDayEvents(): List<Event.AllDay> = allDays
 
     fun isEmpty() = singleEvents.isEmpty() && allDays.isEmpty()
 
-    fun clear() {
-        singleEvents.clear()
-        allDays.clear()
-        earliestStart = start
+    fun clear(): WeekData = copy(
+        singleEvents = emptyList(),
+        allDays = emptyList(),
+        earliestStart = start,
         latestEnd = end
-    }
+    )
 }

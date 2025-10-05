@@ -25,10 +25,10 @@ object EventCreator {
     private val endOfWeek = today.with(DayOfWeek.FRIDAY)
     private val weekRange = LocalDateRange(startOfWeek, endOfWeek)
 
-    // Entferne die weekData Property und erstelle stattdessen eine Funktion
+    // Create weekData using immutable functional approach
     fun createWeekData(dateRange: LocalDateRange): WeekData {
         val random = Random()
-        val weekData =
+        var weekData =
             WeekData(
                 dateRange = dateRange,
                 start = LocalTime.of(9, 0),
@@ -39,16 +39,16 @@ object EventCreator {
             startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
             while (startTime.isBefore(LocalTime.of(14, 0))) {
                 val endTime = startTime.plusMinutes(MIN_EVENT_LENGTH + random.nextInt(MAX_EVENT_LENGTH - MIN_EVENT_LENGTH).toLong())
-                weekData.add(createSampleEntry(date, startTime, endTime))
+                weekData = weekData.add(createSampleEntry(date, startTime, endTime))
                 startTime = endTime.plusMinutes(5 + random.nextInt(95).toLong())
             }
         }
         repeat(10) {
-            weekData.add(createRandomEvent(dateRange))
+            weekData = weekData.add(createRandomEvent(dateRange))
         }
         // add just a single event at 9:00
         val endOfWeek = dateRange.endInclusive
-        weekData.add(
+        weekData = weekData.add(
             Event.Single(
                 id = random.nextLong(),
                 date = endOfWeek,
