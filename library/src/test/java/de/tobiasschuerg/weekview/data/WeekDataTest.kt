@@ -4,23 +4,22 @@ import de.tobiasschuerg.weekview.util.TimeSpan
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
+
 import org.junit.Test
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 
 class WeekDataTest {
-    private lateinit var weekData: WeekData
     private val dateRange = LocalDateRange(LocalDate.of(2024, 9, 1), LocalDate.of(2024, 9, 7))
-
-    @Before
-    fun setUp() {
-        weekData = WeekData(dateRange, start = LocalTime.of(9, 0), end = LocalTime.of(9, 0))
+    
+    private fun createWeekData(): WeekData {
+        return WeekData(dateRange, start = LocalTime.of(9, 0), end = LocalTime.of(9, 0))
     }
 
     @Test
     fun `add single event updates time span`() {
+        val weekData = createWeekData()
         val event =
             Event.Single(
                 id = 1L,
@@ -31,8 +30,8 @@ class WeekDataTest {
                 backgroundColor = 0,
                 textColor = 0,
             )
-        weekData.add(event)
-        val timeSpan = weekData.getTimeSpan()
+        val updatedWeekData = weekData.add(event)
+        val timeSpan = updatedWeekData.getTimeSpan()
         assertNotNull(timeSpan)
         assertEquals(LocalTime.of(8, 0), timeSpan?.start)
         assertEquals(LocalTime.of(10, 0), timeSpan?.endExclusive)
@@ -40,6 +39,7 @@ class WeekDataTest {
 
     @Test
     fun `add all day event is stored correctly`() {
+        val weekData = createWeekData()
         val event =
             Event.AllDay(
                 id = 2L,
@@ -47,12 +47,13 @@ class WeekDataTest {
                 title = "AllDay",
                 shortTitle = "AD",
             )
-        weekData.add(event)
-        assertEquals(1, weekData.getAllDayEvents().size)
+        val updatedWeekData = weekData.add(event)
+        assertEquals(1, updatedWeekData.getAllDayEvents().size)
     }
 
     @Test
     fun `clear removes all events`() {
+        val weekData = createWeekData()
         val event =
             Event.Single(
                 id = 3L,
@@ -63,13 +64,14 @@ class WeekDataTest {
                 backgroundColor = 0,
                 textColor = 0,
             )
-        weekData.add(event)
-        weekData.clear()
-        assertTrue(weekData.isEmpty())
+        val weekDataWithEvent = weekData.add(event)
+        val clearedWeekData = weekDataWithEvent.clear()
+        assertTrue(clearedWeekData.isEmpty())
     }
 
     @Test
     fun `add event outside date range throws exception`() {
+        val weekData = createWeekData()
         val event =
             Event.Single(
                 id = 4L,
