@@ -36,16 +36,19 @@ fun WeekViewCompose(
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
     eventConfig: EventConfig = EventConfig(),
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
-    onSwipeLeft: (() -> Unit)? = null,
-    onSwipeRight: (() -> Unit)? = null,
+    actions: WeekViewActions = WeekViewActions(),
 ) {
     var activeWeekConfig by remember { mutableStateOf(weekViewConfig) }
     val transformableState =
         rememberTransformableState { zoomChange, _, _ ->
-            val newScalingFactor = (activeWeekConfig.scalingFactor * zoomChange).coerceIn(0.5f, 2f)
-            activeWeekConfig = activeWeekConfig.copy(scalingFactor = newScalingFactor)
+            val limits = activeWeekConfig
+            val newScalingFactor =
+                (activeWeekConfig.scalingFactor * zoomChange)
+                    .coerceIn(limits.minScalingFactor, limits.maxScalingFactor)
+            if (newScalingFactor != activeWeekConfig.scalingFactor) {
+                activeWeekConfig = activeWeekConfig.copy(scalingFactor = newScalingFactor)
+                actions.onScalingFactorChange?.invoke(newScalingFactor)
+            }
         }
 
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -57,8 +60,8 @@ fun WeekViewCompose(
             modifier
                 .transformable(state = transformableState)
                 .weekViewGestures(
-                    onSwipeRight = { onSwipeRight?.invoke() },
-                    onSwipeLeft = { onSwipeLeft?.invoke() },
+                    onSwipeRight = { actions.onSwipeRight?.invoke() },
+                    onSwipeLeft = { actions.onSwipeLeft?.invoke() },
                     getOffsetX = { offsetX },
                     setOffsetX = { newOffset -> offsetX = newOffset },
                     getAnimatingOffsetX = { animatingOffsetX },
@@ -79,8 +82,8 @@ fun WeekViewCompose(
                 ),
             events = weekData.getSingleEvents(),
             eventConfig = eventConfig,
-            onEventClick = onEventClick,
-            onEventLongPress = onEventLongPress,
+            onEventClick = actions.onEventClick,
+            onEventLongPress = actions.onEventLongPress,
             weekViewConfig = activeWeekConfig,
         )
 

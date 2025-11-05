@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import de.tobiasschuerg.weekview.compose.WeekViewActions
 import de.tobiasschuerg.weekview.compose.WeekViewCompose
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -89,32 +90,38 @@ class ComposeWeekViewActivity : ComponentActivity() {
                         Modifier
                             .padding(paddingValues)
                             .fillMaxSize(),
-                    onEventClick = { eventId ->
-                        val event: Event.Single = events.single { it.id == eventId }
-                        Toast.makeText(this@ComposeWeekViewActivity, "Clicked event ${event.title}", Toast.LENGTH_SHORT).show()
-                    },
-                    onEventLongPress = { eventId ->
-                        events = events.filterNot { it.id == eventId }
-                        Toast.makeText(this@ComposeWeekViewActivity, "Removed event $eventId", Toast.LENGTH_SHORT).show()
-                    },
-                    onSwipeLeft = {
-                        // Next week
-                        val nextStart = currentDateRange.start.plusWeeks(1)
-                        val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
-                        currentDateRange = LocalDateRange(nextStart, nextEnd)
-                        weekData = EventCreator.createWeekData(currentDateRange)
-                        events = weekData.getSingleEvents()
-                        Log.d("WeekView", "Swiped left: $currentDateRange")
-                    },
-                    onSwipeRight = {
-                        // Previous week
-                        val prevStart = currentDateRange.start.minusWeeks(1)
-                        val prevEnd = currentDateRange.endInclusive.minusWeeks(1)
-                        currentDateRange = LocalDateRange(prevStart, prevEnd)
-                        weekData = EventCreator.createWeekData(currentDateRange)
-                        events = weekData.getSingleEvents()
-                        Log.d("WeekView", "Swiped right: $currentDateRange")
-                    },
+                    actions =
+                        WeekViewActions(
+                            onEventClick = { eventId ->
+                                val event: Event.Single = events.single { it.id == eventId }
+                                Toast.makeText(this@ComposeWeekViewActivity, "Clicked event ${event.title}", Toast.LENGTH_SHORT).show()
+                            },
+                            onEventLongPress = { eventId ->
+                                events = events.filterNot { it.id == eventId }
+                                Toast.makeText(this@ComposeWeekViewActivity, "Removed event $eventId", Toast.LENGTH_SHORT).show()
+                            },
+                            onSwipeLeft = {
+                                // Next week
+                                val nextStart = currentDateRange.start.plusWeeks(1)
+                                val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
+                                currentDateRange = LocalDateRange(nextStart, nextEnd)
+                                weekData = EventCreator.createWeekData(currentDateRange)
+                                events = weekData.getSingleEvents()
+                                Log.d("WeekView", "Swiped left: $currentDateRange")
+                            },
+                            onSwipeRight = {
+                                // Previous week
+                                val prevStart = currentDateRange.start.minusWeeks(1)
+                                val prevEnd = currentDateRange.endInclusive.minusWeeks(1)
+                                currentDateRange = LocalDateRange(prevStart, prevEnd)
+                                weekData = EventCreator.createWeekData(currentDateRange)
+                                events = weekData.getSingleEvents()
+                                Log.d("WeekView", "Swiped right: $currentDateRange")
+                            },
+                            onScalingFactorChange = {
+                                Log.d("WeekView", "Scaling factor changed: $it")
+                            },
+                        ),
                 )
             }
         }
