@@ -14,7 +14,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId "de.tobiasschuerg.weekview.sample"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 36
         versionCode 1
         versionName "${lib_version}"
