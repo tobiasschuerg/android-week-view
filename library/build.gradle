@@ -16,7 +16,6 @@ android {
     defaultConfig {
         minSdkVersion 21
         compileSdk = 36
-        targetSdkVersion 36
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,7 +34,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -48,6 +47,12 @@ android {
     }
 
     namespace 'de.tobiasschuerg.weekview'
+    lint {
+        targetSdk 36
+    }
+    testOptions {
+        targetSdk 36
+    }
 }
 
 dependencies {
