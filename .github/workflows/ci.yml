@@ -6,14 +6,13 @@ on:
       - develop
   pull_request_target:
 
-permissions:
-  checks: write
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -42,6 +41,8 @@ jobs:
   build:
     needs: quality-checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -64,6 +65,8 @@ jobs:
   dependabot_info:
     if: ${{ github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Comment on PR
         uses: actions/github-script@v8
