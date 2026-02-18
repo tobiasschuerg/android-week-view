@@ -16,18 +16,21 @@ internal fun rememberWeekViewMetrics(
     events: List<Event.Single>,
     scalingFactor: Float,
 ): WeekViewMetrics {
-    return remember(dateRange, timeRange, events, scalingFactor) {
+    // Derive stable keys from the event list so remember uses value equality (LocalTime)
+    // instead of list reference equality which changes every recomposition
+    val earliestEventStart = events.minOfOrNull { it.timeSpan.start } ?: timeRange.start
+    val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: timeRange.endExclusive
+
+    return remember(dateRange, timeRange, earliestEventStart, latestEventEnd, scalingFactor) {
         val days = dateRange.toList()
         val columnCount = days.size
         val leftOffsetDp = 48.dp
         val topOffsetDp = 36.dp
 
-        val earliestEventStart = events.minOfOrNull { it.timeSpan.start } ?: timeRange.start
         val effectiveStartTime = if (earliestEventStart.isBefore(timeRange.start)) earliestEventStart else timeRange.start
 
         val rowHeightDp = 60.dp * scalingFactor
 
-        val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: timeRange.endExclusive
         val gridEndTime =
             if (latestEventEnd.hour < 23) {
                 LocalTime.of(latestEventEnd.hour + 1, 0)

@@ -37,12 +37,17 @@ internal object DayOfWeekUtil {
 
         when (firstDayOfTheWeek) {
             DayOfWeek.MONDAY -> {
-                // mo: 0, fr: 4, su: 6
-                val column = day.value
-                return if (!saturdayEnabled && day == DayOfWeek.SUNDAY) {
-                    5
-                } else {
-                    column - 1
+                if (day == DayOfWeek.SATURDAY && !saturdayEnabled) {
+                    throw IllegalStateException("Passed Saturday although it is disabled")
+                }
+                if (day == DayOfWeek.SUNDAY && !sundayEnabled) {
+                    throw IllegalStateException("Passed Sunday although it is disabled")
+                }
+                // mo: 0, tu: 1, ... fr: 4, sa: 5, su: 6
+                val column = day.value - 1
+                return when {
+                    !saturdayEnabled && day == DayOfWeek.SUNDAY -> 5
+                    else -> column
                 }
             }
 
@@ -82,16 +87,28 @@ internal object DayOfWeekUtil {
             }
 
             DayOfWeek.SUNDAY -> {
+                if (day == DayOfWeek.SATURDAY && !saturdayEnabled) {
+                    throw IllegalStateException("Passed Saturday although it is disabled")
+                }
+                if (day == DayOfWeek.SUNDAY && !sundayEnabled) {
+                    throw IllegalStateException("Passed Sunday although it is disabled")
+                }
                 return if (sundayEnabled) {
-                    // su: 0, mo: 1, fr: 5, sa: 6
-                    if (day == DayOfWeek.SUNDAY) {
-                        0
+                    if (saturdayEnabled) {
+                        // su: 0, mo: 1, ... fr: 5, sa: 6
+                        if (day == DayOfWeek.SUNDAY) 0 else day.value
                     } else {
-                        day.value
+                        // su: 0, mo: 1, ... fr: 5 (saturday disabled)
+                        if (day == DayOfWeek.SUNDAY) 0 else day.value
                     }
                 } else {
-                    // mo: 0, fr: 4, sa: 5, su: -1
-                    day.value - 1
+                    if (saturdayEnabled) {
+                        // mo: 0, ... fr: 4, sa: 5 (sunday disabled)
+                        day.value - 1
+                    } else {
+                        // mo: 0, ... fr: 4 (both disabled)
+                        day.value - 1
+                    }
                 }
             }
             else -> throw IllegalStateException("$firstDayOfTheWeek is not supported as start day")

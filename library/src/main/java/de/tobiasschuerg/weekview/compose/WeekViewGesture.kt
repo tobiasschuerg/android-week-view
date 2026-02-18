@@ -64,6 +64,11 @@ private fun handleDragEnd(
     setAnimatingOffsetX: (Float) -> Unit,
     setOffsetX: (Float) -> Unit,
 ) {
+    if (containerWidth <= 0) {
+        setOffsetX(0f)
+        setAnimatingOffsetX(0f)
+        return
+    }
     val threshold = containerWidth / 4
     when {
         offsetX > threshold -> {

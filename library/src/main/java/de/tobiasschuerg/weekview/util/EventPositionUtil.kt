@@ -1,6 +1,5 @@
 package de.tobiasschuerg.weekview.util
 
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.data.Event
@@ -20,14 +19,12 @@ object EventPositionUtil {
      * @param event The Event.Single object
      * @param startTime The start time of the visible column
      * @param scalingFactor The scaling factor for height
-     * @param density The current density for dp conversion
      * @return Pair(topOffset, eventHeight)
      */
     fun calculateVerticalOffsets(
         event: Event.Single,
         startTime: LocalTime,
         scalingFactor: Float,
-        density: Density,
     ): Pair<Dp, Dp> {
         // Minutes since the start of the visible column
         val startMinutes =
@@ -38,10 +35,12 @@ object EventPositionUtil {
 
         // Clamp negative offsets to zero so events before the visible start are not shown above the grid
         val clampedStartMinutes = startMinutes.coerceAtLeast(0)
+        // Reduce duration by the amount clamped so the event's bottom edge stays correct
+        val adjustedDurationMinutes = (durationMinutes - (clampedStartMinutes - startMinutes)).coerceAtLeast(0)
 
         // Convert to dp
-        val topOffset = with(density) { (clampedStartMinutes * scalingFactor).dp }
-        val eventHeight = with(density) { (durationMinutes * scalingFactor).dp }
+        val topOffset = (clampedStartMinutes * scalingFactor).dp
+        val eventHeight = (adjustedDurationMinutes * scalingFactor).dp
 
         return Pair(topOffset, eventHeight)
     }

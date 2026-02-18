@@ -20,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -55,14 +54,11 @@ fun EventCompose(
     onEventClick: ((eventId: Long) -> Unit)? = null,
     onEventLongPress: ((eventId: Long) -> Unit)? = null,
 ) {
-    val density = LocalDensity.current
-
     val (topOffset, eventHeight) =
         EventPositionUtil.calculateVerticalOffsets(
             event = event,
             startTime = startTime,
             scalingFactor = scalingFactor,
-            density = density,
         )
 
     // Apply overlap layout calculations

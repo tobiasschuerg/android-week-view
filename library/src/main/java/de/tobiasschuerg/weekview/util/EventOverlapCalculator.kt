@@ -53,7 +53,6 @@ object EventOverlapCalculator {
         val sortedEvents = dayEvents.sortedBy { it.timeSpan.start }
         val eventCount = sortedEvents.size
         val visited = BooleanArray(eventCount)
-        sortedEvents.mapIndexed { idx, event -> event.id to idx }.toMap()
         var groupIndex = 0
 
         // Build overlap graph (adjacency list)
@@ -84,14 +83,34 @@ object EventOverlapCalculator {
                     }
                 }
             }
-            // Assign layout for all events in this group
-            val widthPerEvent = 1.0f / group.size
+
+            // Use greedy graph coloring to find the minimum number of slots.
+            // For interval graphs (sorted by start time), greedy coloring is optimal
+            // and uses only as many slots as the max number of simultaneously overlapping events.
+            val colors = IntArray(group.size) { -1 }
+            var maxColor = 0
+            for (gi in group.indices) {
+                val eventIdx = group[gi]
+                val usedColors = mutableSetOf<Int>()
+                for (neighbor in adjacency[eventIdx]) {
+                    val neighborGroupIdx = group.indexOf(neighbor)
+                    if (neighborGroupIdx >= 0 && colors[neighborGroupIdx] >= 0) {
+                        usedColors.add(colors[neighborGroupIdx])
+                    }
+                }
+                var color = 0
+                while (color in usedColors) color++
+                colors[gi] = color
+                if (color > maxColor) maxColor = color
+            }
+            val slotCount = maxColor + 1
+            val widthPerSlot = 1.0f / slotCount
             group.forEachIndexed { idx, eventIdx ->
                 val event = sortedEvents[eventIdx]
                 layoutMap[event.id] =
                     EventLayout(
-                        widthFraction = widthPerEvent,
-                        offsetFraction = idx * widthPerEvent,
+                        widthFraction = widthPerSlot,
+                        offsetFraction = colors[idx] * widthPerSlot,
                         overlapGroup = groupIndex,
                     )
             }

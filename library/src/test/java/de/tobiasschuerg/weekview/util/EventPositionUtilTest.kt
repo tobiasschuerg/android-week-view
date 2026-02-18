@@ -1,6 +1,5 @@
 package de.tobiasschuerg.weekview.util
 
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.data.Event
 import org.junit.Assert.assertEquals
@@ -24,14 +23,12 @@ class EventPositionUtilTest {
             )
         val startTime = LocalTime.of(8, 0)
         val scalingFactor = 1f
-        val density = Density(1f)
 
         val (topOffset, eventHeight) =
             EventPositionUtil.calculateVerticalOffsets(
                 event = event,
                 startTime = startTime,
                 scalingFactor = scalingFactor,
-                density = density,
             )
 
         assertEquals(0.dp, topOffset)
