@@ -79,6 +79,30 @@ object EventCreator {
             ),
         )
 
+        // Add sample multi-day events
+        weekData.add(
+            Event.MultiDay(
+                id = random.nextLong(),
+                date = dateRange.start,
+                title = "Conference",
+                shortTitle = "Conf",
+                lastDate = dateRange.start.plusDays(2),
+                textColor = Color.WHITE,
+                backgroundColor = "#3F51B5".toColorInt(),
+            ),
+        )
+        weekData.add(
+            Event.MultiDay(
+                id = random.nextLong(),
+                date = dateRange.start.plusDays(3),
+                title = "Sprint",
+                shortTitle = "Sprint",
+                lastDate = dateRange.start.plusDays(4),
+                textColor = Color.WHITE,
+                backgroundColor = "#009688".toColorInt(),
+            ),
+        )
+
         // add just a single event at 9:00
         val endOfWeek = dateRange.endInclusive
         weekData.add(

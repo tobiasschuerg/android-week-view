@@ -14,6 +14,7 @@ class WeekData(
 ) {
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
+    private val multiDayEvents: MutableList<Event.MultiDay> = mutableListOf()
     private var earliestStart: LocalTime = start
     private var latestEnd: LocalTime = end
 
@@ -27,6 +28,19 @@ class WeekData(
     fun add(item: Event.AllDay) {
         if (!dateRange.contains(item.date)) throw IllegalArgumentException("Event date is outside the allowed range: ${item.date}")
         allDays.add(item)
+    }
+
+    fun add(item: Event.MultiDay) {
+        require(item.date <= item.lastDate) {
+            "MultiDay event start date (${item.date}) must be <= lastDate (${item.lastDate})"
+        }
+        val overlaps = item.date <= dateRange.endInclusive && item.lastDate >= dateRange.start
+        if (!overlaps) {
+            throw IllegalArgumentException(
+                "MultiDay event (${item.date}..${item.lastDate}) does not overlap with the allowed range: $dateRange",
+            )
+        }
+        multiDayEvents.add(item)
     }
 
     fun add(item: Event.Single) {
@@ -63,11 +77,14 @@ class WeekData(
 
     fun getAllDayEvents(): List<Event.AllDay> = allDays.toList()
 
-    fun isEmpty() = singleEvents.isEmpty() && allDays.isEmpty()
+    fun getMultiDayEvents(): List<Event.MultiDay> = multiDayEvents.toList()
+
+    fun isEmpty() = singleEvents.isEmpty() && allDays.isEmpty() && multiDayEvents.isEmpty()
 
     fun clear() {
         singleEvents.clear()
         allDays.clear()
+        multiDayEvents.clear()
         earliestStart = start
         latestEnd = end
     }
