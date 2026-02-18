@@ -7,13 +7,15 @@ plugins {
 }
 
 val libVersion: String by extra {
-    try {
-        val result = providers.exec {
-            commandLine("git", "describe", "--tags", "--abbrev=0")
-        }
-        val tag = result.standardOutput.asText.get().trim()
+    val result = providers.exec {
+        commandLine("git", "describe", "--tags", "--abbrev=0")
+        isIgnoreExitValue = true
+    }
+    val exitCode = result.result.get().exitValue
+    val tag = result.standardOutput.asText.get().trim()
+    if (exitCode == 0 && tag.isNotEmpty()) {
         if (tag.startsWith("v")) tag.substring(1) else tag
-    } catch (_: Exception) {
+    } else {
         "0.0.0"
     }
 }
