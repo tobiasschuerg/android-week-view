@@ -51,8 +51,8 @@ fun EventCompose(
     startTime: LocalTime,
     columnWidth: Dp,
     eventLayout: EventOverlapCalculator.EventLayout,
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    onEventClick: ((event: Event) -> Unit)? = null,
+    onEventLongPress: ((event: Event) -> Unit)? = null,
 ) {
     val (topOffset, eventHeight) =
         EventPositionUtil.calculateVerticalOffsets(
@@ -94,8 +94,8 @@ fun EventCompose(
                 .background(backgroundColor)
                 .pointerInput(event.id) {
                     detectTapGestures(
-                        onTap = { onEventClick?.invoke(event.id) },
-                        onLongPress = { onEventLongPress?.invoke(event.id) },
+                        onTap = { onEventClick?.invoke(event) },
+                        onLongPress = { onEventLongPress?.invoke(event) },
                     )
                 }
                 .padding(start = 4.dp, top = 4.dp, end = 4.dp),

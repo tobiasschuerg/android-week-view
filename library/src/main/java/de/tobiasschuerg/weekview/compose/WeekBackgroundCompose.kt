@@ -46,8 +46,8 @@ fun WeekBackgroundCompose(
     allDayEvents: List<Event.AllDay> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
     weekViewConfig: WeekViewConfig,
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    onEventClick: ((event: Event) -> Unit)? = null,
+    onEventLongPress: ((event: Event) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)

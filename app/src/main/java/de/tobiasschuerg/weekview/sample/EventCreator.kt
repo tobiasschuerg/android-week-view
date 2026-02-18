@@ -25,15 +25,16 @@ object EventCreator {
     private val endOfWeek = today.with(DayOfWeek.FRIDAY)
     private val weekRange = LocalDateRange(startOfWeek, endOfWeek)
 
-    // Entferne die weekData Property und erstelle stattdessen eine Funktion
+    fun createEmptyWeekData(dateRange: LocalDateRange): WeekData =
+        WeekData(
+            dateRange = dateRange,
+            start = LocalTime.of(9, 0),
+            end = LocalTime.of(15, 0),
+        )
+
     fun createWeekData(dateRange: LocalDateRange): WeekData {
         val random = Random()
-        val weekData =
-            WeekData(
-                dateRange = dateRange,
-                start = LocalTime.of(9, 0),
-                end = LocalTime.of(15, 0),
-            )
+        val weekData = createEmptyWeekData(dateRange)
         var startTime: LocalTime
         for (date in dateRange) {
             startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))

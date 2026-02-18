@@ -31,8 +31,8 @@ internal fun AllDayEventsRow(
     allDayEvents: List<Event.AllDay>,
     leftOffsetDp: Dp,
     columnWidth: Dp,
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    onEventClick: ((event: Event) -> Unit)? = null,
+    onEventLongPress: ((event: Event) -> Unit)? = null,
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.width(leftOffsetDp))
@@ -52,8 +52,8 @@ internal fun AllDayEventsRow(
                                 .background(Color(event.backgroundColor))
                                 .pointerInput(event.id) {
                                     detectTapGestures(
-                                        onTap = { onEventClick?.invoke(event.id) },
-                                        onLongPress = { onEventLongPress?.invoke(event.id) },
+                                        onTap = { onEventClick?.invoke(event) },
+                                        onLongPress = { onEventLongPress?.invoke(event) },
                                     )
                                 }
                                 .padding(horizontal = 4.dp),
