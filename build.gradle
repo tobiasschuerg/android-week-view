@@ -1,5 +1,18 @@
 buildscript {
-    ext.lib_version = '2.2.0' // this lib
+    ext.lib_version = {
+        try {
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'describe', '--tags', '--abbrev=0'
+                standardOutput = stdout
+                errorOutput = new ByteArrayOutputStream()
+            }
+            def tag = stdout.toString().trim()
+            return tag.startsWith('v') ? tag.substring(1) : tag
+        } catch (Exception ignored) {
+            return '0.0.0'
+        }
+    }()
     ext.kotlin_version = '2.3.10'
 
     repositories {
