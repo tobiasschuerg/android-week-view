@@ -46,6 +46,8 @@ class WeekDataTest {
                 date = LocalDate.of(2024, 9, 3),
                 title = "AllDay",
                 shortTitle = "AD",
+                textColor = 0,
+                backgroundColor = 0,
             )
         weekData.add(event)
         assertEquals(1, weekData.getAllDayEvents().size)

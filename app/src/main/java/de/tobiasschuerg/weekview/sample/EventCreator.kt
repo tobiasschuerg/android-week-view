@@ -46,6 +46,38 @@ object EventCreator {
         repeat(10) {
             weekData.add(createRandomEvent(dateRange))
         }
+        // Add sample all-day events
+        weekData.add(
+            Event.AllDay(
+                id = random.nextLong(),
+                date = dateRange.start,
+                title = "Holiday",
+                shortTitle = "Holiday",
+                textColor = Color.WHITE,
+                backgroundColor = "#E91E63".toColorInt(),
+            ),
+        )
+        weekData.add(
+            Event.AllDay(
+                id = random.nextLong(),
+                date = dateRange.start.plusDays(2),
+                title = "Team Offsite",
+                shortTitle = "Offsite",
+                textColor = Color.WHITE,
+                backgroundColor = "#4CAF50".toColorInt(),
+            ),
+        )
+        weekData.add(
+            Event.AllDay(
+                id = random.nextLong(),
+                date = dateRange.start.plusDays(2),
+                title = "Deadline",
+                shortTitle = "Deadline",
+                textColor = Color.WHITE,
+                backgroundColor = "#FF9800".toColorInt(),
+            ),
+        )
+
         // add just a single event at 9:00
         val endOfWeek = dateRange.endInclusive
         weekData.add(

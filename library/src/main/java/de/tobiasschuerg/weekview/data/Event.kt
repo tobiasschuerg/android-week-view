@@ -30,6 +30,8 @@ sealed class Event {
         override val date: LocalDate,
         override val title: String,
         override val shortTitle: String,
+        val textColor: Int,
+        val backgroundColor: Int,
     ) : Event()
 
     data class MultiDay(

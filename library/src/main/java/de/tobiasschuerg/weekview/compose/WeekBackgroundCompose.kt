@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import de.tobiasschuerg.weekview.compose.components.AllDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.DayHeaderRow
 import de.tobiasschuerg.weekview.compose.components.EventsPane
 import de.tobiasschuerg.weekview.compose.components.GridCanvas
@@ -41,6 +42,7 @@ fun WeekBackgroundCompose(
     dateRange: LocalDateRange,
     timeRange: TimeSpan,
     events: List<Event.Single> = emptyList(),
+    allDayEvents: List<Event.AllDay> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
     weekViewConfig: WeekViewConfig,
     onEventClick: ((eventId: Long) -> Unit)? = null,
@@ -72,6 +74,17 @@ fun WeekBackgroundCompose(
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
             )
+
+            if (allDayEvents.isNotEmpty()) {
+                AllDayEventsRow(
+                    days = metrics.days,
+                    allDayEvents = allDayEvents,
+                    leftOffsetDp = metrics.leftOffsetDp,
+                    columnWidth = dynamicColumnWidthDp,
+                    onEventClick = onEventClick,
+                    onEventLongPress = onEventLongPress,
+                )
+            }
 
             Row(modifier = Modifier.weight(1f)) {
                 TimeAxisColumn(
