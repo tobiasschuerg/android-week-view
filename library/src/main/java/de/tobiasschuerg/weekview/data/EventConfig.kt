@@ -1,7 +1,7 @@
 package de.tobiasschuerg.weekview.data
 
 /**
- * Configures the appearance of an [de.tobiasschuerg.weekview.view.EventView].
+ * Configures the appearance of an event in the week view.
  */
 data class EventConfig(
     /** If true, always uses the full event title in both portrait and landscape mode.
