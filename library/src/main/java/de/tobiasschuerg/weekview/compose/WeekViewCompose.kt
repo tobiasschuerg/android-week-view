@@ -84,6 +84,7 @@ fun WeekViewCompose(
                 ),
             events = weekData.getSingleEvents(),
             allDayEvents = weekData.getAllDayEvents(),
+            multiDayEvents = weekData.getMultiDayEvents(),
             eventConfig = eventConfig,
             onEventClick = actions.onEventClick,
             onEventLongPress = actions.onEventLongPress,

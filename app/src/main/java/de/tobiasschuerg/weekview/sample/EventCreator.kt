@@ -25,15 +25,16 @@ object EventCreator {
     private val endOfWeek = today.with(DayOfWeek.FRIDAY)
     private val weekRange = LocalDateRange(startOfWeek, endOfWeek)
 
-    // Entferne die weekData Property und erstelle stattdessen eine Funktion
+    fun createEmptyWeekData(dateRange: LocalDateRange): WeekData =
+        WeekData(
+            dateRange = dateRange,
+            start = LocalTime.of(9, 0),
+            end = LocalTime.of(15, 0),
+        )
+
     fun createWeekData(dateRange: LocalDateRange): WeekData {
         val random = Random()
-        val weekData =
-            WeekData(
-                dateRange = dateRange,
-                start = LocalTime.of(9, 0),
-                end = LocalTime.of(15, 0),
-            )
+        val weekData = createEmptyWeekData(dateRange)
         var startTime: LocalTime
         for (date in dateRange) {
             startTime = LocalTime.of(8 + random.nextInt(2), random.nextInt(60))
@@ -75,6 +76,30 @@ object EventCreator {
                 shortTitle = "Deadline",
                 textColor = Color.WHITE,
                 backgroundColor = "#FF9800".toColorInt(),
+            ),
+        )
+
+        // Add sample multi-day events
+        weekData.add(
+            Event.MultiDay(
+                id = random.nextLong(),
+                date = dateRange.start,
+                title = "Conference",
+                shortTitle = "Conf",
+                lastDate = dateRange.start.plusDays(2),
+                textColor = Color.WHITE,
+                backgroundColor = "#3F51B5".toColorInt(),
+            ),
+        )
+        weekData.add(
+            Event.MultiDay(
+                id = random.nextLong(),
+                date = dateRange.start.plusDays(3),
+                title = "Sprint",
+                shortTitle = "Sprint",
+                lastDate = dateRange.start.plusDays(4),
+                textColor = Color.WHITE,
+                backgroundColor = "#009688".toColorInt(),
             ),
         )
 

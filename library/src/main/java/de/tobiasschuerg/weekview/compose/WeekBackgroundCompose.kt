@@ -19,6 +19,7 @@ import de.tobiasschuerg.weekview.compose.components.AllDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.DayHeaderRow
 import de.tobiasschuerg.weekview.compose.components.EventsPane
 import de.tobiasschuerg.weekview.compose.components.GridCanvas
+import de.tobiasschuerg.weekview.compose.components.MultiDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.compose.state.rememberWeekViewMetrics
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
@@ -44,10 +45,11 @@ fun WeekBackgroundCompose(
     timeRange: TimeSpan,
     events: List<Event.Single> = emptyList(),
     allDayEvents: List<Event.AllDay> = emptyList(),
+    multiDayEvents: List<Event.MultiDay> = emptyList(),
     eventConfig: EventConfig = EventConfig(),
     weekViewConfig: WeekViewConfig,
-    onEventClick: ((eventId: Long) -> Unit)? = null,
-    onEventLongPress: ((eventId: Long) -> Unit)? = null,
+    onEventClick: ((event: Event) -> Unit)? = null,
+    onEventLongPress: ((event: Event) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)
@@ -77,6 +79,17 @@ fun WeekBackgroundCompose(
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
             )
+
+            if (multiDayEvents.isNotEmpty()) {
+                MultiDayEventsRow(
+                    days = metrics.days,
+                    multiDayEvents = multiDayEvents,
+                    leftOffsetDp = metrics.leftOffsetDp,
+                    columnWidth = dynamicColumnWidthDp,
+                    onEventClick = onEventClick,
+                    onEventLongPress = onEventLongPress,
+                )
+            }
 
             if (allDayEvents.isNotEmpty()) {
                 AllDayEventsRow(

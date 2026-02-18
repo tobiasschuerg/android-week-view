@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import de.tobiasschuerg.weekview.compose.WeekViewActions
 import de.tobiasschuerg.weekview.compose.WeekViewCompose
-import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -92,13 +91,18 @@ class ComposeWeekViewActivity : ComponentActivity() {
                             .fillMaxSize(),
                     actions =
                         WeekViewActions(
-                            onEventClick = { eventId ->
-                                val event: Event.Single = events.single { it.id == eventId }
+                            onEventClick = { event ->
                                 Toast.makeText(this@ComposeWeekViewActivity, "Clicked event ${event.title}", Toast.LENGTH_SHORT).show()
                             },
-                            onEventLongPress = { eventId ->
-                                events = events.filterNot { it.id == eventId }
-                                Toast.makeText(this@ComposeWeekViewActivity, "Removed event $eventId", Toast.LENGTH_SHORT).show()
+                            onEventLongPress = { event ->
+                                val remainingEvents = events.filterNot { it.id == event.id }
+                                val remainingAllDay = weekData.getAllDayEvents().filterNot { it.id == event.id }
+                                val newWeekData = EventCreator.createEmptyWeekData(currentDateRange)
+                                remainingEvents.forEach { newWeekData.add(it) }
+                                remainingAllDay.forEach { newWeekData.add(it) }
+                                weekData = newWeekData
+                                events = remainingEvents
+                                Toast.makeText(this@ComposeWeekViewActivity, "Removed event ${event.title}", Toast.LENGTH_SHORT).show()
                             },
                             onSwipeLeft = {
                                 // Next week

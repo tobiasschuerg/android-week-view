@@ -40,5 +40,7 @@ sealed class Event {
         override val title: String,
         override val shortTitle: String,
         val lastDate: LocalDate,
+        val textColor: Int,
+        val backgroundColor: Int,
     ) : Event()
 }
