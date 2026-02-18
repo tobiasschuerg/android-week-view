@@ -56,9 +56,6 @@ dependencies {
     implementation 'androidx.activity:activity-compose'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose'
 
-    // Traditional Android dependencies
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-
     // Compose debugging tools
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
