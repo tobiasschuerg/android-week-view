@@ -7,4 +7,11 @@ data class WeekViewConfig(
     val showCurrentTimeIndicator: Boolean = true,
     val highlightCurrentDay: Boolean = true,
     val currentTimeLineOnlyToday: Boolean = false,
-)
+) {
+    init {
+        require(minScalingFactor > 0f) { "minScalingFactor must be positive, but was $minScalingFactor" }
+        require(minScalingFactor <= maxScalingFactor) {
+            "minScalingFactor ($minScalingFactor) must be <= maxScalingFactor ($maxScalingFactor)"
+        }
+    }
+}

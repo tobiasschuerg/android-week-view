@@ -20,9 +20,7 @@ class WeekData(
     fun getTimeSpan(): TimeSpan? {
         val start = earliestStart
         val end = latestEnd
-        // The TimeSpan constructor already validates that the span is not overnight.
-        // Since individual events cannot be overnight, the combined span for a day won't be either,
-        // unless an event ends exactly at midnight (00:00), which is handled as the end of the day.
+        if (!start.isBefore(end)) return null
         return TimeSpan(start, end)
     }
 

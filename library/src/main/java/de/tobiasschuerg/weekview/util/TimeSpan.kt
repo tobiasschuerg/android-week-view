@@ -47,7 +47,14 @@ data class TimeSpan(
             start: LocalTime,
             duration: Duration,
         ): TimeSpan {
-            return TimeSpan(start, start.plus(duration))
+            require(!duration.isNegative && !duration.isZero) {
+                "Duration must be positive, but was $duration"
+            }
+            val end = start.plus(duration)
+            require(end.isAfter(start)) {
+                "TimeSpan starting at $start with duration $duration would cross midnight, which is not supported"
+            }
+            return TimeSpan(start, end)
         }
     }
 }

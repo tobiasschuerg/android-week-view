@@ -71,32 +71,31 @@ internal fun GridCanvas(
             val nowY = (nowPositionMinutes / 60f) * rowHeightPx
             if (nowY >= 0 && nowY <= size.height) {
                 val dotRadius = 8f
-                if (currentTimeLineOnlyToday && days.contains(LocalDate.now())) {
-                    val todayColumnIndex = days.indexOf(LocalDate.now())
-                    val left = todayColumnIndex * columnWidthPx
-                    val right = left + columnWidthPx
-                    // Linie nur in der heutigen Spalte
-                    drawLine(
-                        color = style.colors.nowIndicator,
-                        start = Offset(left, nowY),
-                        end = Offset(right, nowY),
-                        strokeWidth = 4f,
-                    )
-                    // Punkt am Anfang der Linie
-                    drawCircle(
-                        color = style.colors.nowIndicator,
-                        radius = dotRadius,
-                        center = Offset(left, nowY),
-                    )
+                if (currentTimeLineOnlyToday) {
+                    if (days.contains(LocalDate.now())) {
+                        val todayColumnIndex = days.indexOf(LocalDate.now())
+                        val left = todayColumnIndex * columnWidthPx
+                        val right = left + columnWidthPx
+                        drawLine(
+                            color = style.colors.nowIndicator,
+                            start = Offset(left, nowY),
+                            end = Offset(right, nowY),
+                            strokeWidth = 4f,
+                        )
+                        drawCircle(
+                            color = style.colors.nowIndicator,
+                            radius = dotRadius,
+                            center = Offset(left, nowY),
+                        )
+                    }
+                    // When today is not in view, draw nothing
                 } else {
-                    // Linie über alle Spalten
                     drawLine(
                         color = style.colors.nowIndicator,
                         start = Offset(0f, nowY),
                         end = Offset(size.width, nowY),
                         strokeWidth = 4f,
                     )
-                    // Punkt am Anfang der Linie (erste Spalte)
                     drawCircle(
                         color = style.colors.nowIndicator,
                         radius = dotRadius,

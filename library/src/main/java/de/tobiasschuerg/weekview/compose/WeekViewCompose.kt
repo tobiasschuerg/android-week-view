@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,15 +37,15 @@ fun WeekViewCompose(
     eventConfig: EventConfig = EventConfig(),
     actions: WeekViewActions = WeekViewActions(),
 ) {
-    var activeWeekConfig by remember { mutableStateOf(weekViewConfig) }
+    var localScalingFactor by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
+    val activeWeekConfig = weekViewConfig.copy(scalingFactor = localScalingFactor)
     val transformableState =
         rememberTransformableState { zoomChange, _, _ ->
-            val limits = activeWeekConfig
             val newScalingFactor =
-                (activeWeekConfig.scalingFactor * zoomChange)
-                    .coerceIn(limits.minScalingFactor, limits.maxScalingFactor)
-            if (newScalingFactor != activeWeekConfig.scalingFactor) {
-                activeWeekConfig = activeWeekConfig.copy(scalingFactor = newScalingFactor)
+                (localScalingFactor * zoomChange)
+                    .coerceIn(activeWeekConfig.minScalingFactor, activeWeekConfig.maxScalingFactor)
+            if (newScalingFactor != localScalingFactor) {
+                localScalingFactor = newScalingFactor
                 actions.onScalingFactorChange?.invoke(newScalingFactor)
             }
         }
