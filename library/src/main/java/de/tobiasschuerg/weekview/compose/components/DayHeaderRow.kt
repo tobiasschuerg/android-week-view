@@ -21,9 +21,8 @@ import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.util.toShortDateStringWithoutYear
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.format.TextStyle.FULL
 import java.time.format.TextStyle.SHORT
 import java.util.Locale
@@ -31,6 +30,7 @@ import java.util.Locale
 @Composable
 internal fun DayHeaderRow(
     days: List<LocalDate>,
+    today: LocalDate,
     leftOffsetDp: Dp,
     topOffsetDp: Dp,
     columnWidth: Dp,
@@ -41,7 +41,7 @@ internal fun DayHeaderRow(
     Row {
         Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
         days.forEach { date ->
-            val isToday = date == LocalDate.now()
+            val isToday = date == today
             val boxModifier =
                 if (highlightCurrentDay && isToday) {
                     Modifier
@@ -75,7 +75,7 @@ internal fun DayHeaderRow(
                 } else {
                     date.dayOfWeek.getDisplayName(SHORT, Locale.getDefault())
                 }
-            val shortDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)).replace(Regex("[^0-9]*[0-9]+$"), "")
+            val shortDate = date.toShortDateStringWithoutYear()
             Column(
                 modifier = boxModifier,
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -34,9 +35,11 @@ fun WeekViewCompose(
     weekData: WeekData,
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
+    swipeOverlayColor: Color = Color.Unspecified,
     eventConfig: EventConfig = EventConfig(),
     actions: WeekViewActions = WeekViewActions(),
 ) {
+    val surfaceColor = if (swipeOverlayColor != Color.Unspecified) swipeOverlayColor else MaterialTheme.colorScheme.surface
     var localScalingFactor by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
     val activeWeekConfig = weekViewConfig.copy(scalingFactor = localScalingFactor)
     val transformableState =
@@ -98,7 +101,7 @@ fun WeekViewCompose(
                         .graphicsLayer {
                             translationX = dragOffset - containerWidth
                         }
-                        .background(Color.White.copy(alpha = alpha)),
+                        .background(surfaceColor.copy(alpha = alpha)),
             )
         } else if (dragOffset < 0) {
             Box(
@@ -109,7 +112,7 @@ fun WeekViewCompose(
                         .graphicsLayer {
                             translationX = dragOffset + containerWidth
                         }
-                        .background(Color.White.copy(alpha = alpha)),
+                        .background(surfaceColor.copy(alpha = alpha)),
             )
         }
     }

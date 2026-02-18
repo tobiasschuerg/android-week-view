@@ -19,6 +19,7 @@ internal fun GridCanvas(
     rowHeightDp: Dp,
     totalHours: Float,
     days: List<LocalDate>,
+    today: LocalDate,
     showNowIndicator: Boolean,
     highlightCurrentDay: Boolean,
     currentTimeLineOnlyToday: Boolean,
@@ -55,8 +56,8 @@ internal fun GridCanvas(
         }
 
         // Today highlight
-        if (highlightCurrentDay && days.contains(LocalDate.now())) {
-            val todayColumnIndex = days.indexOf(LocalDate.now())
+        if (highlightCurrentDay && days.contains(today)) {
+            val todayColumnIndex = days.indexOf(today)
             val left = todayColumnIndex * columnWidthPx
             drawRect(
                 color = style.colors.todayHighlight,
@@ -72,8 +73,8 @@ internal fun GridCanvas(
             if (nowY >= 0 && nowY <= size.height) {
                 val dotRadius = 8f
                 if (currentTimeLineOnlyToday) {
-                    if (days.contains(LocalDate.now())) {
-                        val todayColumnIndex = days.indexOf(LocalDate.now())
+                    if (days.contains(today)) {
+                        val todayColumnIndex = days.indexOf(today)
                         val left = todayColumnIndex * columnWidthPx
                         val right = left + columnWidthPx
                         drawLine(

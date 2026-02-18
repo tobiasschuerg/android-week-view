@@ -29,6 +29,7 @@ import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
 import kotlinx.coroutines.delay
+import java.time.LocalDate
 import java.time.LocalTime
 
 /**
@@ -51,6 +52,7 @@ fun WeekBackgroundCompose(
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)
     val scrollState = rememberScrollState()
+    val today = LocalDate.now()
     var now by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
@@ -67,6 +69,7 @@ fun WeekBackgroundCompose(
         Column(modifier = Modifier.fillMaxSize()) {
             DayHeaderRow(
                 days = metrics.days,
+                today = today,
                 leftOffsetDp = metrics.leftOffsetDp,
                 topOffsetDp = metrics.topOffsetDp,
                 columnWidth = dynamicColumnWidthDp,
@@ -114,6 +117,7 @@ fun WeekBackgroundCompose(
                         rowHeightDp = metrics.rowHeightDp,
                         totalHours = metrics.totalHours,
                         days = metrics.days,
+                        today = today,
                         showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
                         highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                         currentTimeLineOnlyToday = weekViewConfig.currentTimeLineOnlyToday,
