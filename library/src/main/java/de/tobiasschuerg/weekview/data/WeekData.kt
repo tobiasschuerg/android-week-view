@@ -26,27 +26,18 @@ class WeekData(
     }
 
     fun add(item: Event.AllDay) {
-        if (!dateRange.contains(item.date)) throw IllegalArgumentException("Event date is outside the allowed range: ${item.date}")
+        require(dateRange.contains(item.date)) { "Event date is outside the allowed range: ${item.date}" }
         allDays.add(item)
     }
 
     fun add(item: Event.MultiDay) {
-        require(item.date <= item.lastDate) {
-            "MultiDay event start date (${item.date}) must be <= lastDate (${item.lastDate})"
-        }
         val overlaps = item.date <= dateRange.endInclusive && item.lastDate >= dateRange.start
-        if (!overlaps) {
-            throw IllegalArgumentException(
-                "MultiDay event (${item.date}..${item.lastDate}) does not overlap with the allowed range: $dateRange",
-            )
-        }
+        require(overlaps) { "MultiDay event (${item.date}..${item.lastDate}) does not overlap with the allowed range: $dateRange" }
         multiDayEvents.add(item)
     }
 
     fun add(item: Event.Single) {
-        if (!dateRange.contains(item.date)) {
-            throw IllegalArgumentException("Event date ${item.date} is outside the allowed range: $dateRange")
-        }
+        require(dateRange.contains(item.date)) { "Event date ${item.date} is outside the allowed range: $dateRange" }
         singleEvents.add(item)
 
         // Automatically adjust TimeSpan to accommodate the new event

@@ -42,5 +42,9 @@ sealed class Event {
         val lastDate: LocalDate,
         val textColor: Int,
         val backgroundColor: Int,
-    ) : Event()
+    ) : Event() {
+        init {
+            require(date <= lastDate) { "date ($date) must be <= lastDate ($lastDate)" }
+        }
+    }
 }

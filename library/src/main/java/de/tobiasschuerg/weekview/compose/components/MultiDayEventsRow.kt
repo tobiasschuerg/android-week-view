@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -51,7 +50,6 @@ internal fun MultiDayEventsRow(
                         .fillMaxWidth()
                         .height(24.dp),
             ) {
-                Spacer(modifier = Modifier.width(leftOffsetDp))
                 row.forEach { event ->
                     val clippedStart = maxOf(event.date, firstDay)
                     val clippedEnd = minOf(event.lastDate, lastDay)
