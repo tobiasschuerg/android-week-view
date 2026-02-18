@@ -6,7 +6,6 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.util.TimeSpan
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Random
@@ -18,12 +17,6 @@ object EventCreator {
 
     private const val MIN_EVENT_LENGTH = 30
     private const val MAX_EVENT_LENGTH = 90
-
-    // Create a week range for the current week
-    private val today = LocalDate.now()
-    private val startOfWeek = today.with(DayOfWeek.MONDAY)
-    private val endOfWeek = today.with(DayOfWeek.FRIDAY)
-    private val weekRange = LocalDateRange(startOfWeek, endOfWeek)
 
     fun createEmptyWeekData(dateRange: LocalDateRange): WeekData =
         WeekData(
