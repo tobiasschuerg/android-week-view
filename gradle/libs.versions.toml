@@ -1,7 +1,7 @@
 [versions]
 agp = "9.0.1"
 kotlin = "2.3.10"
-compose-bom = "2026.02.00"
+compose-bom = "2026.02.01"
 ktlint = "14.0.1"
 desugar = "2.1.5"
 annotation = "1.9.1"
