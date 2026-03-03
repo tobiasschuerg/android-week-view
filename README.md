@@ -142,27 +142,12 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2026.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
-
-    // Required for java.time API support on API < 26
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-}
-```
-
-### Step 3: Enable desugaring
-
-In your **app** `build.gradle.kts`:
-
-```kotlin
-android {
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
-    }
 }
 ```
 
 ## Version History
+
+**4.0.0** — Bumped minSdk to 26. Removed core library desugaring dependency.
 
 **3.0.0** — Removed legacy View-based implementation. Compose only.
 

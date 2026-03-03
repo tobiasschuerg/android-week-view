@@ -13,7 +13,7 @@ java {
 
 android {
     defaultConfig {
-        minSdk = 21
+        minSdk = 26
         compileSdk = 36
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -22,7 +22,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
     }
 
     buildFeatures {
@@ -81,9 +80,6 @@ dependencies {
     // Compose debugging tools
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
-
-    // Core library desugaring for java.time API
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     // Test dependencies
     testImplementation(libs.junit)

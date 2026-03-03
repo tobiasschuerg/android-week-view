@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "de.tobiasschuerg.weekview.sample"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = libVersion
@@ -27,7 +27,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
     }
 
     buildFeatures {
@@ -49,7 +48,6 @@ android {
 
 dependencies {
     implementation(project(":library"))
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     implementation(libs.kotlin.stdlib)
 
