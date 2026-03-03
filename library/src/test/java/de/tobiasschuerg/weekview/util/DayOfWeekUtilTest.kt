@@ -40,7 +40,7 @@ class DayOfWeekUtilTest {
 
     @Test
     fun `test mapping for egypt where saturday is the first day of the week`() {
-        val egyptLocale = Locale("ar", "EG")
+        val egyptLocale = Locale.Builder().setLanguage("ar").setRegion("EG").build()
 
         val firstDayOfWeek = WeekFields.of(egyptLocale).firstDayOfWeek
         assertEquals(DayOfWeek.SATURDAY, firstDayOfWeek)
