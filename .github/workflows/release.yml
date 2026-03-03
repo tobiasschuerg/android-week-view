@@ -49,5 +49,6 @@ jobs:
           git add gradle.properties
           git commit -m "chore: bump version to $VERSION"
           git tag "$VERSION"
-          git push origin HEAD:master --follow-tags
+          git push origin HEAD:master
+          git push origin "$VERSION"
           gh release create "$VERSION" --title "$VERSION" --notes "$NOTES"
