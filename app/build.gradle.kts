@@ -21,7 +21,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = libVersion
-        multiDexEnabled = true
     }
 
     compileOptions {
