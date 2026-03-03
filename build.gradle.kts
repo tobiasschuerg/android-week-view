@@ -6,19 +6,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
 }
 
-val libVersion: String by extra {
-    val result = providers.exec {
-        commandLine("git", "describe", "--tags", "--abbrev=0")
-        isIgnoreExitValue = true
-    }
-    val exitCode = result.result.get().exitValue
-    val tag = result.standardOutput.asText.get().trim()
-    if (exitCode == 0 && tag.isNotEmpty()) {
-        if (tag.startsWith("v")) tag.substring(1) else tag
-    } else {
-        "0.0.0"
-    }
-}
+val libVersion: String by extra(property("libVersion") as String)
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

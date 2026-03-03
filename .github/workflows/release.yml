@@ -31,13 +31,23 @@ jobs:
           REPO_URL: ${{ github.server_url }}/${{ github.repository }}
         run: bash scripts/determine-version.sh
 
-      - name: Create tag and release
+      - name: Update version in gradle.properties
+        if: steps.version.outputs.skip != 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: sed -i "s/^libVersion=.*/libVersion=$VERSION/" gradle.properties
+
+      - name: Commit version bump, tag, and release
         if: steps.version.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
           NOTES: ${{ steps.version.outputs.notes }}
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github"
+          git add gradle.properties
+          git commit -m "chore: bump version to $VERSION"
           git tag "$VERSION"
-          git push origin "$VERSION"
+          git push origin HEAD:master --follow-tags
           gh release create "$VERSION" --title "$VERSION" --notes "$NOTES"
