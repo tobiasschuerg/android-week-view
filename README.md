@@ -7,18 +7,22 @@ Kotlin Android library for displaying weekly schedules and timetables using Jetp
 
 Initially created for [Schedule Deluxe](https://play.google.com/store/apps/details?id=com.tobiasschuerg.stundenplan), this library provides a flexible week view component for calendar apps, timetables, and schedule management.
 
-## Screenshot
+## Screenshots
 
-<img alt="Compose WeekView" src="https://github.com/tobiasschuerg/android-week-view/blob/master/meta/Screenshot_20250908_205312.png" height="400">
+| University | Work | School | Conference (3-day) |
+|:---:|:---:|:---:|:---:|
+| <img src="meta/preview_university.png" height="360"> | <img src="meta/preview_work.png" height="360"> | <img src="meta/preview_school.png" height="360"> | <img src="meta/preview_conference.png" height="360"> |
 
 ## Features
 
-- Jetpack Compose implementation
+- Jetpack Compose implementation (Compose-only since 3.0)
 - Three event types: timed, all-day, and multi-day (spanning bars)
 - Automatic overlap handling for concurrent events
-- Pinch-to-zoom and swipe navigation
+- Pinch-to-zoom
 - Current time indicator and day highlighting
-- Configurable event display and time range
+- Configurable event display, spacing, and time range
+- Flexible day counts (3-day, 5-day, 7-day, etc.)
+- Navigation handled externally for full control (e.g. `HorizontalPager`, buttons)
 
 ## Usage
 
@@ -27,7 +31,13 @@ Initially created for [Schedule Deluxe](https://play.google.com/store/apps/detai
 ```kotlin
 @Composable
 fun MyWeekView() {
-    val weekData = remember { WeekData() }
+    val dateRange = LocalDateRange(
+        LocalDate.now().with(DayOfWeek.MONDAY),
+        LocalDate.now().with(DayOfWeek.FRIDAY),
+    )
+    val weekData = remember {
+        WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0))
+    }
 
     WeekViewCompose(
         weekData = weekData,
@@ -100,6 +110,7 @@ val eventConfig = EventConfig(
     showSubtitle = true,
     showTimeStart = true,
     showTimeEnd = true,
+    eventSpacingDp = 1, // gap between adjacent events (0 to disable)
 )
 ```
 
@@ -109,8 +120,6 @@ val eventConfig = EventConfig(
 val actions = WeekViewActions(
     onEventClick = { event -> /* Handle event tap */ },
     onEventLongPress = { event -> /* Handle long press */ },
-    onSwipeLeft = { /* Navigate to next week */ },
-    onSwipeRight = { /* Navigate to previous week */ },
     onScalingFactorChange = { factor -> /* Persist zoom level */ },
 )
 ```
@@ -136,7 +145,7 @@ In your **app** `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.tobiasschuerg:android-week-view:3.1.0")
+    implementation("com.github.tobiasschuerg:android-week-view:4.0.0")
 
     // Required for Compose
     implementation(platform("androidx.compose:compose-bom:2026.02.00"))
@@ -157,7 +166,7 @@ dependencies {
 
 ## Sample App
 
-The `app/` module contains a sample app demonstrating all features. Run it to see the week view in action.
+The `app/` module contains a sample app with four built-in timetables (University, Work, School, Conference) demonstrating different layouts, overlapping events, all-day/multi-day events, and a 3-day view. Switch between them via the top app bar menu.
 
 ## Contributing
 
