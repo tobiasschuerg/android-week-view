@@ -114,6 +114,7 @@ fun EventCompose(
                 text = displayTitle,
                 color = textColor,
                 fontSize = 12.sp,
+                lineHeight = 14.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = if (eventConfig.showSubtitle || eventConfig.showTimeEnd) 1 else 2,
                 overflow = TextOverflow.Ellipsis,
@@ -125,6 +126,7 @@ fun EventCompose(
                     text = event.subTitle,
                     color = textColor.copy(alpha = 0.8f),
                     fontSize = 10.sp,
+                    lineHeight = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -138,6 +140,7 @@ fun EventCompose(
                     text = timeText,
                     color = textColor.copy(alpha = 0.7f),
                     fontSize = 9.sp,
+                    lineHeight = 11.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -149,6 +152,7 @@ fun EventCompose(
                     text = event.upperText,
                     color = textColor.copy(alpha = 0.8f),
                     fontSize = 8.sp,
+                    lineHeight = 10.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -160,6 +164,7 @@ fun EventCompose(
                     text = event.lowerText,
                     color = textColor.copy(alpha = 0.8f),
                     fontSize = 8.sp,
+                    lineHeight = 10.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
