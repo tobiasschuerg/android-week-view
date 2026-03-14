@@ -17,4 +17,6 @@ data class EventConfig(
     val showLowerText: Boolean = true,
     /** Show the event end time in the event view. */
     val showTimeEnd: Boolean = true,
+    /** Spacing in dp between adjacent events. Set to 0 for no spacing. */
+    val eventSpacingDp: Int = 1,
 )

@@ -90,6 +90,7 @@ fun EventCompose(
                 .testTag("EventView_${event.id}")
                 .offset(x = horizontalOffset, y = topOffset)
                 .size(width = eventWidth, height = eventHeight)
+                .let { if (eventConfig.eventSpacingDp > 0) it.padding(eventConfig.eventSpacingDp.dp) else it }
                 .clip(RoundedCornerShape(cornerRadius))
                 .background(backgroundColor)
                 .pointerInput(event.id) {
