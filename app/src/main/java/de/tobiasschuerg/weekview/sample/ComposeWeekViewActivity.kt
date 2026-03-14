@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,69 +65,85 @@ class ComposeWeekViewActivity : ComponentActivity() {
             )
 
         setContent {
-            val today = LocalDate.now()
-            val monday = today.with(DayOfWeek.MONDAY)
-
-            var selectedTimetable by remember { mutableStateOf(SampleTimetables.Timetable.UNIVERSITY) }
-            val dateRange =
-                remember(selectedTimetable) {
-                    LocalDateRange(monday, monday.plusDays(selectedTimetable.days.toLong() - 1))
-                }
-            var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
-            var menuExpanded by remember { mutableStateOf(false) }
-
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(selectedTimetable.label) },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                        actions = {
-                            TextButton(onClick = { menuExpanded = true }) {
-                                Text("Switch", color = MaterialTheme.colorScheme.onPrimary)
-                            }
-                            DropdownMenu(
-                                expanded = menuExpanded,
-                                onDismissRequest = { menuExpanded = false },
-                            ) {
-                                SampleTimetables.Timetable.entries.forEach { timetable ->
-                                    DropdownMenuItem(
-                                        text = { Text(timetable.label) },
-                                        onClick = {
-                                            selectedTimetable = timetable
-                                            menuExpanded = false
-                                        },
-                                    )
-                                }
-                            }
-                        },
-                    )
-                },
-            ) { paddingValues ->
-                WeekViewCompose(
-                    weekData = weekData,
-                    eventConfig = eventConfig,
-                    weekViewConfig = weekViewConfig,
-                    modifier =
-                        Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize(),
-                    actions =
-                        WeekViewActions(
-                            onEventClick = { event ->
-                                Toast.makeText(this@ComposeWeekViewActivity, "Clicked: ${event.title}", Toast.LENGTH_SHORT).show()
-                            },
-                            onEventLongPress = { event ->
-                                Toast.makeText(this@ComposeWeekViewActivity, "Long press: ${event.title}", Toast.LENGTH_SHORT).show()
-                            },
-                            onScalingFactorChange = {
-                                Log.d("WeekView", "Scaling factor: $it")
-                            },
-                        ),
+            val colorScheme =
+                lightColorScheme(
+                    primary = Color(0xFF37474F),
+                    onPrimary = Color.White,
+                    primaryContainer = Color(0xFF546E7A),
+                    onPrimaryContainer = Color.White,
+                    secondary = Color(0xFF607D8B),
+                    onSecondary = Color.White,
+                    surface = Color(0xFFFAFAFA),
+                    onSurface = Color(0xFF212121),
+                    surfaceVariant = Color(0xFFECEFF1),
+                    onSurfaceVariant = Color(0xFF455A64),
                 )
+
+            MaterialTheme(colorScheme = colorScheme) {
+                val today = LocalDate.now()
+                val monday = today.with(DayOfWeek.MONDAY)
+
+                var selectedTimetable by remember { mutableStateOf(SampleTimetables.Timetable.UNIVERSITY) }
+                val dateRange =
+                    remember(selectedTimetable) {
+                        LocalDateRange(monday, monday.plusDays(selectedTimetable.days.toLong() - 1))
+                    }
+                var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
+                var menuExpanded by remember { mutableStateOf(false) }
+
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(selectedTimetable.label) },
+                            colors =
+                                TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                                ),
+                            actions = {
+                                TextButton(onClick = { menuExpanded = true }) {
+                                    Text("Switch", color = MaterialTheme.colorScheme.onPrimary)
+                                }
+                                DropdownMenu(
+                                    expanded = menuExpanded,
+                                    onDismissRequest = { menuExpanded = false },
+                                ) {
+                                    SampleTimetables.Timetable.entries.forEach { timetable ->
+                                        DropdownMenuItem(
+                                            text = { Text(timetable.label) },
+                                            onClick = {
+                                                selectedTimetable = timetable
+                                                menuExpanded = false
+                                            },
+                                        )
+                                    }
+                                }
+                            },
+                        )
+                    },
+                ) { paddingValues ->
+                    WeekViewCompose(
+                        weekData = weekData,
+                        eventConfig = eventConfig,
+                        weekViewConfig = weekViewConfig,
+                        modifier =
+                            Modifier
+                                .padding(paddingValues)
+                                .fillMaxSize(),
+                        actions =
+                            WeekViewActions(
+                                onEventClick = { event ->
+                                    Toast.makeText(this@ComposeWeekViewActivity, "Clicked: ${event.title}", Toast.LENGTH_SHORT).show()
+                                },
+                                onEventLongPress = { event ->
+                                    Toast.makeText(this@ComposeWeekViewActivity, "Long press: ${event.title}", Toast.LENGTH_SHORT).show()
+                                },
+                                onScalingFactorChange = {
+                                    Log.d("WeekView", "Scaling factor: $it")
+                                },
+                            ),
+                    )
+                }
             }
         }
     }
