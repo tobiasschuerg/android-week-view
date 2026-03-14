@@ -66,11 +66,13 @@ class ComposeWeekViewActivity : ComponentActivity() {
         setContent {
             val today = LocalDate.now()
             val monday = today.with(DayOfWeek.MONDAY)
-            val friday = today.with(DayOfWeek.FRIDAY)
-            val dateRange = remember { LocalDateRange(monday, friday) }
 
             var selectedTimetable by remember { mutableStateOf(SampleTimetables.Timetable.UNIVERSITY) }
-            var weekData by remember { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
+            val dateRange =
+                remember(selectedTimetable) {
+                    LocalDateRange(monday, monday.plusDays(selectedTimetable.days.toLong() - 1))
+                }
+            var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
             var menuExpanded by remember { mutableStateOf(false) }
 
             Scaffold(
@@ -95,7 +97,6 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                         text = { Text(timetable.label) },
                                         onClick = {
                                             selectedTimetable = timetable
-                                            weekData = SampleTimetables.create(timetable, dateRange)
                                             menuExpanded = false
                                         },
                                     )
