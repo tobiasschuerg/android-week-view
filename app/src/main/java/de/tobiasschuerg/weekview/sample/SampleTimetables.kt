@@ -129,8 +129,35 @@ object SampleTimetables {
             )
         }
 
-        // Wednesday
+        // Wednesday — includes overlapping electives
         wed?.let { d ->
+            // Two electives at the same time (overlap)
+            weekData.add(
+                Event.Single(
+                    id = nextId++,
+                    date = d,
+                    title = "Elective: Machine Learning",
+                    shortTitle = "ML",
+                    subTitle = "Room E201",
+                    timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
+                    textColor = Color.WHITE,
+                    backgroundColor = "#4E342E".toColorInt(),
+                    upperText = "Prof. Richter",
+                ),
+            )
+            weekData.add(
+                Event.Single(
+                    id = nextId++,
+                    date = d,
+                    title = "Elective: Databases",
+                    shortTitle = "DB",
+                    subTitle = "Room C102",
+                    timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
+                    textColor = Color.WHITE,
+                    backgroundColor = "#33691E".toColorInt(),
+                    upperText = "Dr. Fischer",
+                ),
+            )
             weekData.add(
                 Event.Single(
                     id = nextId++,
@@ -351,7 +378,7 @@ object SampleTimetables {
             )
         }
 
-        // Wednesday
+        // Wednesday — includes double-booked meetings
         wed?.let { d ->
             weekData.add(
                 Event.Single(
@@ -363,6 +390,31 @@ object SampleTimetables {
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(9, 30)),
                     textColor = Color.WHITE,
                     backgroundColor = "#0277BD".toColorInt(),
+                ),
+            )
+            // Two meetings at the same time (overlap)
+            weekData.add(
+                Event.Single(
+                    id = nextId++,
+                    date = d,
+                    title = "Hiring Committee",
+                    shortTitle = "Hiring",
+                    subTitle = "Meeting Room C",
+                    timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(11, 0)),
+                    textColor = Color.WHITE,
+                    backgroundColor = "#E65100".toColorInt(),
+                ),
+            )
+            weekData.add(
+                Event.Single(
+                    id = nextId++,
+                    date = d,
+                    title = "Tech Sync",
+                    shortTitle = "Tech",
+                    subTitle = "Virtual",
+                    timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(11, 30)),
+                    textColor = Color.WHITE,
+                    backgroundColor = "#1B5E20".toColorInt(),
                 ),
             )
             weekData.add(
