@@ -9,7 +9,5 @@ import de.tobiasschuerg.weekview.data.Event
 data class WeekViewActions(
     val onEventClick: ((event: Event) -> Unit)? = null,
     val onEventLongPress: ((event: Event) -> Unit)? = null,
-    val onSwipeLeft: (() -> Unit)? = null,
-    val onSwipeRight: (() -> Unit)? = null,
     val onScalingFactorChange: ((Float) -> Unit)? = null,
 )

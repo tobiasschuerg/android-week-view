@@ -104,24 +104,6 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                 events = remainingEvents
                                 Toast.makeText(this@ComposeWeekViewActivity, "Removed event ${event.title}", Toast.LENGTH_SHORT).show()
                             },
-                            onSwipeLeft = {
-                                // Next week
-                                val nextStart = currentDateRange.start.plusWeeks(1)
-                                val nextEnd = currentDateRange.endInclusive.plusWeeks(1)
-                                currentDateRange = LocalDateRange(nextStart, nextEnd)
-                                weekData = EventCreator.createWeekData(currentDateRange)
-                                events = weekData.getSingleEvents()
-                                Log.d("WeekView", "Swiped left: $currentDateRange")
-                            },
-                            onSwipeRight = {
-                                // Previous week
-                                val prevStart = currentDateRange.start.minusWeeks(1)
-                                val prevEnd = currentDateRange.endInclusive.minusWeeks(1)
-                                currentDateRange = LocalDateRange(prevStart, prevEnd)
-                                weekData = EventCreator.createWeekData(currentDateRange)
-                                events = weekData.getSingleEvents()
-                                Log.d("WeekView", "Swiped right: $currentDateRange")
-                            },
                             onScalingFactorChange = {
                                 Log.d("WeekView", "Scaling factor changed: $it")
                             },

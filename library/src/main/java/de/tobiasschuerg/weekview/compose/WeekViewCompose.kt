@@ -1,29 +1,21 @@
 package de.tobiasschuerg.weekview.compose
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.Duration
 import java.time.LocalTime
-import kotlin.math.abs
 
 /**
  * Main Composable for the WeekView component.
@@ -35,11 +27,9 @@ fun WeekViewCompose(
     weekData: WeekData,
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
-    swipeOverlayColor: Color = Color.Unspecified,
     eventConfig: EventConfig = EventConfig(),
     actions: WeekViewActions = WeekViewActions(),
 ) {
-    val surfaceColor = if (swipeOverlayColor != Color.Unspecified) swipeOverlayColor else MaterialTheme.colorScheme.surface
     var localScalingFactor by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
     val activeWeekConfig = weekViewConfig.copy(scalingFactor = localScalingFactor)
     val transformableState =
@@ -53,25 +43,10 @@ fun WeekViewCompose(
             }
         }
 
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var animatingOffsetX by remember { mutableFloatStateOf(0f) }
-    var containerWidth by remember { mutableIntStateOf(0) }
-
     Box(
         modifier =
             modifier
-                .transformable(state = transformableState)
-                .weekViewGestures(
-                    onSwipeRight = { actions.onSwipeRight?.invoke() },
-                    onSwipeLeft = { actions.onSwipeLeft?.invoke() },
-                    getOffsetX = { offsetX },
-                    setOffsetX = { newOffset -> offsetX = newOffset },
-                    getAnimatingOffsetX = { animatingOffsetX },
-                    setAnimatingOffsetX = { newOffset -> animatingOffsetX = newOffset },
-                )
-                .pointerInput(Unit) {
-                    containerWidth = size.width
-                },
+                .transformable(state = transformableState),
     ) {
         // Render the background grid with integrated events
         WeekBackgroundCompose(
@@ -90,31 +65,5 @@ fun WeekViewCompose(
             onEventLongPress = actions.onEventLongPress,
             weekViewConfig = activeWeekConfig,
         )
-
-        val dragOffset = if (animatingOffsetX != 0f) animatingOffsetX else offsetX
-        val alpha = if (containerWidth > 0) (abs(dragOffset) / containerWidth).coerceIn(0f, 1f) else 0f
-        if (dragOffset > 0) {
-            Box(
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterStart)
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            translationX = dragOffset - containerWidth
-                        }
-                        .background(surfaceColor.copy(alpha = alpha)),
-            )
-        } else if (dragOffset < 0) {
-            Box(
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterEnd)
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            translationX = dragOffset + containerWidth
-                        }
-                        .background(surfaceColor.copy(alpha = alpha)),
-            )
-        }
     }
 }
