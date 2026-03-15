@@ -1,7 +1,8 @@
 package de.tobiasschuerg.weekview.compose
 
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -21,6 +23,9 @@ import java.time.LocalTime
  * Main Composable for the WeekView component.
  * This serves as the entry point for the Compose-based week view implementation.
  * Displays the background grid and renders events from the provided weekData.
+ *
+ * Pinch-to-zoom only activates on multi-touch (2+ fingers) so that single-finger
+ * horizontal swipes pass through to a parent HorizontalPager or similar container.
  */
 @Composable
 fun WeekViewCompose(
@@ -32,21 +37,34 @@ fun WeekViewCompose(
 ) {
     var localScalingFactor by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
     val activeWeekConfig = weekViewConfig.copy(scalingFactor = localScalingFactor)
-    val transformableState =
-        rememberTransformableState { zoomChange, _, _ ->
-            val newScalingFactor =
-                (localScalingFactor * zoomChange)
-                    .coerceIn(activeWeekConfig.minScalingFactor, activeWeekConfig.maxScalingFactor)
-            if (newScalingFactor != localScalingFactor) {
-                localScalingFactor = newScalingFactor
-                actions.onScalingFactorChange?.invoke(newScalingFactor)
-            }
-        }
 
     Box(
         modifier =
             modifier
-                .transformable(state = transformableState),
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false)
+                        do {
+                            val event = awaitPointerEvent()
+                            if (event.changes.size >= 2) {
+                                val zoom = event.calculateZoom()
+                                if (zoom != 1f) {
+                                    val newScalingFactor =
+                                        (localScalingFactor * zoom)
+                                            .coerceIn(
+                                                activeWeekConfig.minScalingFactor,
+                                                activeWeekConfig.maxScalingFactor,
+                                            )
+                                    if (newScalingFactor != localScalingFactor) {
+                                        localScalingFactor = newScalingFactor
+                                        actions.onScalingFactorChange?.invoke(newScalingFactor)
+                                    }
+                                    event.changes.forEach { it.consume() }
+                                }
+                            }
+                        } while (event.changes.any { it.pressed })
+                    }
+                },
     ) {
         // Render the background grid with integrated events
         WeekBackgroundCompose(
