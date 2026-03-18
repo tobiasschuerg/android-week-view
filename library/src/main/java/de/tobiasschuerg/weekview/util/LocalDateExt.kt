@@ -22,6 +22,17 @@ internal fun LocalDate.toShortDateStringWithoutYear(): String {
             IsoChronology.INSTANCE,
             locale,
         )
-    val noYearPattern = localizedPattern.replace(Regex("\\W*y+\\W*"), "")
+    val noYearPattern = removeYearFromPattern(localizedPattern)
     return format(DateTimeFormatter.ofPattern(noYearPattern, locale))
 }
+
+/**
+ * Removes the year field and its adjacent separators/quoted labels from a [DateTimeFormatter] pattern.
+ *
+ * Uses pattern-syntax-aware matching: separators are bare non-letter chars ([^A-Za-z']),
+ * and quoted literals ('...') are consumed whole — never split. This prevents
+ * locale-specific year labels like Russian 'г' (год = year) from leaving an unclosed
+ * string literal in the result.
+ */
+internal fun removeYearFromPattern(pattern: String): String =
+    pattern.replace(Regex("""(?:[^A-Za-z']|'[^']*')*y+(?:[^A-Za-z']|'[^']*')*"""), "")
