@@ -68,10 +68,13 @@ Library version is defined in `gradle.properties` (`libVersion`) and read by the
 
 ## Testing
 
-Unit tests in `library/src/test/` using JUnit 4:
+Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `WeekDataTest` — event addition, time span expansion, date range validation
 - `TimeSpanTest` — duration calculation, hourly time generation
 - `EventPositionUtilTest` — vertical offset/height calculations
 - `DayOfWeekUtilTest` — day-to-column mapping
+- `LocalDateExtTest` — date formatting/pattern helpers
+
+Instrumented Compose UI tests in `library/src/androidTest/` stay on JUnit 4 (`androidx.test`/`ui-test-junit4` have no JUnit 5 equivalent for on-device tests).
 
 Use the sample app (`app/` module) for manual integration testing.
