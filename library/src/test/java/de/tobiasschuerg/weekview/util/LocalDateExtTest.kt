@@ -2,8 +2,15 @@ package de.tobiasschuerg.weekview.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.time.LocalDate
+import java.util.Locale
 
 class LocalDateExtTest {
+    @Test
+    fun `short date formatting uses supplied locale`() {
+        assertEquals("9/2", LocalDate.of(2024, 9, 2).toShortDateStringWithoutYear(Locale.US))
+    }
+
     @Test
     fun `removeYearFromPattern removes year from German short pattern`() {
         assertEquals("dd.MM", removeYearFromPattern("dd.MM.yy"))
