@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.data
 
+import androidx.compose.runtime.mutableIntStateOf
 import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalTime
 
@@ -15,8 +16,13 @@ class WeekData(
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
     private val multiDayEvents: MutableList<Event.MultiDay> = mutableListOf()
+    private val eventIds: MutableSet<Long> = mutableSetOf()
+    private val changeVersionState = mutableIntStateOf(0)
     private var earliestStart: LocalTime = start
     private var latestEnd: LocalTime = end
+
+    internal val changeVersion: Int
+        get() = changeVersionState.intValue
 
     fun getTimeSpan(): TimeSpan? {
         val start = earliestStart
@@ -27,21 +33,35 @@ class WeekData(
 
     fun add(item: Event.AllDay) {
         require(dateRange.contains(item.date)) { "Event date is outside the allowed range: ${item.date}" }
+        requireUniqueId(item)
         allDays.add(item)
+        markChanged()
     }
 
     fun add(item: Event.MultiDay) {
         val overlaps = item.date <= dateRange.endInclusive && item.lastDate >= dateRange.start
         require(overlaps) { "MultiDay event (${item.date}..${item.lastDate}) does not overlap with the allowed range: $dateRange" }
+        requireUniqueId(item)
         multiDayEvents.add(item)
+        markChanged()
     }
 
     fun add(item: Event.Single) {
         require(dateRange.contains(item.date)) { "Event date ${item.date} is outside the allowed range: $dateRange" }
+        requireUniqueId(item)
         singleEvents.add(item)
 
         // Automatically adjust TimeSpan to accommodate the new event
         updateTimeSpanForEvent(item)
+        markChanged()
+    }
+
+    private fun requireUniqueId(event: Event) {
+        require(eventIds.add(event.id)) { "Event ID must be unique, but ${event.id} is already in use" }
+    }
+
+    private fun markChanged() {
+        changeVersionState.intValue++
     }
 
     /**
@@ -76,7 +96,9 @@ class WeekData(
         singleEvents.clear()
         allDays.clear()
         multiDayEvents.clear()
+        eventIds.clear()
         earliestStart = start
         latestEnd = end
+        markChanged()
     }
 }

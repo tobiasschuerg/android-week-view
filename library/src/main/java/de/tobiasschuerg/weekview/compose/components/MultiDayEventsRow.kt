@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,46 +46,50 @@ internal fun MultiDayEventsRow(
     val rows = packEventsIntoRows(multiDayEvents, firstDay, lastDay)
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        rows.forEach { row ->
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(24.dp),
-            ) {
-                row.forEach { event ->
-                    val clippedStart = maxOf(event.date, firstDay)
-                    val clippedEnd = minOf(event.lastDate, lastDay)
-                    val startIndex = ChronoUnit.DAYS.between(firstDay, clippedStart).toInt()
-                    val spanDays = ChronoUnit.DAYS.between(clippedStart, clippedEnd).toInt() + 1
+        rows.forEachIndexed { rowIndex, row ->
+            key(rowIndex) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp),
+                ) {
+                    row.forEach { event ->
+                        key(event.id) {
+                            val clippedStart = maxOf(event.date, firstDay)
+                            val clippedEnd = minOf(event.lastDate, lastDay)
+                            val startIndex = ChronoUnit.DAYS.between(firstDay, clippedStart).toInt()
+                            val spanDays = ChronoUnit.DAYS.between(clippedStart, clippedEnd).toInt() + 1
 
-                    Box(
-                        modifier =
-                            Modifier
-                                .offset(x = leftOffsetDp + columnWidth * startIndex)
-                                .width(columnWidth * spanDays)
-                                .height(24.dp)
-                                .padding(horizontal = 1.dp, vertical = 1.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(Color(event.backgroundColor))
-                                .combinedClickable(
-                                    role = Role.Button,
-                                    onClick = { onEventClick?.invoke(event) },
-                                    onLongClick = onEventLongPress?.let { { it(event) } },
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .offset(x = leftOffsetDp + columnWidth * startIndex)
+                                        .width(columnWidth * spanDays)
+                                        .height(24.dp)
+                                        .padding(horizontal = 1.dp, vertical = 1.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color(event.backgroundColor))
+                                        .combinedClickable(
+                                            role = Role.Button,
+                                            onClick = { onEventClick?.invoke(event) },
+                                            onLongClick = onEventLongPress?.let { { it(event) } },
+                                        )
+                                        .semantics {
+                                            contentDescription = "${event.title}, ${event.date} to ${event.lastDate}"
+                                        }
+                                        .padding(horizontal = 4.dp),
+                                contentAlignment = Alignment.CenterStart,
+                            ) {
+                                Text(
+                                    text = event.title,
+                                    color = Color(event.textColor),
+                                    fontSize = 11.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                 )
-                                .semantics {
-                                    contentDescription = "${event.title}, ${event.date} to ${event.lastDate}"
-                                }
-                                .padding(horizontal = 4.dp),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        Text(
-                            text = event.title,
-                            color = Color(event.textColor),
-                            fontSize = 11.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                            }
+                        }
                     }
                 }
             }
