@@ -55,6 +55,53 @@ class WeekDataTest {
     }
 
     @Test
+    fun `adding and clearing events increments the change version`() {
+        val initialVersion = weekData.changeVersion
+        weekData.add(
+            Event.AllDay(
+                id = 20L,
+                date = LocalDate.of(2024, 9, 3),
+                title = "Changed",
+                shortTitle = "C",
+                textColor = 0,
+                backgroundColor = 0,
+            ),
+        )
+
+        assertEquals(initialVersion + 1, weekData.changeVersion)
+
+        weekData.clear()
+
+        assertEquals(initialVersion + 2, weekData.changeVersion)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `duplicate event ids are rejected across event types`() {
+        weekData.add(
+            Event.Single(
+                id = 21L,
+                date = LocalDate.of(2024, 9, 2),
+                title = "Timed",
+                shortTitle = "T",
+                timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
+                backgroundColor = 0,
+                textColor = 0,
+            ),
+        )
+
+        weekData.add(
+            Event.AllDay(
+                id = 21L,
+                date = LocalDate.of(2024, 9, 3),
+                title = "All day",
+                shortTitle = "AD",
+                textColor = 0,
+                backgroundColor = 0,
+            ),
+        )
+    }
+
+    @Test
     fun `clear removes all events`() {
         val event =
             Event.Single(

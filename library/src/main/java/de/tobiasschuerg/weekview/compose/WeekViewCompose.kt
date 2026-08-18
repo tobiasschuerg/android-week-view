@@ -36,6 +36,7 @@ fun WeekViewCompose(
     actions: WeekViewActions = WeekViewActions(),
     state: WeekViewState = rememberWeekViewState(weekViewConfig.scalingFactor),
 ) {
+    weekData.changeVersion
     LaunchedEffect(weekViewConfig.scalingFactor) {
         state.syncConfiguredScalingFactor(weekViewConfig.scalingFactor)
     }

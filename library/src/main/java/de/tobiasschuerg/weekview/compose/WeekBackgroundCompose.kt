@@ -51,19 +51,23 @@ fun WeekBackgroundCompose(
     weekViewConfig: WeekViewConfig,
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
-    onDayClick: ((date: LocalDate) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
     scrollState: ScrollState = rememberScrollState(),
+    onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)
-    val today = LocalDate.now()
+    var today by remember { mutableStateOf(LocalDate.now()) }
     var now by remember { mutableStateOf(LocalTime.now()) }
 
-    LaunchedEffect(weekViewConfig.showCurrentTimeIndicator) {
-        if (!weekViewConfig.showCurrentTimeIndicator) return@LaunchedEffect
+    LaunchedEffect(weekViewConfig.showCurrentTimeIndicator, weekViewConfig.highlightCurrentDay) {
+        if (!weekViewConfig.showCurrentTimeIndicator && !weekViewConfig.highlightCurrentDay) return@LaunchedEffect
 
         while (true) {
-            now = LocalTime.now()
+            val currentDateTime = java.time.LocalDateTime.now()
+            today = currentDateTime.toLocalDate()
+            if (weekViewConfig.showCurrentTimeIndicator) {
+                now = currentDateTime.toLocalTime()
+            }
             val millisUntilNextMinute = 60_000L - (System.currentTimeMillis() % 60_000L)
             delay(millisUntilNextMinute)
         }

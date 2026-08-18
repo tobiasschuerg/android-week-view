@@ -13,5 +13,8 @@ data class WeekViewConfig(
         require(minScalingFactor <= maxScalingFactor) {
             "minScalingFactor ($minScalingFactor) must be <= maxScalingFactor ($maxScalingFactor)"
         }
+        require(scalingFactor in minScalingFactor..maxScalingFactor) {
+            "scalingFactor ($scalingFactor) must be between minScalingFactor ($minScalingFactor) and maxScalingFactor ($maxScalingFactor)"
+        }
     }
 }

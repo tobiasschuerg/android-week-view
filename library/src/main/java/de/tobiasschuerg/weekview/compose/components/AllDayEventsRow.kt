@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,36 +41,40 @@ internal fun AllDayEventsRow(
         Spacer(modifier = Modifier.width(leftOffsetDp))
         days.forEach { date ->
             val eventsForDay = allDayEvents.filter { it.date == date }
-            Column(
-                modifier = Modifier.width(columnWidth).padding(horizontal = 1.dp),
-            ) {
-                eventsForDay.forEach { event ->
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(24.dp)
-                                .padding(vertical = 1.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(Color(event.backgroundColor))
-                                .combinedClickable(
-                                    role = Role.Button,
-                                    onClick = { onEventClick?.invoke(event) },
-                                    onLongClick = onEventLongPress?.let { { it(event) } },
+            key(date) {
+                Column(
+                    modifier = Modifier.width(columnWidth).padding(horizontal = 1.dp),
+                ) {
+                    eventsForDay.forEach { event ->
+                        key(event.id) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(24.dp)
+                                        .padding(vertical = 1.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color(event.backgroundColor))
+                                        .combinedClickable(
+                                            role = Role.Button,
+                                            onClick = { onEventClick?.invoke(event) },
+                                            onLongClick = onEventLongPress?.let { { it(event) } },
+                                        )
+                                        .semantics {
+                                            contentDescription = "${event.title}, all day"
+                                        }
+                                        .padding(horizontal = 4.dp),
+                                contentAlignment = Alignment.CenterStart,
+                            ) {
+                                Text(
+                                    text = event.title,
+                                    color = Color(event.textColor),
+                                    fontSize = 11.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                 )
-                                .semantics {
-                                    contentDescription = "${event.title}, all day"
-                                }
-                                .padding(horizontal = 4.dp),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        Text(
-                            text = event.title,
-                            color = Color(event.textColor),
-                            fontSize = 11.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                            }
+                        }
                     }
                 }
             }

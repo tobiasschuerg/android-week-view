@@ -13,6 +13,7 @@ import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekViewConfig
 import de.tobiasschuerg.weekview.util.TimeSpan
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +44,7 @@ class WeekBackgroundComposeEventDisplayTest {
 
         composeTestRule.onNodeWithTag("DayHeader_$firstDay").assertHasClickAction().performClick()
 
-        assert(clickedDate == firstDay)
+        assertEquals(firstDay, clickedDate)
     }
 
     @Test
