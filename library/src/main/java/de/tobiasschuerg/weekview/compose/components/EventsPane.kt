@@ -16,6 +16,7 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 @Composable
 internal fun EventsPane(
@@ -29,6 +30,7 @@ internal fun EventsPane(
     gridStartTime: LocalTime,
     effectiveEndTime: LocalTime,
     scalingFactor: Float,
+    locale: Locale = Locale.getDefault(),
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     val eventsByDate = remember(events) { events.groupBy { it.date } }
@@ -50,6 +52,7 @@ internal fun EventsPane(
                         startTime = gridStartTime,
                         endTime = effectiveEndTime,
                         columnWidth = columnWidth,
+                        locale = locale,
                         onEventClick = onEventClick,
                         onEventLongPress = onEventLongPress,
                     )

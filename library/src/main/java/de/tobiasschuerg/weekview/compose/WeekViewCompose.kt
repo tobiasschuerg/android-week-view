@@ -40,7 +40,9 @@ fun WeekViewCompose(
     LaunchedEffect(weekViewConfig.scalingFactor) {
         state.syncConfiguredScalingFactor(weekViewConfig.scalingFactor)
     }
-    val activeWeekConfig = weekViewConfig.copy(scalingFactor = state.scalingFactor)
+    val clampedScalingFactor =
+        state.scalingFactor.coerceIn(weekViewConfig.minScalingFactor, weekViewConfig.maxScalingFactor)
+    val activeWeekConfig = weekViewConfig.copy(scalingFactor = clampedScalingFactor)
 
     Box(
         modifier =

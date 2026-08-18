@@ -10,6 +10,7 @@ import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
 import java.time.LocalTime
+import java.util.Locale
 
 /**
  * Composable for rendering multiple events with overlap handling.
@@ -24,6 +25,7 @@ fun EventsWithOverlapHandling(
     startTime: LocalTime,
     endTime: LocalTime,
     columnWidth: Dp,
+    locale: Locale = Locale.getDefault(),
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
 ) {
@@ -56,6 +58,7 @@ fun EventsWithOverlapHandling(
                         startTime = startTime,
                         columnWidth = columnWidth,
                         eventLayout = layout,
+                        locale = locale,
                         onEventClick = onEventClick,
                         onEventLongPress = onEventLongPress,
                     )

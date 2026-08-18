@@ -39,6 +39,7 @@ import de.tobiasschuerg.weekview.util.toLocalString
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 /**
  * Composable that renders individual events on the week view grid.
@@ -53,6 +54,7 @@ fun EventCompose(
     startTime: LocalTime,
     columnWidth: Dp,
     eventLayout: EventOverlapCalculator.EventLayout,
+    locale: Locale = Locale.getDefault(),
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
 ) {
@@ -96,13 +98,15 @@ fun EventCompose(
                 .clip(RoundedCornerShape(cornerRadius))
                 .background(backgroundColor)
                 .combinedClickable(
+                    enabled = onEventClick != null || onEventLongPress != null,
                     role = Role.Button,
                     onClick = { onEventClick?.invoke(event) },
                     onLongClick = onEventLongPress?.let { { it(event) } },
                 )
                 .semantics {
                     contentDescription =
-                        "${event.title}, ${event.timeSpan.start.toLocalString()} - ${event.timeSpan.endExclusive.toLocalString()}"
+                        "${event.title}, ${event.timeSpan.start.toLocalString(locale)} - " +
+                        event.timeSpan.endExclusive.toLocalString(locale)
                 }
                 .padding(start = 4.dp, top = 4.dp, end = 4.dp),
     ) {
@@ -139,7 +143,7 @@ fun EventCompose(
 
             // Time information (if enabled)
             if (eventConfig.showTimeEnd) {
-                val timeText = "${event.timeSpan.start.toLocalString()} - ${event.timeSpan.endExclusive.toLocalString()}"
+                val timeText = "${event.timeSpan.start.toLocalString(locale)} - ${event.timeSpan.endExclusive.toLocalString(locale)}"
 
                 Text(
                     text = timeText,

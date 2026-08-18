@@ -10,6 +10,6 @@ import java.time.LocalDate
 data class WeekViewActions(
     val onEventClick: ((event: Event) -> Unit)? = null,
     val onEventLongPress: ((event: Event) -> Unit)? = null,
-    val onDayClick: ((date: LocalDate) -> Unit)? = null,
     val onScalingFactorChange: ((Float) -> Unit)? = null,
+    val onDayClick: ((date: LocalDate) -> Unit)? = null,
 )
