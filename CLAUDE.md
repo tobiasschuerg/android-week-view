@@ -9,7 +9,7 @@ Android Week View is a Kotlin Android library for displaying weekly schedules/ti
 - **Package**: `de.tobiasschuerg.weekview`
 - **Modules**: `library/` (the published library) and `app/` (sample/demo app)
 - **Distribution**: JitPack from GitHub tags
-- **Min SDK**: 26, **Compile/Target SDK**: 36, **Java**: 17 toolchain
+- **Min SDK**: 26, **Compile/Target SDK**: 37, **Java**: 17 toolchain
 - Kotlin uses AGP 9.0 built-in Kotlin support (no separate `kotlin-android` plugin)
 - Dependency versions are in `gradle/libs.versions.toml`
 

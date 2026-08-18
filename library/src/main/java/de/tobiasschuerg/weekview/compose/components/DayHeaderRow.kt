@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.ConfigurationCompat
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -38,6 +40,9 @@ internal fun DayHeaderRow(
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
 ) {
+    val configuration = LocalConfiguration.current
+    val locale = ConfigurationCompat.getLocales(configuration).get(0) ?: Locale.getDefault()
+
     Row {
         Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
         days.forEach { date ->
@@ -71,11 +76,11 @@ internal fun DayHeaderRow(
                 }
             val dayName =
                 if (eventConfig.alwaysUseFullName) {
-                    date.dayOfWeek.getDisplayName(FULL, Locale.getDefault())
+                    date.dayOfWeek.getDisplayName(FULL, locale)
                 } else {
-                    date.dayOfWeek.getDisplayName(SHORT, Locale.getDefault())
+                    date.dayOfWeek.getDisplayName(SHORT, locale)
                 }
-            val shortDate = date.toShortDateStringWithoutYear()
+            val shortDate = date.toShortDateStringWithoutYear(locale)
             Column(
                 modifier = boxModifier,
                 horizontalAlignment = Alignment.CenterHorizontally,
