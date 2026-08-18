@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.ConfigurationCompat
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -27,7 +26,6 @@ import de.tobiasschuerg.weekview.util.toShortDateStringWithoutYear
 import java.time.LocalDate
 import java.time.format.TextStyle.FULL
 import java.time.format.TextStyle.SHORT
-import java.util.Locale
 
 @Composable
 internal fun DayHeaderRow(
@@ -40,8 +38,7 @@ internal fun DayHeaderRow(
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
 ) {
-    val configuration = LocalConfiguration.current
-    val locale = ConfigurationCompat.getLocales(configuration).get(0) ?: Locale.getDefault()
+    val locale = LocalLocale.current.platformLocale
 
     Row {
         Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
