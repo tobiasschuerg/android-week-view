@@ -3,6 +3,7 @@ package de.tobiasschuerg.weekview.compose
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -60,11 +61,8 @@ class WeekBackgroundComposeEventDisplayTest {
         // Assert
         composeTestRule.waitForIdle()
 
-        // Wait a bit more to ensure compose hierarchy is fully established
-        Thread.sleep(100)
-
         // Verify event is displayed with correct test tag
-        composeTestRule.onNodeWithTag("EventView_1").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("EventView_1").assertIsDisplayed().assert(hasClickAction())
     }
 
     @Test
@@ -103,7 +101,6 @@ class WeekBackgroundComposeEventDisplayTest {
 
         // Assert
         composeTestRule.waitForIdle()
-        Thread.sleep(100)
 
         // Verify event is displayed
         composeTestRule.onNodeWithTag("EventView_2").assertIsDisplayed()
@@ -157,7 +154,6 @@ class WeekBackgroundComposeEventDisplayTest {
 
         // Assert
         composeTestRule.waitForIdle()
-        Thread.sleep(100)
 
         // Verify both events are displayed by their tags
         composeTestRule.onNodeWithTag("EventView_3").assertIsDisplayed()
@@ -200,7 +196,6 @@ class WeekBackgroundComposeEventDisplayTest {
 
         // Assert
         composeTestRule.waitForIdle()
-        Thread.sleep(100)
 
         // Verify event is displayed with test tag
         composeTestRule.onNodeWithTag("EventView_5").assertIsDisplayed()
@@ -238,7 +233,6 @@ class WeekBackgroundComposeEventDisplayTest {
 
         // Assert
         composeTestRule.waitForIdle()
-        Thread.sleep(100)
 
         // Verify event is displayed
         composeTestRule.onNodeWithTag("EventView_6").assertIsDisplayed()
