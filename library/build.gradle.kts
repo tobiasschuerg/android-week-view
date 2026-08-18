@@ -80,8 +80,8 @@ dependencies {
     debugImplementation(libs.compose.ui.test.manifest)
 
     // Test dependencies
-    testImplementation(libs.junit)
-    testImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     // Android Test dependencies
     androidTestImplementation(libs.androidx.test.ext.junit)
@@ -89,6 +89,10 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 afterEvaluate {

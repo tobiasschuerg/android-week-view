@@ -2,8 +2,8 @@ package de.tobiasschuerg.weekview.util
 
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.data.Event
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
