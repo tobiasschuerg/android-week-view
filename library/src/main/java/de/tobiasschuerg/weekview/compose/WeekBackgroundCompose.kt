@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.compose
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -51,16 +52,19 @@ fun WeekBackgroundCompose(
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
+    scrollState: ScrollState = rememberScrollState(),
 ) {
     val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)
-    val scrollState = rememberScrollState()
     val today = LocalDate.now()
     var now by remember { mutableStateOf(LocalTime.now()) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(weekViewConfig.showCurrentTimeIndicator) {
+        if (!weekViewConfig.showCurrentTimeIndicator) return@LaunchedEffect
+
         while (true) {
             now = LocalTime.now()
-            delay(1000)
+            val millisUntilNextMinute = 60_000L - (System.currentTimeMillis() % 60_000L)
+            delay(millisUntilNextMinute)
         }
     }
 
