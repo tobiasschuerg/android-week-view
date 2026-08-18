@@ -42,6 +42,7 @@ internal fun DayHeaderRow(
     style: WeekViewStyle = defaultWeekViewStyle(),
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
+    locale: Locale = Locale.getDefault(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
     val locale = LocalLocale.current.platformLocale

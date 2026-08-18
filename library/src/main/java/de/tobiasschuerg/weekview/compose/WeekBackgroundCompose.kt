@@ -55,7 +55,13 @@ fun WeekBackgroundCompose(
     scrollState: ScrollState = rememberScrollState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
-    val metrics = rememberWeekViewMetrics(dateRange, timeRange, events, weekViewConfig.scalingFactor)
+    val metrics =
+        rememberWeekViewMetrics(
+            dateRange = dateRange,
+            timeRange = timeRange,
+            events = events,
+            scalingFactor = weekViewConfig.scalingFactor,
+        )
     var today by remember { mutableStateOf(LocalDate.now()) }
     var now by remember { mutableStateOf(LocalTime.now()) }
 
@@ -87,6 +93,7 @@ fun WeekBackgroundCompose(
                 style = style,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
+                locale = weekViewConfig.locale,
                 onDayClick = onDayClick,
             )
 
