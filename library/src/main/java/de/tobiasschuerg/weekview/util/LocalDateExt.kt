@@ -13,8 +13,7 @@ import java.util.Locale
  *
  * Example outputs: "2/18" (US), "18.02." (Germany), "18/02" (UK)
  */
-internal fun LocalDate.toShortDateStringWithoutYear(): String {
-    val locale = Locale.getDefault()
+internal fun LocalDate.toShortDateStringWithoutYear(locale: Locale = Locale.getDefault()): String {
     val localizedPattern =
         DateTimeFormatterBuilder.getLocalizedDateTimePattern(
             FormatStyle.SHORT,
