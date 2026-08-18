@@ -6,12 +6,12 @@ import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import de.tobiasschuerg.weekview.compose.state.WeekViewState
+import de.tobiasschuerg.weekview.compose.state.rememberWeekViewState
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
@@ -34,14 +34,17 @@ fun WeekViewCompose(
     modifier: Modifier = Modifier,
     eventConfig: EventConfig = EventConfig(),
     actions: WeekViewActions = WeekViewActions(),
+    state: WeekViewState = rememberWeekViewState(weekViewConfig.scalingFactor),
 ) {
-    var localScalingFactor by remember { mutableFloatStateOf(weekViewConfig.scalingFactor) }
-    val activeWeekConfig = weekViewConfig.copy(scalingFactor = localScalingFactor)
+    LaunchedEffect(weekViewConfig.scalingFactor) {
+        state.syncConfiguredScalingFactor(weekViewConfig.scalingFactor)
+    }
+    val activeWeekConfig = weekViewConfig.copy(scalingFactor = state.scalingFactor)
 
     Box(
         modifier =
             modifier
-                .pointerInput(Unit) {
+                .pointerInput(weekViewConfig.minScalingFactor, weekViewConfig.maxScalingFactor) {
                     awaitEachGesture {
                         awaitFirstDown(requireUnconsumed = false)
                         do {
@@ -49,14 +52,11 @@ fun WeekViewCompose(
                             if (event.changes.size >= 2) {
                                 val zoom = event.calculateZoom()
                                 if (zoom != 1f) {
-                                    val newScalingFactor =
-                                        (localScalingFactor * zoom)
-                                            .coerceIn(
-                                                activeWeekConfig.minScalingFactor,
-                                                activeWeekConfig.maxScalingFactor,
-                                            )
-                                    if (newScalingFactor != localScalingFactor) {
-                                        localScalingFactor = newScalingFactor
+                                    state.applyZoom(
+                                        zoom = zoom,
+                                        minScalingFactor = weekViewConfig.minScalingFactor,
+                                        maxScalingFactor = weekViewConfig.maxScalingFactor,
+                                    )?.let { newScalingFactor ->
                                         actions.onScalingFactorChange?.invoke(newScalingFactor)
                                     }
                                     event.changes.forEach { it.consume() }
@@ -82,6 +82,7 @@ fun WeekViewCompose(
             onEventClick = actions.onEventClick,
             onEventLongPress = actions.onEventLongPress,
             weekViewConfig = activeWeekConfig,
+            scrollState = state.scrollState,
         )
     }
 }
