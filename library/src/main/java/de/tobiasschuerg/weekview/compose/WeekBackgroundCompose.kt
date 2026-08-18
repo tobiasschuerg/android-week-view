@@ -51,6 +51,7 @@ fun WeekBackgroundCompose(
     weekViewConfig: WeekViewConfig,
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
+    onDayClick: ((date: LocalDate) -> Unit)? = null,
     style: WeekViewStyle = defaultWeekViewStyle(),
     scrollState: ScrollState = rememberScrollState(),
 ) {
@@ -82,6 +83,7 @@ fun WeekBackgroundCompose(
                 style = style,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
+                onDayClick = onDayClick,
             )
 
             if (multiDayEvents.isNotEmpty()) {

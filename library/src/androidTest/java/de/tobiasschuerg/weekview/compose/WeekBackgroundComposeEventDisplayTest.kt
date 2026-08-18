@@ -2,10 +2,11 @@ package de.tobiasschuerg.weekview.compose
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -23,6 +24,27 @@ import java.time.LocalTime
 class WeekBackgroundComposeEventDisplayTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+
+    @Test
+    fun dayHeaderCanBeClicked() {
+        val firstDay = LocalDate.of(2025, 9, 2)
+        var clickedDate: LocalDate? = null
+
+        composeTestRule.setContent {
+            MaterialTheme {
+                WeekBackgroundCompose(
+                    dateRange = LocalDateRange(firstDay, firstDay.plusDays(2)),
+                    timeRange = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
+                    weekViewConfig = WeekViewConfig(),
+                    onDayClick = { clickedDate = it },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("DayHeader_$firstDay").assertHasClickAction().performClick()
+
+        assert(clickedDate == firstDay)
+    }
 
     @Test
     fun eventIsDisplayedCorrectly() {
@@ -62,7 +84,7 @@ class WeekBackgroundComposeEventDisplayTest {
         composeTestRule.waitForIdle()
 
         // Verify event is displayed with correct test tag
-        composeTestRule.onNodeWithTag("EventView_1").assertIsDisplayed().assert(hasClickAction())
+        composeTestRule.onNodeWithTag("EventView_1").assertIsDisplayed().assertHasClickAction()
     }
 
     @Test

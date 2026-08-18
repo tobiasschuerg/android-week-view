@@ -81,6 +81,7 @@ fun WeekViewCompose(
             eventConfig = eventConfig,
             onEventClick = actions.onEventClick,
             onEventLongPress = actions.onEventLongPress,
+            onDayClick = actions.onDayClick,
             weekViewConfig = activeWeekConfig,
             scrollState = state.scrollState,
         )
