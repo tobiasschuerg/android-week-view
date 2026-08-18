@@ -31,6 +31,7 @@ import de.tobiasschuerg.weekview.util.toShortDateStringWithoutYear
 import java.time.LocalDate
 import java.time.format.TextStyle.FULL
 import java.time.format.TextStyle.SHORT
+import java.util.Locale
 
 @Composable
 internal fun DayHeaderRow(
@@ -42,11 +43,9 @@ internal fun DayHeaderRow(
     style: WeekViewStyle = defaultWeekViewStyle(),
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
-    locale: Locale = Locale.getDefault(),
+    locale: Locale = LocalLocale.current.platformLocale,
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
-    val locale = LocalLocale.current.platformLocale
-
     Row {
         Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
         days.forEach { date ->
