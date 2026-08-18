@@ -141,6 +141,9 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                 onScalingFactorChange = {
                                     Log.d("WeekView", "Scaling factor: $it")
                                 },
+                                onDayClick = { date ->
+                                    Toast.makeText(this@ComposeWeekViewActivity, "Clicked day: $date", Toast.LENGTH_SHORT).show()
+                                },
                             ),
                     )
                 }
