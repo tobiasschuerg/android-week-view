@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
@@ -29,27 +31,29 @@ internal fun EventsPane(
     scalingFactor: Float,
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
+    val eventsByDate = remember(events) { events.groupBy { it.date } }
+
     days.forEachIndexed { dayIndex, date ->
-        val eventsForDay = events.filter { it.date == date }
+        val eventsForDay = eventsByDate[date].orEmpty()
         if (eventsForDay.isNotEmpty()) {
-            Box(
-                modifier =
-                    Modifier
-                        .offset(x = dayIndex * columnWidth)
-                        .size(columnWidth, gridHeightDp),
-                // Height must be total grid height for proper event positioning
-            ) {
-                EventsWithOverlapHandling(
-                    events = eventsForDay,
-                    scalingFactor = scalingFactor,
-                    eventConfig = eventConfig,
-                    startTime = gridStartTime,
-                    endTime = effectiveEndTime,
-                    columnWidth = columnWidth,
-                    onEventClick = onEventClick,
-                    onEventLongPress = onEventLongPress,
-                    // style = style // Pass style to EventsWithOverlapHandling if it needs it in the future
-                )
+            key(date) {
+                Box(
+                    modifier =
+                        Modifier
+                            .offset(x = dayIndex * columnWidth)
+                            .size(columnWidth, gridHeightDp),
+                ) {
+                    EventsWithOverlapHandling(
+                        events = eventsForDay,
+                        scalingFactor = scalingFactor,
+                        eventConfig = eventConfig,
+                        startTime = gridStartTime,
+                        endTime = effectiveEndTime,
+                        columnWidth = columnWidth,
+                        onEventClick = onEventClick,
+                        onEventLongPress = onEventLongPress,
+                    )
+                }
             }
         }
     }

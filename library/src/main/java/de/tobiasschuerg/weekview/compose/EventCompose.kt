@@ -1,7 +1,7 @@
 package de.tobiasschuerg.weekview.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,11 +95,14 @@ fun EventCompose(
                 .let { if (eventConfig.eventSpacingDp > 0) it.padding(eventConfig.eventSpacingDp.dp) else it }
                 .clip(RoundedCornerShape(cornerRadius))
                 .background(backgroundColor)
-                .pointerInput(event.id) {
-                    detectTapGestures(
-                        onTap = { onEventClick?.invoke(event) },
-                        onLongPress = { onEventLongPress?.invoke(event) },
-                    )
+                .combinedClickable(
+                    role = Role.Button,
+                    onClick = { onEventClick?.invoke(event) },
+                    onLongClick = onEventLongPress?.let { { it(event) } },
+                )
+                .semantics {
+                    contentDescription =
+                        "${event.title}, ${event.timeSpan.start.toLocalString()} - ${event.timeSpan.endExclusive.toLocalString()}"
                 }
                 .padding(start = 4.dp, top = 4.dp, end = 4.dp),
     ) {

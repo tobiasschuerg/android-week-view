@@ -1,7 +1,7 @@
 package de.tobiasschuerg.weekview.compose.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,11 +52,13 @@ internal fun AllDayEventsRow(
                                 .padding(vertical = 1.dp)
                                 .clip(RoundedCornerShape(4.dp))
                                 .background(Color(event.backgroundColor))
-                                .pointerInput(event.id) {
-                                    detectTapGestures(
-                                        onTap = { onEventClick?.invoke(event) },
-                                        onLongPress = { onEventLongPress?.invoke(event) },
-                                    )
+                                .combinedClickable(
+                                    role = Role.Button,
+                                    onClick = { onEventClick?.invoke(event) },
+                                    onLongClick = onEventLongPress?.let { { it(event) } },
+                                )
+                                .semantics {
+                                    contentDescription = "${event.title}, all day"
                                 }
                                 .padding(horizontal = 4.dp),
                         contentAlignment = Alignment.CenterStart,
