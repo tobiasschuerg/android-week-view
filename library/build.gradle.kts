@@ -13,7 +13,7 @@ java {
 android {
     defaultConfig {
         minSdk = 26
-        compileSdk = 36
+        compileSdk = 37
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,11 +47,11 @@ android {
     namespace = "de.tobiasschuerg.weekview"
 
     lint {
-        targetSdk = 36
+        targetSdk = 37
     }
 
     testOptions {
-        targetSdk = 36
+        targetSdk = 37
     }
 }
 
