@@ -4,7 +4,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -47,6 +49,17 @@ class WeekBackgroundComposeEventDisplayTest {
         assertEquals(firstDay, clickedDate)
     }
 
+    /**
+     * Waits for the semantics tree to actually publish nodes with the given [tags]
+     * instead of relying on [ComposeTestRule.waitForIdle] alone, which can return
+     * before the freshly recomposed hierarchy is fully published.
+     */
+    private fun ComposeTestRule.waitUntilTagsAreDisplayed(vararg tags: String) {
+        waitUntil(timeoutMillis = 1_000) {
+            tags.all { tag -> onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty() }
+        }
+    }
+
     @Test
     fun eventIsDisplayedCorrectly() {
         // Arrange
@@ -77,12 +90,13 @@ class WeekBackgroundComposeEventDisplayTest {
                         ),
                     timeRange = event.timeSpan,
                     weekViewConfig = WeekViewConfig(),
+                    onEventClick = {},
                 )
             }
         }
 
         // Assert
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntilTagsAreDisplayed("EventView_1")
 
         // Verify event is displayed with correct test tag
         composeTestRule.onNodeWithTag("EventView_1").assertIsDisplayed().assertHasClickAction()
@@ -123,7 +137,7 @@ class WeekBackgroundComposeEventDisplayTest {
         }
 
         // Assert
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntilTagsAreDisplayed("EventView_2")
 
         // Verify event is displayed
         composeTestRule.onNodeWithTag("EventView_2").assertIsDisplayed()
@@ -176,7 +190,7 @@ class WeekBackgroundComposeEventDisplayTest {
         }
 
         // Assert
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntilTagsAreDisplayed("EventView_3", "EventView_4")
 
         // Verify both events are displayed by their tags
         composeTestRule.onNodeWithTag("EventView_3").assertIsDisplayed()
@@ -218,7 +232,7 @@ class WeekBackgroundComposeEventDisplayTest {
         }
 
         // Assert
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntilTagsAreDisplayed("EventView_5")
 
         // Verify event is displayed with test tag
         composeTestRule.onNodeWithTag("EventView_5").assertIsDisplayed()
@@ -255,7 +269,7 @@ class WeekBackgroundComposeEventDisplayTest {
         }
 
         // Assert
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntilTagsAreDisplayed("EventView_6")
 
         // Verify event is displayed
         composeTestRule.onNodeWithTag("EventView_6").assertIsDisplayed()

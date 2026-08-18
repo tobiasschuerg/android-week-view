@@ -167,6 +167,7 @@ fun WeekBackgroundCompose(
                         gridStartTime = metrics.gridStartTime,
                         effectiveEndTime = metrics.effectiveEndTime,
                         scalingFactor = weekViewConfig.scalingFactor,
+                        locale = weekViewConfig.locale,
                         style = style,
                     )
                 }

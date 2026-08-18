@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -50,12 +51,14 @@ internal fun AllDayEventsRow(
                             Box(
                                 modifier =
                                     Modifier
+                                        .testTag("AllDayEventView_${event.id}")
                                         .fillMaxWidth()
                                         .height(24.dp)
                                         .padding(vertical = 1.dp)
                                         .clip(RoundedCornerShape(4.dp))
                                         .background(Color(event.backgroundColor))
                                         .combinedClickable(
+                                            enabled = onEventClick != null || onEventLongPress != null,
                                             role = Role.Button,
                                             onClick = { onEventClick?.invoke(event) },
                                             onLongClick = onEventLongPress?.let { { it(event) } },
