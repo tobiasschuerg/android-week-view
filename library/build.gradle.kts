@@ -57,9 +57,7 @@ android {
 
 dependencies {
     // Core Android dependencies
-    implementation(libs.androidx.annotation)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Compose BOM
     implementation(platform(libs.compose.bom))
@@ -73,7 +71,6 @@ dependencies {
     implementation(libs.compose.runtime)
     implementation(libs.compose.ui.geometry)
     implementation(libs.compose.ui.text)
-    implementation(libs.androidx.activity.compose)
 
     // Compose debugging tools
     debugImplementation(libs.compose.ui.tooling)
@@ -85,10 +82,10 @@ dependencies {
 
     // Android Test dependencies
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.activity.compose)
 }
 
 tasks.withType<Test> {
