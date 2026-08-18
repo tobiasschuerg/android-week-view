@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.compose.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLocale
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +42,7 @@ internal fun DayHeaderRow(
     style: WeekViewStyle = defaultWeekViewStyle(),
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
+    onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
     val locale = LocalLocale.current.platformLocale
 
@@ -79,7 +85,17 @@ internal fun DayHeaderRow(
                 }
             val shortDate = date.toShortDateStringWithoutYear(locale)
             Column(
-                modifier = boxModifier,
+                modifier =
+                    boxModifier
+                        .testTag("DayHeader_$date")
+                        .semantics {
+                            contentDescription = "$dayName, $shortDate"
+                        }
+                        .combinedClickable(
+                            enabled = onDayClick != null,
+                            role = Role.Button,
+                            onClick = { onDayClick?.invoke(date) },
+                        ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(

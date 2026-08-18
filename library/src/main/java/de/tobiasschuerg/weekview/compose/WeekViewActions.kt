@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.compose
 
 import de.tobiasschuerg.weekview.data.Event
+import java.time.LocalDate
 
 /**
  * Grouped callbacks for the Compose WeekView API.
@@ -9,5 +10,6 @@ import de.tobiasschuerg.weekview.data.Event
 data class WeekViewActions(
     val onEventClick: ((event: Event) -> Unit)? = null,
     val onEventLongPress: ((event: Event) -> Unit)? = null,
+    val onDayClick: ((date: LocalDate) -> Unit)? = null,
     val onScalingFactorChange: ((Float) -> Unit)? = null,
 )
