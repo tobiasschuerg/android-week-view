@@ -44,4 +44,41 @@ object EventPositionUtil {
 
         return Pair(topOffset, eventHeight)
     }
+
+    /** Minimum entry height for a title to be allowed to wrap onto a second line instead of eliding. */
+    private val MIN_HEIGHT_FOR_TWO_LINE_TITLE = 72.dp
+
+    /**
+     * Whether an event entry of the given height has enough room to let its title
+     * wrap onto a second line instead of being ellipsized to one.
+     */
+    fun allowsTwoLineTitle(eventHeight: Dp): Boolean = eventHeight >= MIN_HEIGHT_FOR_TWO_LINE_TITLE
+
+    /**
+     * Minimum entry height for the start and end time to be split into their own lines
+     * (start at the top, end pinned to the bottom) instead of one combined line at the top.
+     */
+    private val MIN_HEIGHT_FOR_SPLIT_TIME_LABELS = 90.dp
+
+    /**
+     * Whether an event entry of the given height has enough room to show the start
+     * and end time as two separate labels instead of one combined "start - end" line.
+     */
+    fun allowsSplitTimeLabels(eventHeight: Dp): Boolean = eventHeight >= MIN_HEIGHT_FOR_SPLIT_TIME_LABELS
+
+    // Below the minimum height, fields are dropped by priority so the most useful
+    // information survives on very short entries instead of whatever happens to be
+    // first in the stack: name (always shown) > time > location > teacher.
+    private val MIN_HEIGHT_FOR_TIME_FIELD = 24.dp
+    private val MIN_HEIGHT_FOR_LOCATION_FIELD = 40.dp
+    private val MIN_HEIGHT_FOR_TEACHER_FIELD = 56.dp
+
+    /** Whether there's enough room to show the time field at all (priority 2, after the name). */
+    fun allowsTimeField(eventHeight: Dp): Boolean = eventHeight >= MIN_HEIGHT_FOR_TIME_FIELD
+
+    /** Whether there's enough room to show the location field (priority 3). */
+    fun allowsLocationField(eventHeight: Dp): Boolean = eventHeight >= MIN_HEIGHT_FOR_LOCATION_FIELD
+
+    /** Whether there's enough room to show the teacher/lower-text fields (priority 4, lowest). */
+    fun allowsTeacherField(eventHeight: Dp): Boolean = eventHeight >= MIN_HEIGHT_FOR_TEACHER_FIELD
 }
