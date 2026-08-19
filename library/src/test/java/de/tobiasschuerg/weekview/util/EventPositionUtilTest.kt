@@ -34,4 +34,49 @@ class EventPositionUtilTest {
         assertEquals(0.dp, topOffset)
         assertEquals(60.dp, eventHeight)
     }
+
+    @Test
+    fun `allowsTwoLineTitle is false below the minimum height`() {
+        assertEquals(false, EventPositionUtil.allowsTwoLineTitle(71.dp))
+    }
+
+    @Test
+    fun `allowsTwoLineTitle is true at and above the minimum height`() {
+        assertEquals(true, EventPositionUtil.allowsTwoLineTitle(72.dp))
+        assertEquals(true, EventPositionUtil.allowsTwoLineTitle(120.dp))
+    }
+
+    @Test
+    fun `allowsSplitTimeLabels is false below the minimum height`() {
+        assertEquals(false, EventPositionUtil.allowsSplitTimeLabels(89.dp))
+    }
+
+    @Test
+    fun `allowsSplitTimeLabels is true at and above the minimum height`() {
+        assertEquals(true, EventPositionUtil.allowsSplitTimeLabels(90.dp))
+        assertEquals(true, EventPositionUtil.allowsSplitTimeLabels(150.dp))
+    }
+
+    @Test
+    fun `field priority thresholds are ordered time below location below teacher`() {
+        // Below all thresholds: only the name (unconditional) would be shown.
+        assertEquals(false, EventPositionUtil.allowsTimeField(23.dp))
+        assertEquals(false, EventPositionUtil.allowsLocationField(23.dp))
+        assertEquals(false, EventPositionUtil.allowsTeacherField(23.dp))
+
+        // Enough room for time only.
+        assertEquals(true, EventPositionUtil.allowsTimeField(24.dp))
+        assertEquals(false, EventPositionUtil.allowsLocationField(24.dp))
+        assertEquals(false, EventPositionUtil.allowsTeacherField(24.dp))
+
+        // Enough room for time + location.
+        assertEquals(true, EventPositionUtil.allowsTimeField(40.dp))
+        assertEquals(true, EventPositionUtil.allowsLocationField(40.dp))
+        assertEquals(false, EventPositionUtil.allowsTeacherField(40.dp))
+
+        // Enough room for all three.
+        assertEquals(true, EventPositionUtil.allowsTimeField(56.dp))
+        assertEquals(true, EventPositionUtil.allowsLocationField(56.dp))
+        assertEquals(true, EventPositionUtil.allowsTeacherField(56.dp))
+    }
 }
