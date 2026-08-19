@@ -114,6 +114,15 @@ val eventConfig = EventConfig(
 )
 ```
 
+Events adapt their layout to the available height automatically, dropping fields by
+priority (name > time > location > teacher) rather than clipping whatever renders first:
+
+- Short entries show only the name; time, location, and teacher are added back in as
+  the entry gets taller.
+- The start/end time is one combined line (`"09:00 - 10:30"`) until the entry is tall
+  enough to split into two labels — start at the top, end pinned to the bottom.
+- The title wraps onto a second line instead of eliding once there's room to spare.
+
 ### Callbacks
 
 ```kotlin
@@ -145,7 +154,7 @@ In your **app** `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.tobiasschuerg:android-week-view:4.0.0")
+    implementation("com.github.tobiasschuerg:android-week-view:4.2.0")
 
     // Required for Compose
     implementation(platform("androidx.compose:compose-bom:2026.02.00"))
@@ -155,6 +164,8 @@ dependencies {
 ```
 
 ## Version History
+
+**Unreleased** — Events now drop fields by priority (name > time > location > teacher) instead of clipping whatever renders first on short entries; start/end time splits into separate top/bottom labels once there's room; titles wrap to a second line when there's room to spare.
 
 **4.0.0** — Bumped minSdk to 26. Removed core library desugaring dependency.
 
@@ -166,7 +177,7 @@ dependencies {
 
 ## Sample App
 
-The `app/` module contains a sample app with four built-in timetables (University, Work, School, Conference) demonstrating different layouts, overlapping events, all-day/multi-day events, and a 3-day view. Switch between them via the top app bar menu.
+The `app/` module contains a sample app with five built-in timetables (University, Work, School, Conference, Special Cases) demonstrating different layouts, overlapping events, all-day/multi-day events, a 3-day view, and rendering edge cases like very short entries and long titles. Switch between them via the top app bar menu.
 
 ## Contributing
 
