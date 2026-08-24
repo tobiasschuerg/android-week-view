@@ -25,7 +25,7 @@ object SampleTimetableWork {
         // Monday
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = mon,
                 title = "Team Standup",
                 shortTitle = "Standup",
@@ -37,7 +37,7 @@ object SampleTimetableWork {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = mon,
                 title = "Sprint Planning",
                 shortTitle = "Planning",
@@ -50,7 +50,7 @@ object SampleTimetableWork {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = mon,
                 title = "1:1 with Manager",
                 shortTitle = "1:1",
@@ -65,7 +65,7 @@ object SampleTimetableWork {
         tue?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Team Standup",
                     shortTitle = "Standup",
@@ -77,7 +77,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Code Review Session",
                     shortTitle = "Review",
@@ -89,7 +89,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Design Workshop",
                     shortTitle = "Design",
@@ -106,7 +106,7 @@ object SampleTimetableWork {
         wed?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Team Standup",
                     shortTitle = "Standup",
@@ -119,7 +119,7 @@ object SampleTimetableWork {
             // Two meetings at the same time (overlap)
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Hiring Committee",
                     shortTitle = "Hiring",
@@ -131,7 +131,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Tech Sync",
                     shortTitle = "Tech",
@@ -143,7 +143,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Lunch & Learn",
                     shortTitle = "L&L",
@@ -156,7 +156,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Architecture Review",
                     shortTitle = "ArchReview",
@@ -172,7 +172,7 @@ object SampleTimetableWork {
         thu?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Team Standup",
                     shortTitle = "Standup",
@@ -184,7 +184,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Product Demo",
                     shortTitle = "Demo",
@@ -197,7 +197,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Retrospective",
                     shortTitle = "Retro",
@@ -214,7 +214,7 @@ object SampleTimetableWork {
         fri?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Team Standup",
                     shortTitle = "Standup",
@@ -226,7 +226,7 @@ object SampleTimetableWork {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Knowledge Sharing",
                     shortTitle = "KnowShare",
@@ -242,7 +242,7 @@ object SampleTimetableWork {
         if (days.size >= 2) {
             weekData.add(
                 Event.MultiDay(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = days[0],
                     title = "Team Offsite",
                     shortTitle = "Offsite",
@@ -257,7 +257,7 @@ object SampleTimetableWork {
         fri?.let { d ->
             weekData.add(
                 Event.AllDay(
-                    id = nextId,
+                    id = nextId.toString(),
                     date = d,
                     title = "Casual Friday",
                     shortTitle = "Casual",

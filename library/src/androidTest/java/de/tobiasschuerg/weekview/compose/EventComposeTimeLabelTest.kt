@@ -53,7 +53,7 @@ class EventComposeTimeLabelTest {
         DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale).format(time)
 
     private fun event(
-        id: Long,
+        id: String,
         start: LocalTime,
         duration: Duration,
         title: String = "Test Event",
@@ -70,7 +70,7 @@ class EventComposeTimeLabelTest {
         )
 
     private fun setEventContent(
-        id: Long,
+        id: String,
         start: LocalTime = LocalTime.of(9, 0),
         duration: Duration = Duration.ofMinutes(90),
         title: String = "Test Event",
@@ -107,7 +107,7 @@ class EventComposeTimeLabelTest {
         // 60 min at scalingFactor=1f -> eventHeight = 60.dp, below the 90.dp split threshold.
         val start = LocalTime.of(9, 0)
         val duration = Duration.ofMinutes(60)
-        setEventContent(id = 1L, start = start, duration = duration, eventConfig = EventConfig())
+        setEventContent(id = "1", start = start, duration = duration, eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTime_1")
 
@@ -121,7 +121,7 @@ class EventComposeTimeLabelTest {
         // 120 min at scalingFactor=1f -> eventHeight = 120.dp, above the 90.dp split threshold.
         val start = LocalTime.of(9, 0)
         val duration = Duration.ofMinutes(120)
-        setEventContent(id = 7L, start = start, duration = duration, eventConfig = EventConfig())
+        setEventContent(id = "7", start = start, duration = duration, eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTime_7", "EventTimeEnd_7")
 
@@ -136,7 +136,7 @@ class EventComposeTimeLabelTest {
     fun onlyStartTimeShownWhenEndTimeDisabled() {
         val start = LocalTime.of(9, 0)
         setEventContent(
-            id = 2L,
+            id = "2",
             start = start,
             eventConfig = EventConfig(showTimeStart = true, showTimeEnd = false),
         )
@@ -150,7 +150,7 @@ class EventComposeTimeLabelTest {
         val start = LocalTime.of(9, 0)
         val duration = Duration.ofMinutes(90)
         setEventContent(
-            id = 3L,
+            id = "3",
             start = start,
             duration = duration,
             eventConfig = EventConfig(showTimeStart = false, showTimeEnd = true),
@@ -166,7 +166,7 @@ class EventComposeTimeLabelTest {
     @Test
     fun noTimeLabelShownWhenBothDisabled() {
         setEventContent(
-            id = 4L,
+            id = "4",
             eventConfig = EventConfig(showTimeStart = false, showTimeEnd = false),
         )
 

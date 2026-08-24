@@ -25,7 +25,7 @@ object SampleTimetableUniversity {
         // Monday
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = mon,
                 title = "Linear Algebra",
                 shortTitle = "LinAlg",
@@ -38,7 +38,7 @@ object SampleTimetableUniversity {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = mon,
                 title = "Physics I",
                 shortTitle = "Phys",
@@ -51,7 +51,7 @@ object SampleTimetableUniversity {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = mon,
                 title = "Programming Lab",
                 shortTitle = "ProgLab",
@@ -66,7 +66,7 @@ object SampleTimetableUniversity {
         tue?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Analysis I",
                     shortTitle = "Ana",
@@ -79,7 +79,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Computer Architecture",
                     shortTitle = "CompArch",
@@ -92,7 +92,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Tutorial: LinAlg",
                     shortTitle = "Tut LinAlg",
@@ -109,7 +109,7 @@ object SampleTimetableUniversity {
             // Two electives at the same time (overlap)
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Elective: Machine Learning",
                     shortTitle = "ML",
@@ -122,7 +122,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Elective: Databases",
                     shortTitle = "DB",
@@ -135,7 +135,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Physics I",
                     shortTitle = "Phys",
@@ -148,7 +148,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Algorithms & Data Structures",
                     shortTitle = "ADS",
@@ -161,7 +161,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Tutorial: Analysis",
                     shortTitle = "Tut Ana",
@@ -177,7 +177,7 @@ object SampleTimetableUniversity {
         thu?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Linear Algebra",
                     shortTitle = "LinAlg",
@@ -190,7 +190,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Analysis I",
                     shortTitle = "Ana",
@@ -203,7 +203,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Physics Lab",
                     shortTitle = "PhysLab",
@@ -219,7 +219,7 @@ object SampleTimetableUniversity {
         fri?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Algorithms & Data Structures",
                     shortTitle = "ADS",
@@ -232,7 +232,7 @@ object SampleTimetableUniversity {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Programming Lab",
                     shortTitle = "ProgLab",
@@ -248,7 +248,7 @@ object SampleTimetableUniversity {
         wed?.let { d ->
             weekData.add(
                 Event.AllDay(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Enrollment Deadline",
                     shortTitle = "Deadline",
