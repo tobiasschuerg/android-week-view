@@ -56,7 +56,7 @@ fun MyWeekView() {
 ```kotlin
 // Timed event
 val meeting = Event.Single(
-    id = 1L,
+    id = "1",
     date = LocalDate.of(2026, 1, 15),
     title = "Team Meeting",
     shortTitle = "Meeting",
@@ -67,7 +67,7 @@ val meeting = Event.Single(
 
 // All-day event
 val holiday = Event.AllDay(
-    id = 2L,
+    id = "2",
     date = LocalDate.of(2026, 1, 16),
     title = "National Holiday",
     shortTitle = "Holiday",
@@ -77,7 +77,7 @@ val holiday = Event.AllDay(
 
 // Multi-day event (renders as a spanning bar)
 val conference = Event.MultiDay(
-    id = 3L,
+    id = "3",
     date = LocalDate.of(2026, 1, 20),
     title = "Tech Conference",
     shortTitle = "Conf",

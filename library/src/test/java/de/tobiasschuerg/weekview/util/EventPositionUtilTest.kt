@@ -13,7 +13,7 @@ class EventPositionUtilTest {
     fun `event at column start should have zero offset`() {
         val event =
             Event.Single(
-                id = 1L,
+                id = "1",
                 date = LocalDate.of(2025, 9, 2),
                 title = "Test Event",
                 shortTitle = "Test",

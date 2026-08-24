@@ -67,7 +67,7 @@ class WeekBackgroundComposeEventDisplayTest {
         val dateRange = LocalDateRange(testDate, testDate.plusDays(2)) // mind. 3 Tage
         val event =
             Event.Single(
-                id = 1L,
+                id = "1",
                 date = testDate,
                 title = "Test Event",
                 shortTitle = "Test",
@@ -109,7 +109,7 @@ class WeekBackgroundComposeEventDisplayTest {
         val dateRange = LocalDateRange(testDate, testDate.plusDays(2)) // mind. 3 Tage
         val event =
             Event.Single(
-                id = 2L,
+                id = "2",
                 date = testDate,
                 title = "Simple Event",
                 shortTitle = "Simple",
@@ -151,7 +151,7 @@ class WeekBackgroundComposeEventDisplayTest {
         val events =
             listOf(
                 Event.Single(
-                    id = 3L,
+                    id = "3",
                     date = testDate,
                     title = "Morning Event",
                     shortTitle = "Morning",
@@ -161,7 +161,7 @@ class WeekBackgroundComposeEventDisplayTest {
                     backgroundColor = 0xFF0000FF.toInt(),
                 ),
                 Event.Single(
-                    id = 4L,
+                    id = "4",
                     date = testDate,
                     title = "Afternoon Event",
                     shortTitle = "Afternoon",
@@ -204,7 +204,7 @@ class WeekBackgroundComposeEventDisplayTest {
         val dateRange = LocalDateRange(testDate, testDate.plusDays(2)) // mind. 3 Tage
         val event =
             Event.Single(
-                id = 5L,
+                id = "5",
                 date = testDate,
                 title = "Very Long Event Title That Should Be Shortened",
                 shortTitle = "Short",
@@ -245,7 +245,7 @@ class WeekBackgroundComposeEventDisplayTest {
         val dateRange = LocalDateRange(testDate, testDate.plusDays(2)) // mind. 3 Tage
         val event =
             Event.Single(
-                id = 6L,
+                id = "6",
                 date = testDate,
                 title = "Long Meeting",
                 shortTitle = "Meeting",

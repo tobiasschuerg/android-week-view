@@ -30,7 +30,7 @@ object SampleTimetableConference {
         // Day 1 — Opening & Keynotes
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Registration & Coffee",
                 shortTitle = "Reg",
@@ -42,7 +42,7 @@ object SampleTimetableConference {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Opening Keynote",
                 shortTitle = "Keynote",
@@ -55,7 +55,7 @@ object SampleTimetableConference {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Compose Internals",
                 shortTitle = "Compose",
@@ -68,7 +68,7 @@ object SampleTimetableConference {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Lunch Break",
                 shortTitle = "Lunch",
@@ -80,7 +80,7 @@ object SampleTimetableConference {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Workshop: Kotlin Multiplatform",
                 shortTitle = "KMP",
@@ -92,7 +92,7 @@ object SampleTimetableConference {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Panel: Future of Mobile",
                 shortTitle = "Panel",
@@ -104,7 +104,7 @@ object SampleTimetableConference {
         )
         weekData.add(
             Event.Single(
-                id = nextId++,
+                id = (nextId++).toString(),
                 date = day1,
                 title = "Networking Reception",
                 shortTitle = "Network",
@@ -119,7 +119,7 @@ object SampleTimetableConference {
         day2?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Keynote: AI in Dev Tools",
                     shortTitle = "AI Talk",
@@ -132,7 +132,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Performance Optimization",
                     shortTitle = "Perf",
@@ -145,7 +145,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Lunch Break",
                     shortTitle = "Lunch",
@@ -157,7 +157,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Workshop: Testing Strategies",
                     shortTitle = "Testing",
@@ -169,7 +169,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Lightning Talks",
                     shortTitle = "Lightning",
@@ -181,7 +181,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Conference Dinner",
                     shortTitle = "Dinner",
@@ -197,7 +197,7 @@ object SampleTimetableConference {
         day3?.let { d ->
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Unconference Sessions",
                     shortTitle = "Unconf",
@@ -209,7 +209,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Panel: Open Source",
                     shortTitle = "OSS Panel",
@@ -221,7 +221,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Lunch Break",
                     shortTitle = "Lunch",
@@ -233,7 +233,7 @@ object SampleTimetableConference {
             )
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Closing Keynote",
                     shortTitle = "Closing",
@@ -250,7 +250,7 @@ object SampleTimetableConference {
         if (days.size >= 3) {
             weekData.add(
                 Event.MultiDay(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = days[0],
                     title = "DroidCon 2026",
                     shortTitle = "DroidCon",

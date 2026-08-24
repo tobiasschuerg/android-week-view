@@ -32,7 +32,7 @@ private val fullEventLayout =
     )
 
 private fun sampleEvent(
-    id: Long,
+    id: String,
     title: String = "Linear Algebra",
     shortTitle: String = "LinAlg",
     subTitle: String? = "Room A101",
@@ -81,7 +81,7 @@ private fun PreviewRow(
 private fun PreviewEventComposeBothTimesStacked() {
     PreviewRow(
         label = "Both times, 60 min (stacked)",
-        event = sampleEvent(id = 1L, duration = Duration.ofMinutes(60)),
+        event = sampleEvent(id = "1", duration = Duration.ofMinutes(60)),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
@@ -92,7 +92,7 @@ private fun PreviewEventComposeBothTimesStacked() {
 private fun PreviewEventComposeBothTimesStackedTall() {
     PreviewRow(
         label = "Both times, 120 min (stacked + location + teacher)",
-        event = sampleEvent(id = 10L, duration = Duration.ofMinutes(120)),
+        event = sampleEvent(id = "10", duration = Duration.ofMinutes(120)),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
@@ -103,7 +103,7 @@ private fun PreviewEventComposeBothTimesStackedTall() {
 private fun PreviewEventComposeBothTimesCorners() {
     PreviewRow(
         label = "Both times, 30 min (corners)",
-        event = sampleEvent(id = 12L, duration = Duration.ofMinutes(30), subTitle = null, upperText = null),
+        event = sampleEvent(id = "12", duration = Duration.ofMinutes(30), subTitle = null, upperText = null),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
@@ -114,7 +114,7 @@ private fun PreviewEventComposeBothTimesCorners() {
 private fun PreviewEventComposeShrunkTitle() {
     PreviewRow(
         label = "Both times enabled, 12 min (title only, shrunk)",
-        event = sampleEvent(id = 13L, title = "Mentor", shortTitle = "Mentor", duration = Duration.ofMinutes(12)),
+        event = sampleEvent(id = "13", title = "Mentor", shortTitle = "Mentor", duration = Duration.ofMinutes(12)),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
@@ -125,7 +125,7 @@ private fun PreviewEventComposeShrunkTitle() {
 private fun PreviewEventComposeStartTimeOnly() {
     PreviewRow(
         label = "Start time only, 120 min",
-        event = sampleEvent(id = 2L, duration = Duration.ofMinutes(120)),
+        event = sampleEvent(id = "2", duration = Duration.ofMinutes(120)),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = false),
     )
 }
@@ -136,7 +136,7 @@ private fun PreviewEventComposeStartTimeOnly() {
 private fun PreviewEventComposeEndTimeOnly() {
     PreviewRow(
         label = "End time only, 120 min",
-        event = sampleEvent(id = 3L, duration = Duration.ofMinutes(120)),
+        event = sampleEvent(id = "3", duration = Duration.ofMinutes(120)),
         eventConfig = EventConfig(showTimeStart = false, showTimeEnd = true),
     )
 }
@@ -147,7 +147,7 @@ private fun PreviewEventComposeEndTimeOnly() {
 private fun PreviewEventComposeNoTimes() {
     PreviewRow(
         label = "No time label, 90 min",
-        event = sampleEvent(id = 4L),
+        event = sampleEvent(id = "4"),
         eventConfig = EventConfig(showTimeStart = false, showTimeEnd = false),
     )
 }
@@ -158,7 +158,7 @@ private fun PreviewEventComposeNoTimes() {
 private fun PreviewEventComposeShortLesson() {
     PreviewRow(
         label = "Both times, 25 min",
-        event = sampleEvent(id = 5L, duration = Duration.ofMinutes(25), subTitle = null, upperText = null),
+        event = sampleEvent(id = "5", duration = Duration.ofMinutes(25), subTitle = null, upperText = null),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
@@ -174,7 +174,7 @@ private fun PreviewEventComposeLongTitleTallEntry() {
         label = "Long title, 120 min (2-line title + stacked time)",
         event =
             sampleEvent(
-                id = 6L,
+                id = "6",
                 title = "Introduction to Machine Learning and Neural Networks",
                 shortTitle = "Intro ML & Neural Networks",
                 duration = Duration.ofMinutes(120),
@@ -194,7 +194,7 @@ private fun PreviewEventComposeLongTitleShortEntry() {
         label = "Long title, 30 min (1-line, ellipsized)",
         event =
             sampleEvent(
-                id = 7L,
+                id = "7",
                 title = "Introduction to Machine Learning and Neural Networks",
                 shortTitle = "Intro ML & Neural Networks",
                 duration = Duration.ofMinutes(30),
@@ -211,7 +211,7 @@ private fun PreviewEventComposeAllFieldsMedium() {
         label = "All fields, 60 min (dropped by priority)",
         event =
             sampleEvent(
-                id = 8L,
+                id = "8",
                 duration = Duration.ofMinutes(60),
                 subTitle = "Subtitle",
                 upperText = "Upper Text",
@@ -236,7 +236,7 @@ private fun PreviewEventComposeAllFieldsTall() {
         label = "All fields, 150 min",
         event =
             sampleEvent(
-                id = 11L,
+                id = "11",
                 duration = Duration.ofMinutes(150),
                 subTitle = "Subtitle",
                 upperText = "Upper Text",
@@ -259,7 +259,7 @@ private fun PreviewEventComposeAllFieldsTall() {
 private fun PreviewEventComposeMinimalFields() {
     PreviewRow(
         label = "Minimal fields, 45 min",
-        event = sampleEvent(id = 9L, duration = Duration.ofMinutes(45), subTitle = null, upperText = null),
+        event = sampleEvent(id = "9", duration = Duration.ofMinutes(45), subTitle = null, upperText = null),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true, showSubtitle = false, showUpperText = false),
     )
 }

@@ -56,7 +56,7 @@ class EventComposeTimeLabelTest {
         DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale).format(time)
 
     private fun event(
-        id: Long,
+        id: String,
         start: LocalTime,
         duration: Duration,
         title: String = "Test Event",
@@ -73,7 +73,7 @@ class EventComposeTimeLabelTest {
         )
 
     private fun setEventContent(
-        id: Long,
+        id: String,
         start: LocalTime = LocalTime.of(9, 0),
         duration: Duration = Duration.ofMinutes(90),
         title: String = "Test Event",
@@ -110,7 +110,7 @@ class EventComposeTimeLabelTest {
         // 60 min at scalingFactor=1f -> 60.dp, well above the stacked threshold.
         val start = LocalTime.of(9, 0)
         val duration = Duration.ofMinutes(60)
-        setEventContent(id = 1L, start = start, duration = duration, eventConfig = EventConfig())
+        setEventContent(id = "1", start = start, duration = duration, eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTime_1", "EventTimeEnd_1")
 
@@ -126,7 +126,7 @@ class EventComposeTimeLabelTest {
         // 35 min -> 35.dp, 29.dp available: below stacked (36) but above both corners (26.17).
         val start = LocalTime.of(9, 0)
         val duration = Duration.ofMinutes(35)
-        setEventContent(id = 7L, start = start, duration = duration, eventConfig = EventConfig())
+        setEventContent(id = "7", start = start, duration = duration, eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTime_7", "EventTimeEnd_7")
 
@@ -141,7 +141,7 @@ class EventComposeTimeLabelTest {
     fun onlyStartTimeShownInCornerWhenBothWouldCrowdOutTheTitle() {
         // 30 min -> 30.dp, 24.dp available: below both corners (26.17) but above a single one (17.17).
         val start = LocalTime.of(9, 0)
-        setEventContent(id = 10L, start = start, duration = Duration.ofMinutes(30), eventConfig = EventConfig())
+        setEventContent(id = "10", start = start, duration = Duration.ofMinutes(30), eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTime_10")
 
@@ -152,7 +152,7 @@ class EventComposeTimeLabelTest {
     @Test
     fun noTimeLabelButTitleShownWhenTooShortForCorners() {
         // 12 min -> 12.dp, 10.dp available: below even a single corner band plus minimum title (17.17).
-        setEventContent(id = 8L, duration = Duration.ofMinutes(12), title = "Mentor", eventConfig = EventConfig())
+        setEventContent(id = "8", duration = Duration.ofMinutes(12), title = "Mentor", eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTitle_8")
 
@@ -165,7 +165,7 @@ class EventComposeTimeLabelTest {
     fun onlyStartTimeShownWhenEndTimeDisabled() {
         val start = LocalTime.of(9, 0)
         setEventContent(
-            id = 2L,
+            id = "2",
             start = start,
             eventConfig = EventConfig(showTimeStart = true, showTimeEnd = false),
         )
@@ -180,7 +180,7 @@ class EventComposeTimeLabelTest {
         val start = LocalTime.of(9, 0)
         val duration = Duration.ofMinutes(90)
         setEventContent(
-            id = 3L,
+            id = "3",
             start = start,
             duration = duration,
             eventConfig = EventConfig(showTimeStart = false, showTimeEnd = true),
@@ -197,7 +197,7 @@ class EventComposeTimeLabelTest {
     @Test
     fun noTimeLabelShownWhenBothDisabled() {
         setEventContent(
-            id = 4L,
+            id = "4",
             eventConfig = EventConfig(showTimeStart = false, showTimeEnd = false),
         )
 
@@ -215,7 +215,7 @@ class EventComposeTimeLabelTest {
             MaterialTheme {
                 Box(Modifier.fillMaxSize()) {
                     EventCompose(
-                        event = event(9L, start, duration).copy(subTitle = "Room 1", upperText = "Ms. Smith"),
+                        event = event("9", start, duration).copy(subTitle = "Room 1", upperText = "Ms. Smith"),
                         scalingFactor = 1f,
                         eventConfig = EventConfig(),
                         startTime = LocalTime.of(8, 0),

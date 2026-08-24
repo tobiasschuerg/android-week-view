@@ -16,7 +16,7 @@ class WeekData(
     private val singleEvents: MutableList<Event.Single> = mutableListOf()
     private val allDays: MutableList<Event.AllDay> = mutableListOf()
     private val multiDayEvents: MutableList<Event.MultiDay> = mutableListOf()
-    private val eventIds: MutableSet<Long> = mutableSetOf()
+    private val eventIds: MutableSet<String> = mutableSetOf()
     private val changeVersionState = mutableIntStateOf(0)
     private var earliestStart: LocalTime = start
     private var latestEnd: LocalTime = end

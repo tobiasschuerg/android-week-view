@@ -25,7 +25,7 @@ class WeekDataTest {
     fun `add single event updates time span`() {
         val event =
             Event.Single(
-                id = 1L,
+                id = "1",
                 date = LocalDate.of(2024, 9, 2),
                 title = "Test",
                 shortTitle = "T",
@@ -44,7 +44,7 @@ class WeekDataTest {
     fun `add all day event is stored correctly`() {
         val event =
             Event.AllDay(
-                id = 2L,
+                id = "2",
                 date = LocalDate.of(2024, 9, 3),
                 title = "AllDay",
                 shortTitle = "AD",
@@ -60,7 +60,7 @@ class WeekDataTest {
         val initialVersion = weekData.changeVersion
         weekData.add(
             Event.AllDay(
-                id = 20L,
+                id = "20",
                 date = LocalDate.of(2024, 9, 3),
                 title = "Changed",
                 shortTitle = "C",
@@ -81,7 +81,7 @@ class WeekDataTest {
         assertThrows<IllegalArgumentException> {
             weekData.add(
                 Event.Single(
-                    id = 21L,
+                    id = "21",
                     date = LocalDate.of(2024, 9, 2),
                     title = "Timed",
                     shortTitle = "T",
@@ -93,7 +93,7 @@ class WeekDataTest {
 
             weekData.add(
                 Event.AllDay(
-                    id = 21L,
+                    id = "21",
                     date = LocalDate.of(2024, 9, 3),
                     title = "All day",
                     shortTitle = "AD",
@@ -108,7 +108,7 @@ class WeekDataTest {
     fun `clear removes all events`() {
         val event =
             Event.Single(
-                id = 3L,
+                id = "3",
                 date = LocalDate.of(2024, 9, 4),
                 title = "ClearTest",
                 shortTitle = "CT",
@@ -125,7 +125,7 @@ class WeekDataTest {
     fun `add multi-day event is stored correctly`() {
         val event =
             Event.MultiDay(
-                id = 10L,
+                id = "10",
                 date = LocalDate.of(2024, 9, 2),
                 title = "Conference",
                 shortTitle = "Conf",
@@ -142,7 +142,7 @@ class WeekDataTest {
     fun `multi-day event partially overlapping start is accepted`() {
         val event =
             Event.MultiDay(
-                id = 11L,
+                id = "11",
                 date = LocalDate.of(2024, 8, 30),
                 title = "Overlap Start",
                 shortTitle = "OS",
@@ -158,7 +158,7 @@ class WeekDataTest {
     fun `multi-day event partially overlapping end is accepted`() {
         val event =
             Event.MultiDay(
-                id = 12L,
+                id = "12",
                 date = LocalDate.of(2024, 9, 5),
                 title = "Overlap End",
                 shortTitle = "OE",
@@ -175,7 +175,7 @@ class WeekDataTest {
         assertThrows<IllegalArgumentException> {
             weekData.add(
                 Event.MultiDay(
-                    id = 13L,
+                    id = "13",
                     date = LocalDate.of(2024, 8, 1),
                     title = "Outside",
                     shortTitle = "Out",
@@ -192,7 +192,7 @@ class WeekDataTest {
         assertThrows<IllegalArgumentException> {
             weekData.add(
                 Event.MultiDay(
-                    id = 14L,
+                    id = "14",
                     date = LocalDate.of(2024, 9, 4),
                     title = "Invalid",
                     shortTitle = "Inv",
@@ -208,7 +208,7 @@ class WeekDataTest {
     fun `isEmpty returns false when only multi-day events exist`() {
         weekData.add(
             Event.MultiDay(
-                id = 15L,
+                id = "15",
                 date = LocalDate.of(2024, 9, 1),
                 title = "Test",
                 shortTitle = "T",
@@ -224,7 +224,7 @@ class WeekDataTest {
     fun `clear removes multi-day events`() {
         weekData.add(
             Event.MultiDay(
-                id = 16L,
+                id = "16",
                 date = LocalDate.of(2024, 9, 1),
                 title = "Test",
                 shortTitle = "T",
@@ -242,7 +242,7 @@ class WeekDataTest {
     fun `add event outside date range throws exception`() {
         val event =
             Event.Single(
-                id = 4L,
+                id = "4",
                 // outside range
                 date = LocalDate.of(2024, 8, 31),
                 title = "Outside",

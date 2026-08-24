@@ -36,7 +36,7 @@ class EventClickabilityAccessibilityTest {
     fun singleEventWithoutHandlersIsDisabled() {
         val event =
             Event.Single(
-                id = 1L,
+                id = "1",
                 date = testDate,
                 title = "Test Event",
                 shortTitle = "Test",
@@ -63,7 +63,7 @@ class EventClickabilityAccessibilityTest {
     fun singleEventWithClickHandlerIsEnabledAndClickable() {
         val event =
             Event.Single(
-                id = 2L,
+                id = "2",
                 date = testDate,
                 title = "Test Event",
                 shortTitle = "Test",
@@ -91,7 +91,7 @@ class EventClickabilityAccessibilityTest {
     fun allDayEventWithoutHandlersIsDisabled() {
         val event =
             Event.AllDay(
-                id = 3L,
+                id = "3",
                 date = testDate,
                 title = "Holiday",
                 shortTitle = "Holiday",
@@ -117,7 +117,7 @@ class EventClickabilityAccessibilityTest {
     fun multiDayEventWithoutHandlersIsDisabled() {
         val event =
             Event.MultiDay(
-                id = 4L,
+                id = "4",
                 date = testDate,
                 title = "Conference",
                 shortTitle = "Conference",
