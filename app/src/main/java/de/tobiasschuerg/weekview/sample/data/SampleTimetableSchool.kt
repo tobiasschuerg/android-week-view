@@ -78,7 +78,7 @@ object SampleTimetableSchool {
         thu?.let { d ->
             weekData.add(
                 Event.AllDay(
-                    id = nextId,
+                    id = nextId.toString(),
                     date = d,
                     title = "Parent-Teacher Day",
                     shortTitle = "PT Day",

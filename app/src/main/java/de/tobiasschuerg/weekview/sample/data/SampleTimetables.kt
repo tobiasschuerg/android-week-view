@@ -52,7 +52,7 @@ internal fun lesson(
     color: Int,
 ): Event.Single =
     Event.Single(
-        id = id,
+        id = id.toString(),
         date = date,
         title = title,
         shortTitle = shortTitle,

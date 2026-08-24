@@ -29,8 +29,8 @@ object EventOverlapCalculator {
      * @param events List of events to calculate layouts for
      * @return Map from event ID to layout information
      */
-    fun calculateEventLayouts(events: List<Event.Single>): Map<Long, EventLayout> {
-        val layoutMap = mutableMapOf<Long, EventLayout>()
+    fun calculateEventLayouts(events: List<Event.Single>): Map<String, EventLayout> {
+        val layoutMap = mutableMapOf<String, EventLayout>()
 
         // Group events by date for separate overlap calculation per day
         val eventsByDate = events.groupBy { it.date }
@@ -47,7 +47,7 @@ object EventOverlapCalculator {
      */
     private fun calculateOverlapsForDay(
         dayEvents: List<Event.Single>,
-        layoutMap: MutableMap<Long, EventLayout>,
+        layoutMap: MutableMap<String, EventLayout>,
     ) {
         // Sort events by start time for consistent processing
         val sortedEvents = dayEvents.sortedBy { it.timeSpan.start }

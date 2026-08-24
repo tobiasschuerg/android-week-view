@@ -5,13 +5,13 @@ import java.time.Duration
 import java.time.LocalDate
 
 sealed class Event {
-    abstract val id: Long
+    abstract val id: String
     abstract val date: LocalDate
     abstract val title: String
     abstract val shortTitle: String
 
     data class Single(
-        override val id: Long,
+        override val id: String,
         override val date: LocalDate,
         override val title: String,
         override val shortTitle: String,
@@ -26,7 +26,7 @@ sealed class Event {
     }
 
     data class AllDay(
-        override val id: Long,
+        override val id: String,
         override val date: LocalDate,
         override val title: String,
         override val shortTitle: String,
@@ -35,7 +35,7 @@ sealed class Event {
     ) : Event()
 
     data class MultiDay(
-        override val id: Long,
+        override val id: String,
         override val date: LocalDate,
         override val title: String,
         override val shortTitle: String,
