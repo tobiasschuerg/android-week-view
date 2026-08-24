@@ -37,7 +37,7 @@ class EventContentSlotTest {
     private val testDate: LocalDate = LocalDate.of(2025, 9, 2)
     private val event =
         Event.Single(
-            id = 1L,
+            id = "1",
             date = testDate,
             title = "Math",
             shortTitle = "M",

@@ -91,7 +91,7 @@ object SampleTimetableSpecialCases {
             // Tall entry with every field so the lowest-priority tiers (teacher, lower text) show.
             weekData.add(
                 Event.Single(
-                    id = nextId++,
+                    id = (nextId++).toString(),
                     date = d,
                     title = "Physics Lab",
                     shortTitle = "Phys Lab",

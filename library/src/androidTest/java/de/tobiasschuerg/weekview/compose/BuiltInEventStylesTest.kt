@@ -45,7 +45,7 @@ class BuiltInEventStylesTest {
 
     private fun event(subTitle: String? = null): Event.Single =
         Event.Single(
-            id = 1L,
+            id = "1",
             date = LocalDate.of(2025, 9, 2),
             title = "Math",
             shortTitle = "M",

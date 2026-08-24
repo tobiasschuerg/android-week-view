@@ -49,7 +49,7 @@ class WeekBackgroundComposeScrollSyncTest {
     ) {
         val entry =
             Event.Single(
-                id = 1L,
+                id = "1",
                 date = firstDay,
                 title = "Entry",
                 shortTitle = "E",
