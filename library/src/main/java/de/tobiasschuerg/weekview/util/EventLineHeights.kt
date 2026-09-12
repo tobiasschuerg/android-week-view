@@ -1,0 +1,14 @@
+package de.tobiasschuerg.weekview.util
+
+import androidx.compose.ui.unit.Dp
+
+/** Line heights (already scaled by the user's font scale) of the text fields inside an event entry. */
+data class EventLineHeights(
+    /** Regular time label, used when start and end can be stacked with the title. */
+    val time: Dp,
+    /** Smaller time label, used when the labels have to sit in the corners beside the title. */
+    val compactTime: Dp,
+    val title: Dp,
+    val location: Dp,
+    val teacher: Dp,
+)

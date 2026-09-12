@@ -4,11 +4,11 @@ package de.tobiasschuerg.weekview.data
  * Configures the appearance of an event in the week view.
  *
  * The fields below enable a piece of content; whether it actually renders can still
- * depend on the entry's height. The title is always shown; time, then location
- * (subtitle), then upper text are dropped in that order on entries too short to fit
- * everything, so the most useful information survives rather than whatever happens to
- * be first in the layout. See [de.tobiasschuerg.weekview.util.EventPositionUtil] for
- * the height thresholds.
+ * depend on the entry's height. The title is always shown (shrunk to fit if needed);
+ * start time, end time, location (subtitle), upper text and lower text are dropped in
+ * that order on entries too low to fit everything, so the most useful information
+ * survives rather than whatever happens to be first in the layout. See
+ * [de.tobiasschuerg.weekview.util.EventFieldLayout] for how the room is divided.
  */
 data class EventConfig(
     /** If true, always uses the full event title in both portrait and landscape mode.

@@ -15,9 +15,13 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * Previews for [EventCompose] covering the start/end time label combinations, the
- * height-aware split of start/end into separate labels, and the height-aware
- * two-line title wrapping.
+ * Previews for [EventCompose] covering the start/end time label combinations, the three
+ * height-aware time label modes (stacked, corners, none - see EventFieldLayout), the
+ * shrunk title on very low entries and the height-aware two-line title wrapping.
+ *
+ * Entry height is duration * scalingFactor (1f here), so at font scale 1.0 both times
+ * are stacked from 42 min on, sit in the corners between 24 and 41 min and are dropped
+ * below that.
  */
 
 private val fullEventLayout =
@@ -71,29 +75,51 @@ private fun PreviewRow(
     }
 }
 
-/** Combined "start - end" label: entry too short (60 min < 90.dp threshold) to split. */
-@Preview(name = "Both times combined (60 min)", showBackground = true)
+/** Stacked labels: start above the title, end pinned to the bottom right. */
+@Preview(name = "Both times stacked (60 min)", showBackground = true)
 @Composable
-private fun PreviewEventComposeBothTimesCombined() {
+private fun PreviewEventComposeBothTimesStacked() {
     PreviewRow(
-        label = "Both times, 60 min (combined)",
+        label = "Both times, 60 min (stacked)",
         event = sampleEvent(id = 1L, duration = Duration.ofMinutes(60)),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
 
-/** Split labels: entry tall enough (120 min >= 90.dp threshold) for start-top / end-bottom. */
-@Preview(name = "Both times split (120 min)", showBackground = true)
+/** Stacked labels on a tall entry, with room left over for location and teacher. */
+@Preview(name = "Both times stacked (120 min)", showBackground = true)
 @Composable
-private fun PreviewEventComposeBothTimesSplit() {
+private fun PreviewEventComposeBothTimesStackedTall() {
     PreviewRow(
-        label = "Both times, 120 min (split: start top, end bottom)",
+        label = "Both times, 120 min (stacked + location + teacher)",
         event = sampleEvent(id = 10L, duration = Duration.ofMinutes(120)),
         eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
     )
 }
 
-/** Only the start time shown. Never splits - nothing to split when only one flag is enabled. */
+/** Corner labels: too low to stack, so start sits top-left and end bottom-right as small labels. */
+@Preview(name = "Both times in corners (30 min)", showBackground = true)
+@Composable
+private fun PreviewEventComposeBothTimesCorners() {
+    PreviewRow(
+        label = "Both times, 30 min (corners)",
+        event = sampleEvent(id = 12L, duration = Duration.ofMinutes(30), subTitle = null, upperText = null),
+        eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
+    )
+}
+
+/** Very low entry: no room for any time label, the title is shrunk to fit. */
+@Preview(name = "Title only, shrunk (12 min)", showBackground = true)
+@Composable
+private fun PreviewEventComposeShrunkTitle() {
+    PreviewRow(
+        label = "Both times enabled, 12 min (title only, shrunk)",
+        event = sampleEvent(id = 13L, title = "Mentor", shortTitle = "Mentor", duration = Duration.ofMinutes(12)),
+        eventConfig = EventConfig(showTimeStart = true, showTimeEnd = true),
+    )
+}
+
+/** Only the start time shown, stacked above the title. */
 @Preview(name = "Start time only", showBackground = true)
 @Composable
 private fun PreviewEventComposeStartTimeOnly() {
@@ -104,7 +130,7 @@ private fun PreviewEventComposeStartTimeOnly() {
     )
 }
 
-/** Only the end time shown. Never splits - nothing to split when only one flag is enabled. */
+/** Only the end time shown, pinned to the bottom right. */
 @Preview(name = "End time only", showBackground = true)
 @Composable
 private fun PreviewEventComposeEndTimeOnly() {
@@ -126,7 +152,7 @@ private fun PreviewEventComposeNoTimes() {
     )
 }
 
-/** Short lesson (25 min): combined time label still renders on the one available line. */
+/** Short lesson (25 min): still enough room for corner labels around a full-height title. */
 @Preview(name = "Both times - short lesson (25 min)", showBackground = true)
 @Composable
 private fun PreviewEventComposeShortLesson() {
@@ -145,7 +171,7 @@ private fun PreviewEventComposeShortLesson() {
 @Composable
 private fun PreviewEventComposeLongTitleTallEntry() {
     PreviewRow(
-        label = "Long title, 120 min (2-line title + split time)",
+        label = "Long title, 120 min (2-line title + stacked time)",
         event =
             sampleEvent(
                 id = 6L,
@@ -177,12 +203,12 @@ private fun PreviewEventComposeLongTitleShortEntry() {
     )
 }
 
-/** All optional fields enabled together with the combined time label, to check for overlap/clipping. */
-@Preview(name = "All fields + combined time (60 min)", showBackground = true)
+/** All optional fields enabled on a 60 min entry: only those that fit below the stacked labels are shown. */
+@Preview(name = "All fields (60 min)", showBackground = true)
 @Composable
-private fun PreviewEventComposeAllFieldsCombined() {
+private fun PreviewEventComposeAllFieldsMedium() {
     PreviewRow(
-        label = "All fields, 60 min (combined)",
+        label = "All fields, 60 min (dropped by priority)",
         event =
             sampleEvent(
                 id = 8L,
@@ -202,12 +228,12 @@ private fun PreviewEventComposeAllFieldsCombined() {
     )
 }
 
-/** All optional fields enabled together with split time labels, to check the bottom-pinned end time doesn't collide with lower text. */
-@Preview(name = "All fields + split times (150 min)", showBackground = true)
+/** All optional fields on a tall entry, to check the bottom-pinned end time doesn't collide with lower text. */
+@Preview(name = "All fields (150 min)", showBackground = true)
 @Composable
-private fun PreviewEventComposeAllFieldsSplit() {
+private fun PreviewEventComposeAllFieldsTall() {
     PreviewRow(
-        label = "All fields, 150 min (split)",
+        label = "All fields, 150 min",
         event =
             sampleEvent(
                 id = 11L,
@@ -227,7 +253,7 @@ private fun PreviewEventComposeAllFieldsSplit() {
     )
 }
 
-/** Minimal fields (title + combined time only), no subtitle/upper/lower text. */
+/** Minimal fields (title + stacked times only), no subtitle/upper/lower text. */
 @Preview(name = "Minimal fields + both times", showBackground = true)
 @Composable
 private fun PreviewEventComposeMinimalFields() {

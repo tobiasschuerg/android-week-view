@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,17 +75,7 @@ fun EventCompose(
 
     // Which optional fields fit, and how the time labels are laid out, is decided from the
     // real (font-scaled) line heights; the title is always shown. See EventFieldLayout.
-    val density = LocalDensity.current
-    val lineHeights =
-        with(density) {
-            EventLineHeights(
-                time = TIME_LINE_HEIGHT.toDp(),
-                compactTime = COMPACT_TIME_LINE_HEIGHT.toDp(),
-                title = TITLE_LINE_HEIGHT.toDp(),
-                location = LOCATION_LINE_HEIGHT.toDp(),
-                teacher = TEACHER_LINE_HEIGHT.toDp(),
-            )
-        }
+    val lineHeights = LocalDensity.current.eventLineHeights()
     val innerHeight = eventHeight - eventConfig.eventSpacingDp.dp * 2
     val verticalPadding = EventFieldLayout.verticalPadding(innerHeight, lineHeights)
     val availableHeight = innerHeight - verticalPadding * 2
@@ -113,19 +105,7 @@ fun EventCompose(
     val textColor = Color(event.textColor)
     val cornerRadius = 4.dp
 
-    // Determine which title to show based on config and orientation
-    val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT
-    val displayTitle =
-        if (eventConfig.alwaysUseFullName) {
-            event.title
-        } else {
-            if (isPortrait) {
-                event.shortTitle.ifBlank { event.title }
-            } else {
-                event.title
-            }
-        }
+    val displayTitle = displayTitle(event, eventConfig)
 
     Box(
         modifier =
@@ -255,6 +235,29 @@ fun EventCompose(
                         .testTag("EventTimeEnd_${event.id}"),
             )
         }
+    }
+}
+
+/** Line heights of the entry's text fields in dp, i.e. scaled by the current font scale. */
+private fun Density.eventLineHeights(): EventLineHeights =
+    EventLineHeights(
+        time = TIME_LINE_HEIGHT.toDp(),
+        compactTime = COMPACT_TIME_LINE_HEIGHT.toDp(),
+        title = TITLE_LINE_HEIGHT.toDp(),
+        location = LOCATION_LINE_HEIGHT.toDp(),
+        teacher = TEACHER_LINE_HEIGHT.toDp(),
+    )
+
+/** Full title always when configured so, otherwise the short title in portrait and the full title in landscape. */
+@Composable
+private fun displayTitle(
+    event: Event.Single,
+    eventConfig: EventConfig,
+): String {
+    val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    return when {
+        eventConfig.alwaysUseFullName || !isPortrait -> event.title
+        else -> event.shortTitle.ifBlank { event.title }
     }
 }
 

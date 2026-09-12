@@ -3,42 +3,6 @@ package de.tobiasschuerg.weekview.util
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/** Line heights (already scaled by the user's font scale) of the text fields inside an event entry. */
-data class EventLineHeights(
-    /** Regular time label, used when start and end can be stacked with the title. */
-    val time: Dp,
-    /** Smaller time label, used when the labels have to sit in the corners beside the title. */
-    val compactTime: Dp,
-    val title: Dp,
-    val location: Dp,
-    val teacher: Dp,
-)
-
-/** How the start/end time labels of an entry are laid out. */
-enum class TimeLabelMode {
-    /** Start on its own line above the title, end pinned below the rest of the fields. */
-    STACKED,
-
-    /** Small labels in the top-left and bottom-right corners, title centred between them. */
-    CORNERS,
-
-    /** Entry too low for any time label; only the title (and whatever else fits) is shown. */
-    NONE,
-}
-
-/** Which optional fields of an event entry fit into its box, see [EventFieldLayout.resolve]. */
-data class EventFieldVisibility(
-    val timeLabelMode: TimeLabelMode,
-    val showStartTime: Boolean,
-    val showEndTime: Boolean,
-    val showLocation: Boolean,
-    val showTeacher: Boolean,
-    val showLowerText: Boolean,
-    val twoLineTitle: Boolean,
-    /** Height the title may use; smaller than its regular line height when the entry is too low, so the font is shrunk to it. */
-    val titleHeight: Dp,
-)
-
 /**
  * Decides which fields of an event entry are shown based on the vertical room it has.
  *

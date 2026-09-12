@@ -26,7 +26,7 @@ Android Week View is a Kotlin Android library for displaying weekly schedules/ti
 ./gradlew assembleDebug        # Build debug APK (sample app)
 ```
 
-Always run `./gradlew ktlintFormat` before committing. Use conventional commit messages (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`).
+Always run `./gradlew ktlintFormat` before committing. One top-level class/object/enum per file. Use conventional commit messages (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`).
 
 ## Architecture
 
@@ -41,13 +41,14 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/` i
 ### Utility Layer (`util/`)
 - **EventOverlapCalculator** — BFS graph algorithm to find connected components of overlapping events, returns layout fractions (widthFraction, offsetFraction)
 - **EventPositionUtil** — vertical offset and height from scaling factor and visible time range
+- **EventFieldLayout** — decides which entry fields (time labels, location, teacher) fit the entry height, using real line heights; result types `EventFieldVisibility`, `TimeLabelMode`, `EventLineHeights` live in their own files
 - **DayOfWeekUtil** — locale-aware day-of-week to column index mapping
 
 ### Compose Layer (`compose/`)
 - **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, and `WeekViewActions` callbacks
 - **`components/`** — extracted composables: grid canvas, day headers, time axis, events pane, all-day/multi-day rows
 - **`state/`** — `WeekViewMetrics` for layout calculations; `rememberWeekViewMetrics` for Compose state integration
-- **`style/`** — `WeekViewStyle` theming with `WeekViewColors`
+- **`style/`** — `WeekViewStyle` theming with `WeekViewColors` (one file each)
 - **WeekViewGesture** — pinch-zoom via `TransformableState`, swipe navigation
 
 ## Key Patterns
@@ -72,6 +73,7 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `WeekDataTest` — event addition, time span expansion, date range validation
 - `TimeSpanTest` — duration calculation, hourly time generation
 - `EventPositionUtilTest` — vertical offset/height calculations
+- `EventFieldLayoutTest` — field visibility, time label mode and title height per available height
 - `DayOfWeekUtilTest` — day-to-column mapping
 - `LocalDateExtTest` — date formatting/pattern helpers
 - `LocalTimeExtTest` — time formatting/locale defaults

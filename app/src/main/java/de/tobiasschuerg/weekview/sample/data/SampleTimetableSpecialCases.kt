@@ -8,7 +8,8 @@ import java.time.LocalTime
 /**
  * Special Cases sample: entries chosen to stress-test rendering edge cases rather than
  * represent a realistic timetable - very short (10-25 minute) passing periods/breaks/lessons
- * to check the combined time label and priority-based field dropping at small entry heights,
+ * to check the corner time labels, the shrunk title and priority-based field dropping at
+ * small entry heights,
  * plus a pair of long-titled lessons to check that the title wraps to two lines when there's
  * room and ellipsizes to one when there isn't.
  */
