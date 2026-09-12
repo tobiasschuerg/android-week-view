@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
 }
 
-val libVersion: String by extra(property("libVersion") as String)
+extra.set("libVersion", property("libVersion") as String)
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

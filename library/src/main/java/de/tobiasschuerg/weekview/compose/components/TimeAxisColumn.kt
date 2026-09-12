@@ -14,11 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
@@ -65,12 +65,15 @@ internal fun TimeAxisColumn(
         if (showNowIndicator && now.isAfter(gridStartTime) && now.isBefore(gridEndTime)) {
             val nowPositionMinutes = ChronoUnit.MINUTES.between(gridStartTime, now)
             val nowPositionDp = (nowPositionMinutes / 60f * rowHeightDp.value).dp
-            val density = LocalDensity.current.density
 
             Box(
                 modifier =
                     Modifier
-                        .offset(y = nowPositionDp - (scrollState.value / density).dp - 12.dp)
+                        .offset {
+                            // Read the scroll position inside the layout lambda so scrolling
+                            // only triggers relayout instead of recomposition.
+                            IntOffset(x = 0, y = (nowPositionDp - 12.dp).roundToPx() - scrollState.value)
+                        }
                         .width(leftOffsetDp)
                         .height(24.dp),
                 contentAlignment = Alignment.Center,

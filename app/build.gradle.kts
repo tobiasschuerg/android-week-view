@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-val libVersion: String by rootProject.extra
+val libVersion = rootProject.extra["libVersion"] as String
 
 java {
     toolchain {
