@@ -4,10 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,25 +50,30 @@ internal fun DayHeaderRow(
     locale: Locale = LocalLocale.current.platformLocale,
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
-    Row {
-        Box(modifier = Modifier.size(leftOffsetDp, topOffsetDp))
+    // The row grows with its two text lines (e.g. under a large system font scale) and
+    // never shrinks below topOffsetDp, so the day name and date are never cut off.
+    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+        Box(modifier = Modifier.width(leftOffsetDp).fillMaxHeight())
         days.forEach { date ->
             val isToday = date == today
             val boxModifier =
                 if (highlightCurrentDay && isToday) {
                     Modifier
-                        .size(columnWidth, topOffsetDp)
+                        .width(columnWidth)
+                        .heightIn(min = topOffsetDp)
+                        .fillMaxHeight()
                         .background(style.colors.currentDayBackground)
-                        .padding(vertical = 2.dp)
                 } else {
                     Modifier
-                        .size(columnWidth, topOffsetDp)
-                        .padding(vertical = 2.dp)
+                        .width(columnWidth)
+                        .heightIn(min = topOffsetDp)
+                        .fillMaxHeight()
                 }
             val textStyle =
                 if (highlightCurrentDay && isToday) {
                     TextStyle(
                         fontSize = 13.sp,
+                        lineHeight = 16.sp,
                         color = style.colors.currentDayText,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -72,6 +81,7 @@ internal fun DayHeaderRow(
                 } else {
                     TextStyle(
                         fontSize = 13.sp,
+                        lineHeight = 16.sp,
                         color = style.colors.dayHeaderText,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
@@ -95,7 +105,7 @@ internal fun DayHeaderRow(
                             enabled = onDayClick != null,
                             role = Role.Button,
                             onClick = { onDayClick?.invoke(date) },
-                        ),
+                        ).padding(vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -108,6 +118,7 @@ internal fun DayHeaderRow(
                 Text(
                     text = shortDate,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     style = textStyle,
                     modifier = Modifier.fillMaxWidth(),
                 )

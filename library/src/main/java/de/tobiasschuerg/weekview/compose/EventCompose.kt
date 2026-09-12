@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,19 +20,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
+import de.tobiasschuerg.weekview.util.EventFieldLayout
+import de.tobiasschuerg.weekview.util.EventLineHeights
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
 import de.tobiasschuerg.weekview.util.EventPositionUtil
+import de.tobiasschuerg.weekview.util.TimeLabelMode
 import de.tobiasschuerg.weekview.util.toLocalString
 import java.time.LocalTime
 import java.util.Locale
@@ -58,29 +67,42 @@ fun EventCompose(
             scalingFactor = scalingFactor,
         )
 
-    val hasTimeLabel = eventConfig.showTimeStart || eventConfig.showTimeEnd
     val location = event.subTitle?.takeIf { eventConfig.showSubtitle && it.isNotBlank() }
     val teacher = event.upperText?.takeIf { eventConfig.showUpperText && it.isNotBlank() }
     val lowerText = event.lowerText?.takeIf { eventConfig.showLowerText && it.isNotBlank() }
 
-    // Priority-based visibility for short entries: the name (title) is always shown;
-    // time, location, and teacher are only added once there's enough room, in that
-    // priority order (name=1 > time=2 > location=3 > teacher=4), so very short entries
-    // surface the most useful info first instead of whatever happens to render first.
-    val showTimeField = hasTimeLabel && EventPositionUtil.allowsTimeField(eventHeight)
-    val showLocationField = location != null && EventPositionUtil.allowsLocationField(eventHeight)
-    val showTeacherField = teacher != null && EventPositionUtil.allowsTeacherField(eventHeight)
-    val showLowerTextField = lowerText != null && EventPositionUtil.allowsTeacherField(eventHeight)
-
-    val allowTwoLineTitle = EventPositionUtil.allowsTwoLineTitle(eventHeight)
-    // Splitting into two separate labels only makes sense when there's something to split
-    // (both start and end enabled) and only when there's enough room to not feel cramped;
-    // otherwise fall back to one combined "start - end" line.
-    val splitTimeLabels =
-        showTimeField &&
-            eventConfig.showTimeStart &&
-            eventConfig.showTimeEnd &&
-            EventPositionUtil.allowsSplitTimeLabels(eventHeight)
+    // Which optional fields fit, and how the time labels are laid out, is decided from the
+    // real (font-scaled) line heights; the title is always shown. See EventFieldLayout.
+    val density = LocalDensity.current
+    val lineHeights =
+        with(density) {
+            EventLineHeights(
+                time = TIME_LINE_HEIGHT.toDp(),
+                compactTime = COMPACT_TIME_LINE_HEIGHT.toDp(),
+                title = TITLE_LINE_HEIGHT.toDp(),
+                location = LOCATION_LINE_HEIGHT.toDp(),
+                teacher = TEACHER_LINE_HEIGHT.toDp(),
+            )
+        }
+    val innerHeight = eventHeight - eventConfig.eventSpacingDp.dp * 2
+    val verticalPadding = EventFieldLayout.verticalPadding(innerHeight, lineHeights)
+    val availableHeight = innerHeight - verticalPadding * 2
+    val fields =
+        EventFieldLayout.resolve(
+            availableHeight = availableHeight,
+            lines = lineHeights,
+            hasStartTime = eventConfig.showTimeStart,
+            hasEndTime = eventConfig.showTimeEnd,
+            hasLocation = location != null,
+            hasTeacher = teacher != null,
+            hasLowerText = lowerText != null,
+        )
+    val cornerLabels = fields.timeLabelMode == TimeLabelMode.CORNERS
+    // Shrink the title (font and line height together) to the band it was granted.
+    val titleScale = (fields.titleHeight / lineHeights.title).coerceIn(0f, 1f)
+    val titleFontSize = (TITLE_FONT_SIZE.value * titleScale).coerceAtLeast(MIN_TITLE_FONT_SIZE.value).sp
+    val titleLineHeight = (TITLE_LINE_HEIGHT.value * titleFontSize.value / TITLE_FONT_SIZE.value).sp
+    val fitsTitleLine = titleScale >= 1f
 
     // Apply overlap layout calculations
     val eventWidth = columnWidth * eventLayout.widthFraction
@@ -125,109 +147,144 @@ fun EventCompose(
                         "${event.title}, ${event.timeSpan.start.toLocalString(locale)} - " +
                         event.timeSpan.endExclusive.toLocalString(locale)
                 }
-                .padding(start = 4.dp, top = 4.dp, end = 4.dp),
+                .padding(horizontal = 4.dp, vertical = verticalPadding),
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
+                    // Stacked mode keeps the fields clear of the end time pinned to the bottom.
+                    // Corner mode centres them instead: the resolver only grants fields that
+                    // fit between the corner bands, and a title already at its minimum size
+                    // may overlap the bands slightly rather than being clipped.
+                    .padding(bottom = if (fields.showEndTime && !cornerLabels) lineHeights.time else 0.dp)
                     .testTag("EventViewInner_${event.id}"),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = if (fitsTitleLine && !cornerLabels) Arrangement.Top else Arrangement.Center,
         ) {
-            // Start/end time. Shown first so the entry reads time -> name -> location
-            // -> teacher, top to bottom. When there's enough room, start and end are
-            // split into their own labels (end pinned to the bottom, below); otherwise
-            // one combined "start - end" line here carries both. Dropped entirely on
-            // very short entries so the name below isn't crowded out (see showTimeField).
-            if (showTimeField) {
-                val timeText =
-                    if (splitTimeLabels) {
-                        event.timeSpan.start.toLocalString(locale)
-                    } else {
-                        buildString {
-                            if (eventConfig.showTimeStart) append(event.timeSpan.start.toLocalString(locale))
-                            if (eventConfig.showTimeStart && eventConfig.showTimeEnd) append(" - ")
-                            if (eventConfig.showTimeEnd) append(event.timeSpan.endExclusive.toLocalString(locale))
-                        }
-                    }
-
-                Text(
-                    text = timeText,
-                    color = textColor.copy(alpha = 0.7f),
-                    fontSize = 9.sp,
-                    lineHeight = 11.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.testTag("EventTime_${event.id}"),
+            // Start time on its own line above the title (stacked mode).
+            if (fields.showStartTime && !cornerLabels) {
+                TimeLabel(
+                    text = event.timeSpan.start.toLocalString(locale),
+                    color = textColor,
+                    textAlign = TextAlign.Start,
+                    compact = false,
+                    modifier = Modifier.fillMaxWidth().testTag("EventTime_${event.id}"),
                 )
             }
 
-            // Main title. Allowed to wrap onto a second line when the entry is tall
-            // enough to spare the room, otherwise kept to one line so it doesn't
-            // crowd out the other fields below.
-            Text(
+            // Main title. Pre-shrunk to the height it was granted (see titleScale), shrunk
+            // further by auto-size when it's too wide for the column, and allowed to wrap
+            // onto a second line when there's room to spare.
+            BasicText(
                 text = displayTitle,
-                color = textColor,
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
-                fontWeight = FontWeight.Medium,
-                maxLines = if (allowTwoLineTitle || !(showLocationField || showTimeField)) 2 else 1,
+                style =
+                    TextStyle(
+                        color = textColor,
+                        fontSize = titleFontSize,
+                        lineHeight = titleLineHeight,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                    ),
+                autoSize = TextAutoSize.StepBased(minFontSize = MIN_TITLE_FONT_SIZE, maxFontSize = titleFontSize),
+                maxLines = if (fields.twoLineTitle) 2 else 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth().testTag("EventTitle_${event.id}"),
             )
 
-            // Location (if enabled, available, and there's enough room - priority 3)
-            if (location != null && showLocationField) {
+            if (location != null && fields.showLocation) {
                 Text(
                     text = location,
                     color = textColor.copy(alpha = 0.8f),
                     fontSize = 10.sp,
-                    lineHeight = 12.sp,
+                    lineHeight = LOCATION_LINE_HEIGHT,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.testTag("EventLocation_${event.id}"),
                 )
             }
 
-            // Teacher (if enabled, available, and there's enough room - priority 4, lowest)
-            if (teacher != null && showTeacherField) {
+            if (teacher != null && fields.showTeacher) {
                 Text(
                     text = teacher,
                     color = textColor.copy(alpha = 0.8f),
                     fontSize = 8.sp,
-                    lineHeight = 10.sp,
+                    lineHeight = TEACHER_LINE_HEIGHT,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.testTag("EventTeacher_${event.id}"),
                 )
             }
 
-            // Lower text (if enabled, available, and there's enough room - same tier as teacher)
-            if (lowerText != null && showLowerTextField) {
+            if (lowerText != null && fields.showLowerText) {
                 Text(
                     text = lowerText,
                     color = textColor.copy(alpha = 0.8f),
                     fontSize = 8.sp,
-                    lineHeight = 10.sp,
+                    lineHeight = TEACHER_LINE_HEIGHT,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
         }
 
-        // End time, pinned to the bottom of the entry. Only rendered when there's
-        // enough room to split start/end into separate labels (see splitTimeLabels above).
-        if (splitTimeLabels) {
-            Text(
-                text = event.timeSpan.endExclusive.toLocalString(locale),
-                color = textColor.copy(alpha = 0.7f),
-                fontSize = 9.sp,
-                lineHeight = 11.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+        // Start time in the top-left corner (corner mode); the column reserves its band.
+        if (fields.showStartTime && cornerLabels) {
+            TimeLabel(
+                text = event.timeSpan.start.toLocalString(locale),
+                color = textColor,
+                textAlign = TextAlign.Start,
+                compact = true,
                 modifier =
                     Modifier
-                        .align(Alignment.BottomCenter)
+                        .align(Alignment.TopStart)
+                        .testTag("EventTime_${event.id}"),
+            )
+        }
+
+        // End time in the bottom-right corner in both modes; the column reserves its band.
+        if (fields.showEndTime) {
+            TimeLabel(
+                text = event.timeSpan.endExclusive.toLocalString(locale),
+                color = textColor,
+                textAlign = TextAlign.End,
+                compact = cornerLabels,
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
                         .testTag("EventTimeEnd_${event.id}"),
             )
         }
     }
 }
+
+@Composable
+private fun TimeLabel(
+    text: String,
+    color: Color,
+    textAlign: TextAlign,
+    compact: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        color = color.copy(alpha = 0.7f),
+        fontSize = if (compact) COMPACT_TIME_FONT_SIZE else TIME_FONT_SIZE,
+        lineHeight = if (compact) COMPACT_TIME_LINE_HEIGHT else TIME_LINE_HEIGHT,
+        textAlign = textAlign,
+        maxLines = 1,
+        softWrap = false,
+        overflow = TextOverflow.Clip,
+        modifier = modifier,
+    )
+}
+
+private val TITLE_FONT_SIZE = 12.sp
+private val MIN_TITLE_FONT_SIZE = 7.sp
+private val TIME_FONT_SIZE = 9.sp
+private val TIME_LINE_HEIGHT = 11.sp
+private val COMPACT_TIME_FONT_SIZE = 7.sp
+private val COMPACT_TIME_LINE_HEIGHT = 9.sp
+private val TITLE_LINE_HEIGHT = 14.sp
+private val LOCATION_LINE_HEIGHT = 12.sp
+private val TEACHER_LINE_HEIGHT = 10.sp

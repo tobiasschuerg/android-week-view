@@ -115,12 +115,16 @@ val eventConfig = EventConfig(
 ```
 
 Events adapt their layout to the available height automatically, dropping fields by
-priority (name > time > location > teacher) rather than clipping whatever renders first:
+priority (name > start time > end time > location > teacher) rather than clipping
+whatever renders first. The decision uses the real line heights, so it stays correct
+under any system font scale:
 
-- Short entries show only the name; time, location, and teacher are added back in as
-  the entry gets taller.
-- The start/end time is one combined line (`"09:00 - 10:30"`) until the entry is tall
-  enough to split into two labels — start at the top, end pinned to the bottom.
+- The name is always shown and shrinks to fit when the entry is very low or narrow.
+- Start and end time are never combined into one line (that does not fit a five-day
+  phone column). When the entry is tall enough they are stacked with the name - start
+  above, end pinned to the bottom right; when it isn't, they move into the top-left and
+  bottom-right corners as smaller labels; only very low entries drop them entirely.
+- Location and teacher are added back in as the entry gets taller.
 - The title wraps onto a second line instead of eliding once there's room to spare.
 
 ### Callbacks
