@@ -1,17 +1,26 @@
 package de.tobiasschuerg.weekview.sample.data
 
+import android.graphics.Color
 import androidx.core.graphics.toColorInt
+import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekData
+import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalTime
 
 /**
  * Special Cases sample: entries chosen to stress-test rendering edge cases rather than
- * represent a realistic timetable - very short (10-25 minute) passing periods/breaks/lessons
- * to check the corner time labels, the shrunk title and priority-based field dropping at
- * small entry heights,
- * plus a pair of long-titled lessons to check that the title wraps to two lines when there's
- * room and ellipsizes to one when there isn't.
+ * represent a realistic timetable.
+ *
+ * - Monday/Tuesday: very short (10-25 minute) passing periods, breaks and lessons to check
+ *   the shrunk title, the corner time labels and priority-based field dropping.
+ * - Wednesday: the same long title on a tall entry (wraps to two lines) and a short one
+ *   (ellipsized), plus a tall entry carrying every field (room, teacher, lower text).
+ * - Thursday: a 30-60 minute duration ladder with rooms and dark text on bright fills -
+ *   the range in which start/end switch between corner and stacked mode and the room
+ *   appears - so the transitions can be checked at any zoom level and system font scale.
+ * - Friday: overlapping entries, so the corner labels and shrunk titles are also checked
+ *   in half-width columns, including a 10-minute duty on top of a lesson.
  */
 object SampleTimetableSpecialCases {
     fun create(dateRange: LocalDateRange): WeekData {
@@ -21,6 +30,8 @@ object SampleTimetableSpecialCases {
         val mon = days[0]
         val tue = days.getOrNull(1)
         val wed = days.getOrNull(2)
+        val thu = days.getOrNull(3)
+        val fri = days.getOrNull(4)
 
         var nextId = 400L
 
@@ -76,6 +87,61 @@ object SampleTimetableSpecialCases {
                     "#6A1B9A".toColorInt(),
                 ),
             )
+
+            // Tall entry with every field so the lowest-priority tiers (teacher, lower text) show.
+            weekData.add(
+                Event.Single(
+                    id = nextId++,
+                    date = d,
+                    title = "Physics Lab",
+                    shortTitle = "Phys Lab",
+                    subTitle = "Lab B01",
+                    upperText = "Dr. Braun",
+                    lowerText = "Bring goggles",
+                    timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 30)),
+                    textColor = Color.WHITE,
+                    backgroundColor = "#00838F".toColorInt(),
+                ),
+            )
+        }
+
+        // Thursday: duration ladder 30 -> 60 min in 5-min steps with 5-min gaps, dark text on bright fills.
+        thu?.let { d ->
+            val fills = listOf("#FFE000", "#00AEFF", "#2FFF2F", "#FFE000", "#00AEFF", "#2FFF2F", "#FFE000")
+            var startMinutes = 8 * 60
+            (30..60 step 5).forEachIndexed { index, duration ->
+                val endMinutes = startMinutes + duration
+                weekData.add(
+                    lesson(
+                        nextId++,
+                        d,
+                        "$duration min",
+                        "$duration",
+                        "Room ${index + 1}",
+                        startMinutes / 60,
+                        startMinutes % 60,
+                        endMinutes / 60,
+                        endMinutes % 60,
+                        fills[index].toColorInt(),
+                        Color.BLACK,
+                    ),
+                )
+                startMinutes = endMinutes + 5
+            }
+        }
+
+        // Friday: overlapping entries share the column width.
+        fri?.let { d ->
+            // Two 40-min lessons offset by 20 min -> both at half width.
+            weekData.add(lesson(nextId++, d, "Overlap A", "Ovl A", "Room 1", 8, 0, 8, 40, "#1565C0".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Overlap B", "Ovl B", "Room 2", 8, 20, 9, 0, "#2E7D32".toColorInt()))
+            // A 10-min duty on top of a 55-min lesson (e.g. a teacher supervising during their own class).
+            weekData.add(lesson(nextId++, d, "Geography", "Geo", "Room 9", 9, 15, 10, 10, "#BF360C".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Hall Duty", "Duty", "", 9, 15, 9, 25, "#D50000".toColorInt()))
+            // Three-way overlap of short entries -> third-width columns with corner labels.
+            weekData.add(lesson(nextId++, d, "Tutoring", "Tut", "Room 4", 10, 30, 11, 10, "#6A1B9A".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Office Hours", "Office", "Room 5", 10, 40, 11, 20, "#E65100".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Meeting", "Meet", "", 10, 50, 11, 30, "#78909C".toColorInt()))
         }
 
         return weekData

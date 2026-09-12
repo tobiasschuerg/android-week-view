@@ -50,6 +50,7 @@ internal fun lesson(
     endHour: Int,
     endMin: Int,
     color: Int,
+    textColor: Int = Color.WHITE,
 ): Event.Single =
     Event.Single(
         id = id,
@@ -58,6 +59,6 @@ internal fun lesson(
         shortTitle = shortTitle,
         subTitle = room,
         timeSpan = TimeSpan(LocalTime.of(startHour, startMin), LocalTime.of(endHour, endMin)),
-        textColor = Color.WHITE,
+        textColor = textColor,
         backgroundColor = color,
     )
