@@ -35,8 +35,8 @@ import java.util.Locale
  * flag and never combined into one line. Stacked with the title when the entry is tall
  * enough, moved into the corners as smaller labels when it isn't, and dropped entirely
  * on very low entries (see EventFieldLayout). Thresholds below assume font scale 1.0:
- * stacked needs 14 + 2 * 11 = 36.dp, corners need 2 * 9 = 18.dp, plus 1.dp spacing and
- * 2.dp padding on each side.
+ * stacked needs 14 + 2 * 11 = 36.dp, both corners 2 * 9 + 8.17 = 26.17.dp, a single
+ * corner 17.17.dp, plus 1.dp spacing and 2.dp padding on each side.
  */
 @RunWith(AndroidJUnit4::class)
 class EventComposeTimeLabelTest {
@@ -123,9 +123,9 @@ class EventComposeTimeLabelTest {
 
     @Test
     fun bothTimesShownInCornersWhenTooShortToStack() {
-        // 30 min -> 30.dp, 24.dp available: below stacked (36) but above corners (18).
+        // 35 min -> 35.dp, 29.dp available: below stacked (36) but above both corners (26.17).
         val start = LocalTime.of(9, 0)
-        val duration = Duration.ofMinutes(30)
+        val duration = Duration.ofMinutes(35)
         setEventContent(id = 7L, start = start, duration = duration, eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTime_7", "EventTimeEnd_7")
@@ -138,8 +138,20 @@ class EventComposeTimeLabelTest {
     }
 
     @Test
+    fun onlyStartTimeShownInCornerWhenBothWouldCrowdOutTheTitle() {
+        // 30 min -> 30.dp, 24.dp available: below both corners (26.17) but above a single one (17.17).
+        val start = LocalTime.of(9, 0)
+        setEventContent(id = 10L, start = start, duration = Duration.ofMinutes(30), eventConfig = EventConfig())
+
+        composeTestRule.waitUntilTagsAreDisplayed("EventTime_10")
+
+        composeTestRule.onNodeWithTag("EventTime_10", useUnmergedTree = true).assertIsDisplayed().assertTextEquals(expectedTimeText(start))
+        composeTestRule.onNodeWithTag("EventTimeEnd_10", useUnmergedTree = true).assertDoesNotExist()
+    }
+
+    @Test
     fun noTimeLabelButTitleShownWhenTooShortForCorners() {
-        // 12 min -> 12.dp, 10.dp available: below the corner threshold (18).
+        // 12 min -> 12.dp, 10.dp available: below even a single corner band plus minimum title (17.17).
         setEventContent(id = 8L, duration = Duration.ofMinutes(12), title = "Mentor", eventConfig = EventConfig())
 
         composeTestRule.waitUntilTagsAreDisplayed("EventTitle_8")

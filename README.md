@@ -123,7 +123,9 @@ under any system font scale:
 - Start and end time are never combined into one line (that does not fit a five-day
   phone column). When the entry is tall enough they are stacked with the name - start
   above, end pinned to the bottom right; when it isn't, they move into the top-left and
-  bottom-right corners as smaller labels; only very low entries drop them entirely.
+  bottom-right corners as smaller labels, keeping only the start time once both would
+  crowd out the name; only very low entries drop them entirely. Labels that don't fit
+  a narrow overlap column even at their smallest size are hidden rather than clipped.
 - Location and teacher are added back in as the entry gets taller.
 - The title wraps onto a second line instead of eliding once there's room to spare.
 

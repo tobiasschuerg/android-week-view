@@ -9,6 +9,8 @@ data class EventLineHeights(
     /** Smaller time label, used when the labels have to sit in the corners beside the title. */
     val compactTime: Dp,
     val title: Dp,
+    /** Title at its minimum font size; corner labels must leave at least this much room for it. */
+    val minTitle: Dp,
     val location: Dp,
     val teacher: Dp,
 )

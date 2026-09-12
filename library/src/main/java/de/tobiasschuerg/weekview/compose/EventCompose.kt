@@ -16,8 +16,13 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -133,13 +138,19 @@ fun EventCompose(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    // Stacked mode keeps the fields clear of the end time pinned to the bottom.
-                    // Corner mode centres them instead: the resolver only grants fields that
-                    // fit between the corner bands, and a title already at its minimum size
-                    // may overlap the bands slightly rather than being clipped.
-                    .padding(bottom = if (fields.showEndTime && !cornerLabels) lineHeights.time else 0.dp)
-                    .testTag("EventViewInner_${event.id}"),
+                    // Keep the stacked fields clear of the time labels pinned to the corners;
+                    // the resolver guarantees at least a minimum-size title line stays free.
+                    .padding(
+                        top = if (cornerLabels && fields.showStartTime) lineHeights.compactTime else 0.dp,
+                        bottom =
+                            when {
+                                !fields.showEndTime -> 0.dp
+                                cornerLabels -> lineHeights.compactTime
+                                else -> lineHeights.time
+                            },
+                    ).testTag("EventViewInner_${event.id}"),
             horizontalAlignment = Alignment.CenterHorizontally,
+            // Corner mode and entries too low for a full title line centre the (shrunk) title.
             verticalArrangement = if (fitsTitleLine && !cornerLabels) Arrangement.Top else Arrangement.Center,
         ) {
             // Start time on its own line above the title (stacked mode).
@@ -244,6 +255,7 @@ private fun Density.eventLineHeights(): EventLineHeights =
         time = TIME_LINE_HEIGHT.toDp(),
         compactTime = COMPACT_TIME_LINE_HEIGHT.toDp(),
         title = TITLE_LINE_HEIGHT.toDp(),
+        minTitle = (TITLE_LINE_HEIGHT * (MIN_TITLE_FONT_SIZE.value / TITLE_FONT_SIZE.value)).toDp(),
         location = LOCATION_LINE_HEIGHT.toDp(),
         teacher = TEACHER_LINE_HEIGHT.toDp(),
     )
@@ -269,22 +281,32 @@ private fun TimeLabel(
     compact: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    val fontSize = if (compact) COMPACT_TIME_FONT_SIZE else TIME_FONT_SIZE
+    // Shrinks further in narrow overlap columns; a label that still doesn't fit at the
+    // minimum size is hidden rather than clipped, since a truncated time reads as a wrong one.
+    var overflows by remember { mutableStateOf(false) }
+    BasicText(
         text = text,
-        color = color.copy(alpha = 0.7f),
-        fontSize = if (compact) COMPACT_TIME_FONT_SIZE else TIME_FONT_SIZE,
-        lineHeight = if (compact) COMPACT_TIME_LINE_HEIGHT else TIME_LINE_HEIGHT,
-        textAlign = textAlign,
+        style =
+            TextStyle(
+                color = color.copy(alpha = 0.7f),
+                fontSize = fontSize,
+                lineHeight = if (compact) COMPACT_TIME_LINE_HEIGHT else TIME_LINE_HEIGHT,
+                textAlign = textAlign,
+            ),
+        autoSize = TextAutoSize.StepBased(minFontSize = MIN_TIME_FONT_SIZE, maxFontSize = fontSize),
         maxLines = 1,
         softWrap = false,
         overflow = TextOverflow.Clip,
-        modifier = modifier,
+        onTextLayout = { overflows = it.hasVisualOverflow },
+        modifier = modifier.alpha(if (overflows) 0f else 1f),
     )
 }
 
 private val TITLE_FONT_SIZE = 12.sp
 private val MIN_TITLE_FONT_SIZE = 7.sp
 private val TIME_FONT_SIZE = 9.sp
+private val MIN_TIME_FONT_SIZE = 5.sp
 private val TIME_LINE_HEIGHT = 11.sp
 private val COMPACT_TIME_FONT_SIZE = 7.sp
 private val COMPACT_TIME_LINE_HEIGHT = 9.sp

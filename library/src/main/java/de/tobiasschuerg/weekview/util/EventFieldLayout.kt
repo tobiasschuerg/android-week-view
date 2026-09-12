@@ -9,8 +9,9 @@ import androidx.compose.ui.unit.dp
  * The title is always shown (shrunk to fit if needed). Start and end time come next:
  * stacked with the title when the entry is tall enough, otherwise as smaller labels in
  * the corners so they never need to share a line with each other (a combined
- * "start - end" line does not fit a five-day phone column). Location, teacher and lower
- * text are then added in that order as long as they still fit. Working with the actual
+ * "start - end" line does not fit a five-day phone column); when even that leaves no
+ * room for a minimum-size title, only the start time is kept. Location, teacher and
+ * lower text are then added in that order as long as they still fit. Working with the actual
  * line heights rather than fixed dp thresholds keeps the decision correct under any
  * system font scale.
  */
@@ -26,17 +27,24 @@ object EventFieldLayout {
     ): EventFieldVisibility {
         val wantedTimeLabels = listOf(hasStartTime, hasEndTime).count { it }
         val stackedHeight = lines.title + lines.time * wantedTimeLabels
+        // Corner labels must leave at least a minimum-size title line between them, otherwise
+        // a wide title would collide with them. If both don't fit, keep just the start time.
+        val cornerHeight = lines.compactTime * wantedTimeLabels + lines.minTitle
+        val singleCornerHeight = lines.compactTime + lines.minTitle
         val mode =
             when {
                 wantedTimeLabels == 0 || availableHeight >= stackedHeight -> TimeLabelMode.STACKED
-                availableHeight >= lines.compactTime * 2 -> TimeLabelMode.CORNERS
+                availableHeight >= cornerHeight -> TimeLabelMode.CORNERS
+                wantedTimeLabels == 2 && availableHeight >= singleCornerHeight -> TimeLabelMode.CORNERS
                 else -> TimeLabelMode.NONE
             }
-        // Corner labels always block both bands so the centred title stays clear of them.
+        val showStartTime = mode != TimeLabelMode.NONE && hasStartTime
+        val showEndTime = mode != TimeLabelMode.NONE && hasEndTime && (mode == TimeLabelMode.STACKED || availableHeight >= cornerHeight)
+        val shownTimeLabels = listOf(showStartTime, showEndTime).count { it }
         val timeHeight =
             when (mode) {
-                TimeLabelMode.STACKED -> lines.time * wantedTimeLabels
-                TimeLabelMode.CORNERS -> lines.compactTime * 2
+                TimeLabelMode.STACKED -> lines.time * shownTimeLabels
+                TimeLabelMode.CORNERS -> lines.compactTime * shownTimeLabels
                 TimeLabelMode.NONE -> 0.dp
             }
 
@@ -58,8 +66,8 @@ object EventFieldLayout {
 
         return EventFieldVisibility(
             timeLabelMode = mode,
-            showStartTime = mode != TimeLabelMode.NONE && hasStartTime,
-            showEndTime = mode != TimeLabelMode.NONE && hasEndTime,
+            showStartTime = showStartTime,
+            showEndTime = showEndTime,
             showLocation = showLocation,
             showTeacher = showTeacher,
             showLowerText = showLowerText,

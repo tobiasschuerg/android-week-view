@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class EventFieldLayoutTest {
-    // Line heights at font scale 1.0 (11/9/14/12/10 sp).
-    private val lines = EventLineHeights(time = 11.dp, compactTime = 9.dp, title = 14.dp, location = 12.dp, teacher = 10.dp)
+    // Line heights at font scale 1.0 (11/9/14/8/12/10 sp); corners need 2 * 9 + 8 = 26, a single corner 17.
+    private val lines =
+        EventLineHeights(time = 11.dp, compactTime = 9.dp, title = 14.dp, minTitle = 8.dp, location = 12.dp, teacher = 10.dp)
 
     private fun resolve(
         availableHeight: Dp,
@@ -45,17 +46,31 @@ class EventFieldLayoutTest {
     }
 
     @Test
-    fun `should shrink title in corner mode when it does not fit between the bands`() {
-        // 24 - 2 * 9 = 6 left for the title
-        val fields = resolve(24.dp)
+    fun `should shrink title in corner mode down to its minimum line`() {
+        // 26 - 2 * 9 = 8 left for the title, exactly the minimum
+        val fields = resolve(26.dp)
 
         assertEquals(TimeLabelMode.CORNERS, fields.timeLabelMode)
-        assertEquals(6.dp, fields.titleHeight)
+        assertTrue(fields.showStartTime)
+        assertTrue(fields.showEndTime)
+        assertEquals(8.dp, fields.titleHeight)
     }
 
     @Test
-    fun `should drop time labels when the entry is too low for two compact bands`() {
-        val fields = resolve(17.dp)
+    fun `should keep only the start time in a corner when both would crowd out the title`() {
+        // 25 < 26 but >= 17: one corner band plus a minimum title line
+        val fields = resolve(25.dp)
+
+        assertEquals(TimeLabelMode.CORNERS, fields.timeLabelMode)
+        assertTrue(fields.showStartTime)
+        assertFalse(fields.showEndTime)
+        // 25 - 9 = 16 >= 14, so the title keeps its full height
+        assertEquals(14.dp, fields.titleHeight)
+    }
+
+    @Test
+    fun `should drop time labels when the entry is too low for one corner band plus a minimum title`() {
+        val fields = resolve(16.dp)
 
         assertEquals(TimeLabelMode.NONE, fields.timeLabelMode)
         assertFalse(fields.showStartTime)
