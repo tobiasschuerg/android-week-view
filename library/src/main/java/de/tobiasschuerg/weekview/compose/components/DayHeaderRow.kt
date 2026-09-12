@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -23,6 +25,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -50,6 +53,8 @@ internal fun DayHeaderRow(
     locale: Locale = LocalLocale.current.platformLocale,
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
+    val useFullNames = eventConfig.alwaysUseFullName && fullDayNamesFit(days, columnWidth, locale)
+
     // The row grows with its two text lines (e.g. under a large system font scale) and
     // never shrinks below topOffsetDp, so the day name and date are never cut off.
     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
@@ -71,28 +76,11 @@ internal fun DayHeaderRow(
                 }
             val textStyle =
                 if (highlightCurrentDay && isToday) {
-                    TextStyle(
-                        fontSize = 13.sp,
-                        lineHeight = 16.sp,
-                        color = style.colors.currentDayText,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                    )
+                    HEADER_TODAY_STYLE.copy(color = style.colors.currentDayText)
                 } else {
-                    TextStyle(
-                        fontSize = 13.sp,
-                        lineHeight = 16.sp,
-                        color = style.colors.dayHeaderText,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                    )
+                    HEADER_STYLE.copy(color = style.colors.dayHeaderText)
                 }
-            val dayName =
-                if (eventConfig.alwaysUseFullName) {
-                    date.dayOfWeek.getDisplayName(FULL, locale)
-                } else {
-                    date.dayOfWeek.getDisplayName(SHORT, locale)
-                }
+            val dayName = date.dayOfWeek.getDisplayName(if (useFullNames) FULL else SHORT, locale)
             val shortDate = date.toShortDateStringWithoutYear(locale)
             Column(
                 modifier =
@@ -126,3 +114,38 @@ internal fun DayHeaderRow(
         }
     }
 }
+
+/**
+ * Whether every full weekday name fits into one column without being ellipsized, measured
+ * in the (widest) bold today style. Under a large system font scale or on a narrow screen
+ * that is often not the case, and a row of "Wedne..." / "Thurs..." reads worse than
+ * consistently short names, so the caller falls back to the short form for all days.
+ */
+@Composable
+private fun fullDayNamesFit(
+    days: List<LocalDate>,
+    columnWidth: Dp,
+    locale: Locale,
+): Boolean {
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    return remember(days, columnWidth, locale, density) {
+        val maxWidthPx = with(density) { (columnWidth - HEADER_HORIZONTAL_PADDING * 2).roundToPx() }
+        days.all { date ->
+            val name = date.dayOfWeek.getDisplayName(FULL, locale)
+            textMeasurer.measure(name, style = HEADER_TODAY_STYLE, softWrap = false, maxLines = 1).size.width <= maxWidthPx
+        }
+    }
+}
+
+private val HEADER_STYLE =
+    TextStyle(
+        fontSize = 13.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Medium,
+        textAlign = TextAlign.Center,
+    )
+private val HEADER_TODAY_STYLE = HEADER_STYLE.copy(fontWeight = FontWeight.Bold)
+
+/** Breathing room kept on each side of the day name when deciding whether the full name fits. */
+private val HEADER_HORIZONTAL_PADDING = 2.dp
