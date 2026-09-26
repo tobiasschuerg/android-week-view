@@ -27,6 +27,7 @@ import de.tobiasschuerg.weekview.compose.components.MultiDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.compose.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.compose.components.TimeAxisDefaults
+import de.tobiasschuerg.weekview.compose.components.TimeAxisLabelMetrics
 import de.tobiasschuerg.weekview.compose.state.WeekViewMetrics
 import de.tobiasschuerg.weekview.compose.state.rememberWeekViewMetrics
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
@@ -81,7 +82,9 @@ fun WeekBackgroundCompose(
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         // The axis has to fit its widest label, which is wider in 12-hour locales than in 24-hour ones.
-        val leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(weekViewConfig.locale).axisWidth
+        // Measured once here and handed to the axis, which needs the same sizes.
+        val labelMetrics = TimeAxisDefaults.rememberLabelMetrics(weekViewConfig.locale)
+        val leftOffsetDp = labelMetrics.axisWidth
         val availableWidth = maxWidth - leftOffsetDp
         val dynamicColumnWidthDp = if (days.isNotEmpty()) (availableWidth / days.size) else availableWidth
 
@@ -135,6 +138,7 @@ fun WeekBackgroundCompose(
                     )
                 WeekGridRow(
                     metrics = metrics,
+                    labelMetrics = labelMetrics,
                     events = events,
                     eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
@@ -155,6 +159,7 @@ fun WeekBackgroundCompose(
 @Composable
 private fun WeekGridRow(
     metrics: WeekViewMetrics,
+    labelMetrics: TimeAxisLabelMetrics,
     events: List<Event.Single>,
     eventConfig: EventConfig,
     weekViewConfig: WeekViewConfig,
@@ -180,7 +185,7 @@ private fun WeekGridRow(
             gridEndTime = metrics.effectiveEndTime,
             rowHeightDp = metrics.rowHeightDp,
             gridHeightDp = metrics.gridHeightDp,
-            leftOffsetDp = metrics.leftOffsetDp,
+            labelMetrics = labelMetrics,
             showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
             locale = weekViewConfig.locale,
             style = style,

@@ -29,7 +29,7 @@ private fun TimeAxisColumnPreviewDE() {
         gridEndTime = sampleEnd,
         rowHeightDp = rowHeight,
         gridHeightDp = gridHeight,
-        leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(Locale.GERMANY).axisWidth,
+        labelMetrics = TimeAxisDefaults.rememberLabelMetrics(Locale.GERMANY),
         showNowIndicator = true,
         locale = Locale.GERMANY,
     )
@@ -48,7 +48,7 @@ private fun TimeAxisColumnPreviewUS() {
         gridEndTime = sampleEnd,
         rowHeightDp = rowHeight,
         gridHeightDp = gridHeight,
-        leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(Locale.US).axisWidth,
+        labelMetrics = TimeAxisDefaults.rememberLabelMetrics(Locale.US),
         showNowIndicator = true,
         locale = Locale.US,
     )

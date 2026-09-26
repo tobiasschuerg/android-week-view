@@ -73,4 +73,14 @@ class LocalTimeExtTest {
         assertFalse(LocalTime.of(7, 59).isStrictlyBetween(start, end))
         assertFalse(LocalTime.of(12, 1).isStrictlyBetween(start, end))
     }
+
+    @Test
+    fun `should format each locale with its own pattern when locales alternate`() {
+        val time = LocalTime.of(13, 5)
+
+        repeat(2) {
+            assertEquals(AxisTimeLabel(time = "1:05", dayPeriod = "PM"), time.toAxisLabel(Locale.US))
+            assertEquals(AxisTimeLabel(time = "13:05", dayPeriod = null), time.toAxisLabel(Locale.GERMANY))
+        }
+    }
 }

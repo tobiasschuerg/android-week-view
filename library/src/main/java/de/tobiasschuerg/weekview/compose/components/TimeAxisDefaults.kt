@@ -16,6 +16,7 @@ import de.tobiasschuerg.weekview.compose.state.WeekViewMetrics
 import de.tobiasschuerg.weekview.util.toAxisLabel
 import java.time.LocalTime
 import java.util.Locale
+import kotlin.math.ceil
 
 /** Typography and spacing shared by the time axis labels, the current-time pill and their measurements. */
 internal object TimeAxisDefaults {
@@ -61,16 +62,22 @@ internal object TimeAxisDefaults {
         }
     }
 
-    /** Size of the widest of [texts], or zero when there is nothing to measure. */
+    /**
+     * Size of the widest of [texts] and the height of one line, or zero when there is nothing to measure.
+     *
+     * All texts are laid out together, one per line, because a text layout costs far more to set up
+     * than to extend: one layout of 48 lines is much cheaper than 48 layouts of one line.
+     */
     private fun TextMeasurer.widestSize(
         texts: List<String>,
         style: TextStyle,
     ): IntSize {
-        val boldStyle = style.copy(fontWeight = FontWeight.Bold)
-        val measured = texts.map { measure(it, boldStyle).size }
+        if (texts.isEmpty()) return IntSize.Zero
+        val layout = measure(texts.joinToString("\n"), style.copy(fontWeight = FontWeight.Bold), softWrap = false)
+        val lines = 0 until layout.lineCount
         return IntSize(
-            width = measured.maxOfOrNull { it.width } ?: 0,
-            height = measured.maxOfOrNull { it.height } ?: 0,
+            width = ceil(lines.maxOf { layout.getLineRight(it) - layout.getLineLeft(it) }).toInt(),
+            height = ceil(lines.maxOf { layout.getLineBottom(it) - layout.getLineTop(it) }).toInt(),
         )
     }
 }

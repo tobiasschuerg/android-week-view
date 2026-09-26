@@ -42,7 +42,7 @@ class TimeAxisColumnLabelTest {
                     gridEndTime = LocalTime.MAX,
                     rowHeightDp = 60.dp,
                     gridHeightDp = 60.dp * hours.size,
-                    leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(locale).axisWidth,
+                    labelMetrics = TimeAxisDefaults.rememberLabelMetrics(locale),
                     showNowIndicator = true,
                     locale = locale,
                 )

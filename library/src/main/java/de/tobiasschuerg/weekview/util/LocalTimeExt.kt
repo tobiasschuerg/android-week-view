@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 
 private val localTimeFormat: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
 
@@ -28,12 +29,18 @@ internal fun LocalTime.toLocalString(locale: Locale = Locale.getDefault()): Stri
  * Splits the localized time into the clock time and, in 12-hour locales, the AM/PM marker, so the
  * axis can stack them instead of needing a gutter wide enough for `10:58 PM` on one line.
  */
-internal fun LocalTime.toAxisLabel(locale: Locale = Locale.getDefault()): AxisTimeLabel {
+internal fun LocalTime.toAxisLabel(locale: Locale = Locale.getDefault()): AxisTimeLabel =
+    axisLabelFormats.getOrPut(locale) { axisLabelFormat(locale) }.format(this)
+
+/** One [AxisLabelFormat] per locale; the axis formats the same hours again on every zoom step. */
+private val axisLabelFormats = ConcurrentHashMap<Locale, AxisLabelFormat>()
+
+private fun axisLabelFormat(locale: Locale): AxisLabelFormat {
     val pattern = shortTimePattern(locale)
-    if (!pattern.usesDayPeriod()) return AxisTimeLabel(time = toLocalString(locale), dayPeriod = null)
-    return AxisTimeLabel(
-        time = DateTimeFormatter.ofPattern(pattern.withoutDayPeriod(), locale).format(this),
-        dayPeriod = DateTimeFormatter.ofPattern("a", locale).format(this),
+    if (!pattern.usesDayPeriod()) return AxisLabelFormat(time = localTimeFormat.withLocale(locale), dayPeriod = null)
+    return AxisLabelFormat(
+        time = DateTimeFormatter.ofPattern(pattern.withoutDayPeriod(), locale),
+        dayPeriod = DateTimeFormatter.ofPattern("a", locale),
     )
 }
 

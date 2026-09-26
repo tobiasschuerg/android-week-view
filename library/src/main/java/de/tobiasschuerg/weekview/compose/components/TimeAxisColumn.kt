@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,27 +46,29 @@ internal fun TimeAxisColumn(
     gridEndTime: LocalTime,
     rowHeightDp: Dp,
     gridHeightDp: Dp,
-    leftOffsetDp: Dp,
+    /** Measured by the caller, which also needs the axis width to lay out the columns next to it. */
+    labelMetrics: TimeAxisLabelMetrics,
     showNowIndicator: Boolean,
     locale: Locale = Locale.getDefault(),
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
-    val labelMetrics = TimeAxisDefaults.rememberLabelMetrics(locale)
+    // Formatted once per set of hours: the axis recomposes on every zoom step, the hours rarely change.
+    val hourLabels = remember(timeLabels, locale) { timeLabels.map { it.toAxisLabel(locale) } }
     val showNowPill = showNowIndicator && now.isStrictlyBetween(gridStartTime, gridEndTime)
 
     Box(
         modifier =
             Modifier
-                .width(leftOffsetDp)
+                .width(labelMetrics.axisWidth)
                 .height(gridHeightDp),
     ) {
         // One row per hour. The last label can reach past the end of a grid that stops mid-hour, so
         // the labels are laid out unbounded instead of being squeezed into the grid height.
         Column(modifier = Modifier.wrapContentHeight(align = Alignment.Top, unbounded = true)) {
-            timeLabels.forEach { timeLabel ->
-                Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
+            hourLabels.forEach { hourLabel ->
+                Box(modifier = Modifier.size(labelMetrics.axisWidth, rowHeightDp)) {
                     HourLabel(
-                        label = timeLabel.toAxisLabel(locale),
+                        label = hourLabel,
                         color = style.colors.timeLabelTextColor,
                         modifier = Modifier.padding(horizontal = TimeAxisDefaults.horizontalPadding),
                     )
@@ -89,7 +92,7 @@ internal fun TimeAxisColumn(
                                 y = (nowPositionDp - labelMetrics.pillHeight / 2).roundToPx().coerceIn(0, maxY),
                             )
                         }
-                        .width(leftOffsetDp)
+                        .width(labelMetrics.axisWidth)
                         // Padded on the start side only, so the pill ends where the line begins.
                         .padding(start = TimeAxisDefaults.horizontalPadding / 2),
             ) {
