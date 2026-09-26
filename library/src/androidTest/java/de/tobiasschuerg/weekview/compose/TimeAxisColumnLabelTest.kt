@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.compose
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
@@ -44,7 +43,6 @@ class TimeAxisColumnLabelTest {
                     rowHeightDp = 60.dp,
                     gridHeightDp = 60.dp * hours.size,
                     leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(locale).axisWidth,
-                    scrollState = rememberScrollState(),
                     showNowIndicator = true,
                     locale = locale,
                 )

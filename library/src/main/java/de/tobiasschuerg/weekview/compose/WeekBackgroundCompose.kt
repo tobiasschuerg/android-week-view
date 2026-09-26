@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.compose.components.AllDayEventsRow
@@ -165,7 +166,13 @@ private fun WeekGridRow(
     onEventLongPress: ((event: Event) -> Unit)?,
     style: WeekViewStyle,
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
+    // Axis and grid scroll as one container, so the hour labels always stay level with their rows.
+    Row(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
+    ) {
         TimeAxisColumn(
             timeLabels = metrics.timeLabels,
             now = now,
@@ -174,19 +181,19 @@ private fun WeekGridRow(
             rowHeightDp = metrics.rowHeightDp,
             gridHeightDp = metrics.gridHeightDp,
             leftOffsetDp = metrics.leftOffsetDp,
-            scrollState = scrollState,
             showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
             locale = weekViewConfig.locale,
             style = style,
         )
 
-        // Scrollable Grid Area (Canvas + Events)
+        // Grid area (canvas + events). Clipped because the canvas draws hour lines up to the next full
+        // hour, which would otherwise show below a grid that ends mid-hour.
         Box(
             modifier =
                 Modifier
-                    .verticalScroll(scrollState)
                     .weight(1f)
-                    .height(metrics.gridHeightDp),
+                    .height(metrics.gridHeightDp)
+                    .clipToBounds(),
         ) {
             GridCanvas(
                 modifier = Modifier.fillMaxSize(),

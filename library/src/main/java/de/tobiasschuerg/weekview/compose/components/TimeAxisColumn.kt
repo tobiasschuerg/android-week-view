@@ -1,6 +1,5 @@
 package de.tobiasschuerg.weekview.compose.components
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,8 +9,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +31,12 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 
+/**
+ * The hour labels and the current-time pill on the left of the grid.
+ *
+ * It does not scroll by itself: it is placed in the same scroll container as the grid, so the two
+ * share one scroll range and cannot drift apart.
+ */
 @Composable
 internal fun TimeAxisColumn(
     timeLabels: List<LocalTime>,
@@ -41,7 +46,6 @@ internal fun TimeAxisColumn(
     rowHeightDp: Dp,
     gridHeightDp: Dp,
     leftOffsetDp: Dp,
-    scrollState: ScrollState,
     showNowIndicator: Boolean,
     locale: Locale = Locale.getDefault(),
     style: WeekViewStyle = defaultWeekViewStyle(),
@@ -54,10 +58,10 @@ internal fun TimeAxisColumn(
             Modifier
                 .width(leftOffsetDp)
                 .height(gridHeightDp),
-        // Total height of the scrollable grid
     ) {
-        // Regular time labels (hours)
-        Column(modifier = Modifier.verticalScroll(scrollState)) {
+        // One row per hour. The last label can reach past the end of a grid that stops mid-hour, so
+        // the labels are laid out unbounded instead of being squeezed into the grid height.
+        Column(modifier = Modifier.wrapContentHeight(align = Alignment.Top, unbounded = true)) {
             timeLabels.forEach { timeLabel ->
                 Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
                     HourLabel(
@@ -78,11 +82,11 @@ internal fun TimeAxisColumn(
                 modifier =
                     Modifier
                         .offset {
-                            // Read the scroll position inside the layout lambda so scrolling
-                            // only triggers relayout instead of recomposition.
+                            // Kept inside the axis, so the pill is not clipped by the edges of the scroll container.
+                            val maxY = (gridHeightDp - labelMetrics.pillHeight).roundToPx().coerceAtLeast(0)
                             IntOffset(
                                 x = 0,
-                                y = (nowPositionDp - labelMetrics.pillHeight / 2).roundToPx() - scrollState.value,
+                                y = (nowPositionDp - labelMetrics.pillHeight / 2).roundToPx().coerceIn(0, maxY),
                             )
                         }
                         .width(leftOffsetDp)

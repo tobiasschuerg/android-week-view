@@ -1,6 +1,5 @@
 package de.tobiasschuerg.weekview.compose.components
 
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +30,6 @@ private fun TimeAxisColumnPreviewDE() {
         rowHeightDp = rowHeight,
         gridHeightDp = gridHeight,
         leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(Locale.GERMANY).axisWidth,
-        scrollState = rememberScrollState(0),
         showNowIndicator = true,
         locale = Locale.GERMANY,
     )
@@ -51,7 +49,6 @@ private fun TimeAxisColumnPreviewUS() {
         rowHeightDp = rowHeight,
         gridHeightDp = gridHeight,
         leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(Locale.US).axisWidth,
-        scrollState = rememberScrollState(0),
         showNowIndicator = true,
         locale = Locale.US,
     )
