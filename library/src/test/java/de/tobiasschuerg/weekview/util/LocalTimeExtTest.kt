@@ -1,6 +1,8 @@
 package de.tobiasschuerg.weekview.util
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalTime
 import java.util.Locale
@@ -23,5 +25,21 @@ class LocalTimeExtTest {
         } finally {
             Locale.setDefault(defaultLocale)
         }
+    }
+
+    @Test
+    fun `should report a time strictly inside the bounds as between them`() {
+        assertTrue(LocalTime.of(9, 30).isStrictlyBetween(LocalTime.of(8, 0), LocalTime.of(12, 0)))
+    }
+
+    @Test
+    fun `should not report a time on or outside the bounds as between them`() {
+        val start = LocalTime.of(8, 0)
+        val end = LocalTime.of(12, 0)
+
+        assertFalse(start.isStrictlyBetween(start, end))
+        assertFalse(end.isStrictlyBetween(start, end))
+        assertFalse(LocalTime.of(7, 59).isStrictlyBetween(start, end))
+        assertFalse(LocalTime.of(12, 1).isStrictlyBetween(start, end))
     }
 }

@@ -10,3 +10,9 @@ private val localTimeFormat: DateTimeFormatter = DateTimeFormatter.ofLocalizedTi
 internal fun LocalTime.toLocalString(locale: Locale = Locale.getDefault()): String {
     return localTimeFormat.withLocale(locale).format(this)
 }
+
+/** Whether this time lies strictly inside [start]..[end], i.e. where the current-time indicator is shown. */
+internal fun LocalTime.isStrictlyBetween(
+    start: LocalTime,
+    end: LocalTime,
+): Boolean = isAfter(start) && isBefore(end)

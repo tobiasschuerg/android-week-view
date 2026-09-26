@@ -23,6 +23,7 @@ import de.tobiasschuerg.weekview.compose.components.DayHeaderRow
 import de.tobiasschuerg.weekview.compose.components.EventsPane
 import de.tobiasschuerg.weekview.compose.components.GridCanvas
 import de.tobiasschuerg.weekview.compose.components.MultiDayEventsRow
+import de.tobiasschuerg.weekview.compose.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.compose.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.compose.state.WeekViewMetrics
 import de.tobiasschuerg.weekview.compose.state.rememberWeekViewMetrics
@@ -191,12 +192,7 @@ private fun WeekGridRow(
                 totalHours = metrics.totalHours,
                 days = metrics.days,
                 today = today,
-                showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
-                currentTimeLineOnlyToday = weekViewConfig.currentTimeLineOnlyToday,
-                now = now,
-                gridStartTime = metrics.gridStartTime,
-                effectiveEndTime = metrics.effectiveEndTime,
                 style = style,
             )
             EventsPane(
@@ -213,6 +209,21 @@ private fun WeekGridRow(
                 locale = weekViewConfig.locale,
                 style = style,
             )
+            if (weekViewConfig.showCurrentTimeIndicator) {
+                // Drawn last so the line and its dot stay visible on top of the events they cross.
+                NowIndicatorOverlay(
+                    modifier = Modifier.fillMaxSize(),
+                    columnCount = metrics.columnCount,
+                    rowHeightDp = metrics.rowHeightDp,
+                    days = metrics.days,
+                    today = today,
+                    now = now,
+                    gridStartTime = metrics.gridStartTime,
+                    effectiveEndTime = metrics.effectiveEndTime,
+                    onlyToday = weekViewConfig.currentTimeLineOnlyToday,
+                    style = style,
+                )
+            }
         }
     }
 }

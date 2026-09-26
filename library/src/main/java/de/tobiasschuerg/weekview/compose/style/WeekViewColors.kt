@@ -16,6 +16,8 @@ data class WeekViewColors(
     val gridLineColor: Color,
     val currentDayBackground: Color,
     val currentDayText: Color,
+    /** Outline behind the current-time line, keeping it readable where it crosses an event. */
+    val nowIndicatorHalo: Color = Color.White,
 )
 
 @Composable
@@ -27,8 +29,18 @@ fun defaultWeekViewColors(
     gridLineColor: Color = Color.LightGray,
     currentDayBackground: Color = MaterialTheme.colorScheme.primary,
     currentDayText: Color = Color(0xFF000000),
+    nowIndicatorHalo: Color = MaterialTheme.colorScheme.surface,
 ): WeekViewColors =
-    remember(todayHighlight, nowIndicator, dayHeaderText, timeLabelTextColor, gridLineColor, currentDayBackground, currentDayText) {
+    remember(
+        todayHighlight,
+        nowIndicator,
+        dayHeaderText,
+        timeLabelTextColor,
+        gridLineColor,
+        currentDayBackground,
+        currentDayText,
+        nowIndicatorHalo,
+    ) {
         WeekViewColors(
             todayHighlight = todayHighlight,
             nowIndicator = nowIndicator,
@@ -37,5 +49,6 @@ fun defaultWeekViewColors(
             gridLineColor = gridLineColor,
             currentDayBackground = currentDayBackground.copy(alpha = 0.2f),
             currentDayText = currentDayText,
+            nowIndicatorHalo = nowIndicatorHalo,
         )
     }

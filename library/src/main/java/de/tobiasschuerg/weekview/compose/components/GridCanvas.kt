@@ -9,8 +9,6 @@ import androidx.compose.ui.unit.Dp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.temporal.ChronoUnit
 
 @Composable
 internal fun GridCanvas(
@@ -20,12 +18,7 @@ internal fun GridCanvas(
     totalHours: Float,
     days: List<LocalDate>,
     today: LocalDate,
-    showNowIndicator: Boolean,
     highlightCurrentDay: Boolean,
-    currentTimeLineOnlyToday: Boolean,
-    now: LocalTime,
-    gridStartTime: LocalTime,
-    effectiveEndTime: LocalTime,
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     Canvas(modifier = modifier) {
@@ -64,46 +57,6 @@ internal fun GridCanvas(
                 topLeft = Offset(left, 0f),
                 size = Size(columnWidthPx, size.height),
             )
-        }
-
-        // Now indicator line
-        if (showNowIndicator && now.isAfter(gridStartTime) && now.isBefore(effectiveEndTime)) {
-            val nowPositionMinutes = ChronoUnit.MINUTES.between(gridStartTime, now)
-            val nowY = (nowPositionMinutes / 60f) * rowHeightPx
-            if (nowY >= 0 && nowY <= size.height) {
-                val dotRadius = 8f
-                if (currentTimeLineOnlyToday) {
-                    if (days.contains(today)) {
-                        val todayColumnIndex = days.indexOf(today)
-                        val left = todayColumnIndex * columnWidthPx
-                        val right = left + columnWidthPx
-                        drawLine(
-                            color = style.colors.nowIndicator,
-                            start = Offset(left, nowY),
-                            end = Offset(right, nowY),
-                            strokeWidth = 4f,
-                        )
-                        drawCircle(
-                            color = style.colors.nowIndicator,
-                            radius = dotRadius,
-                            center = Offset(left, nowY),
-                        )
-                    }
-                    // When today is not in view, draw nothing
-                } else {
-                    drawLine(
-                        color = style.colors.nowIndicator,
-                        start = Offset(0f, nowY),
-                        end = Offset(size.width, nowY),
-                        strokeWidth = 4f,
-                    )
-                    drawCircle(
-                        color = style.colors.nowIndicator,
-                        radius = dotRadius,
-                        center = Offset(0f, nowY),
-                    )
-                }
-            }
         }
     }
 }
