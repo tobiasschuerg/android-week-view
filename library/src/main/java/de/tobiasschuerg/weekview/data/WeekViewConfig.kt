@@ -10,6 +10,12 @@ data class WeekViewConfig(
     val highlightCurrentDay: Boolean = true,
     val currentTimeLineOnlyToday: Boolean = false,
     val locale: Locale = Locale.getDefault(),
+    /**
+     * Pads a short schedule with whole hours so the grid fills the available height instead of
+     * leaving blank space below it. When false, the grid shows only the requested time range and
+     * the hours its events need.
+     */
+    val fillViewport: Boolean = true,
 ) {
     init {
         require(minScalingFactor > 0f) { "minScalingFactor must be positive, but was $minScalingFactor" }

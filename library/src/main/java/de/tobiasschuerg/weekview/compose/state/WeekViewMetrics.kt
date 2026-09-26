@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.compose.state
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalDate
 import java.time.LocalTime
@@ -20,4 +21,12 @@ internal data class WeekViewMetrics(
     val gridHeightDp: Dp,
     val timeLabels: List<LocalTime>,
     val visibleTimeSpan: TimeSpan,
-)
+) {
+    companion object {
+        /** Minimum width of the time axis column on the left; wide labels grow it, see `TimeAxisDefaults`. */
+        val LEFT_OFFSET: Dp = 48.dp
+
+        /** Minimum height of the day header row on top. */
+        val TOP_OFFSET: Dp = 36.dp
+    }
+}

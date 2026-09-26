@@ -48,6 +48,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 showCurrentTimeIndicator = true,
                 highlightCurrentDay = true,
                 currentTimeLineOnlyToday = false,
+                fillViewport = true,
             )
 
         val eventConfig =

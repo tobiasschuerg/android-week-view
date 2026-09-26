@@ -78,6 +78,7 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `LocalDateExtTest` — date formatting/pattern helpers
 - `LocalTimeExtTest` — time formatting/locale defaults
 - `WeekViewConfigTest` — scaling factor validation
+- `GridTimeSpanFillTest` — extending the visible time span in whole hours so the grid fills the viewport
 
 Instrumented Compose UI tests in `library/src/androidTest/` stay on JUnit 4 (`androidx.test`/`ui-test-junit4` have no JUnit 5 equivalent for on-device tests).
 

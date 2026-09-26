@@ -16,12 +16,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.compose.components.AllDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.DayHeaderRow
 import de.tobiasschuerg.weekview.compose.components.EventsPane
 import de.tobiasschuerg.weekview.compose.components.GridCanvas
 import de.tobiasschuerg.weekview.compose.components.MultiDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.TimeAxisColumn
+import de.tobiasschuerg.weekview.compose.state.WeekViewMetrics
 import de.tobiasschuerg.weekview.compose.state.rememberWeekViewMetrics
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
@@ -55,13 +58,7 @@ fun WeekBackgroundCompose(
     scrollState: ScrollState = rememberScrollState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
-    val metrics =
-        rememberWeekViewMetrics(
-            dateRange = dateRange,
-            timeRange = timeRange,
-            events = events,
-            scalingFactor = weekViewConfig.scalingFactor,
-        )
+    val days = remember(dateRange) { dateRange.toList() }
     var today by remember { mutableStateOf(LocalDate.now()) }
     var now by remember { mutableStateOf(LocalTime.now()) }
 
@@ -80,15 +77,16 @@ fun WeekBackgroundCompose(
     }
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val availableWidth = maxWidth - metrics.leftOffsetDp
-        val dynamicColumnWidthDp = if (metrics.columnCount > 0) (availableWidth / metrics.columnCount) else availableWidth
+        val leftOffsetDp = WeekViewMetrics.LEFT_OFFSET
+        val availableWidth = maxWidth - leftOffsetDp
+        val dynamicColumnWidthDp = if (days.isNotEmpty()) (availableWidth / days.size) else availableWidth
 
         Column(modifier = Modifier.fillMaxSize()) {
             DayHeaderRow(
-                days = metrics.days,
+                days = days,
                 today = today,
-                leftOffsetDp = metrics.leftOffsetDp,
-                topOffsetDp = metrics.topOffsetDp,
+                leftOffsetDp = leftOffsetDp,
+                topOffsetDp = WeekViewMetrics.TOP_OFFSET,
                 columnWidth = dynamicColumnWidthDp,
                 style = style,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
@@ -99,9 +97,9 @@ fun WeekBackgroundCompose(
 
             if (multiDayEvents.isNotEmpty()) {
                 MultiDayEventsRow(
-                    days = metrics.days,
+                    days = days,
                     multiDayEvents = multiDayEvents,
-                    leftOffsetDp = metrics.leftOffsetDp,
+                    leftOffsetDp = leftOffsetDp,
                     columnWidth = dynamicColumnWidthDp,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
@@ -110,68 +108,111 @@ fun WeekBackgroundCompose(
 
             if (allDayEvents.isNotEmpty()) {
                 AllDayEventsRow(
-                    days = metrics.days,
+                    days = days,
                     allDayEvents = allDayEvents,
-                    leftOffsetDp = metrics.leftOffsetDp,
+                    leftOffsetDp = leftOffsetDp,
                     columnWidth = dynamicColumnWidthDp,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
                 )
             }
 
-            Row(modifier = Modifier.weight(1f)) {
-                TimeAxisColumn(
-                    timeLabels = metrics.timeLabels,
+            // The grid is measured against the space left below the header rows so that a short
+            // schedule is padded with extra hour rows instead of leaving that space blank.
+            BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                val metrics =
+                    rememberWeekViewMetrics(
+                        dateRange = dateRange,
+                        timeRange = timeRange,
+                        events = events,
+                        scalingFactor = weekViewConfig.scalingFactor,
+                        leftOffsetDp = leftOffsetDp,
+                        minGridHeightDp = if (weekViewConfig.fillViewport) maxHeight else 0.dp,
+                    )
+                WeekGridRow(
+                    metrics = metrics,
+                    events = events,
+                    eventConfig = eventConfig,
+                    weekViewConfig = weekViewConfig,
+                    columnWidth = dynamicColumnWidthDp,
+                    today = today,
                     now = now,
-                    gridStartTime = metrics.gridStartTime,
-                    gridEndTime = metrics.effectiveEndTime,
-                    rowHeightDp = metrics.rowHeightDp,
-                    gridHeightDp = metrics.gridHeightDp,
-                    leftOffsetDp = metrics.leftOffsetDp,
                     scrollState = scrollState,
-                    showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
+                    onEventClick = onEventClick,
+                    onEventLongPress = onEventLongPress,
                     style = style,
                 )
-
-                // Scrollable Grid Area (Canvas + Events)
-                Box(
-                    modifier =
-                        Modifier
-                            .verticalScroll(scrollState)
-                            .weight(1f)
-                            .height(metrics.gridHeightDp),
-                ) {
-                    GridCanvas(
-                        modifier = Modifier.fillMaxSize(),
-                        columnCount = metrics.columnCount,
-                        rowHeightDp = metrics.rowHeightDp,
-                        totalHours = metrics.totalHours,
-                        days = metrics.days,
-                        today = today,
-                        showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
-                        highlightCurrentDay = weekViewConfig.highlightCurrentDay,
-                        currentTimeLineOnlyToday = weekViewConfig.currentTimeLineOnlyToday,
-                        now = now,
-                        gridStartTime = metrics.gridStartTime,
-                        effectiveEndTime = metrics.effectiveEndTime,
-                        style = style,
-                    )
-                    EventsPane(
-                        days = metrics.days,
-                        events = events,
-                        eventConfig = eventConfig,
-                        onEventClick = onEventClick,
-                        onEventLongPress = onEventLongPress,
-                        columnWidth = dynamicColumnWidthDp,
-                        gridHeightDp = metrics.gridHeightDp,
-                        gridStartTime = metrics.gridStartTime,
-                        effectiveEndTime = metrics.effectiveEndTime,
-                        scalingFactor = weekViewConfig.scalingFactor,
-                        locale = weekViewConfig.locale,
-                        style = style,
-                    )
-                }
             }
+        }
+    }
+}
+
+/** The scrollable part of the week view: time axis on the left, grid canvas and events on the right. */
+@Composable
+private fun WeekGridRow(
+    metrics: WeekViewMetrics,
+    events: List<Event.Single>,
+    eventConfig: EventConfig,
+    weekViewConfig: WeekViewConfig,
+    columnWidth: Dp,
+    today: LocalDate,
+    now: LocalTime,
+    scrollState: ScrollState,
+    onEventClick: ((event: Event) -> Unit)?,
+    onEventLongPress: ((event: Event) -> Unit)?,
+    style: WeekViewStyle,
+) {
+    Row(modifier = Modifier.fillMaxSize()) {
+        TimeAxisColumn(
+            timeLabels = metrics.timeLabels,
+            now = now,
+            gridStartTime = metrics.gridStartTime,
+            gridEndTime = metrics.effectiveEndTime,
+            rowHeightDp = metrics.rowHeightDp,
+            gridHeightDp = metrics.gridHeightDp,
+            leftOffsetDp = metrics.leftOffsetDp,
+            scrollState = scrollState,
+            showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
+            style = style,
+        )
+
+        // Scrollable Grid Area (Canvas + Events)
+        Box(
+            modifier =
+                Modifier
+                    .verticalScroll(scrollState)
+                    .weight(1f)
+                    .height(metrics.gridHeightDp),
+        ) {
+            GridCanvas(
+                modifier = Modifier.fillMaxSize(),
+                columnCount = metrics.columnCount,
+                rowHeightDp = metrics.rowHeightDp,
+                totalHours = metrics.totalHours,
+                days = metrics.days,
+                today = today,
+                showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
+                highlightCurrentDay = weekViewConfig.highlightCurrentDay,
+                currentTimeLineOnlyToday = weekViewConfig.currentTimeLineOnlyToday,
+                now = now,
+                gridStartTime = metrics.gridStartTime,
+                effectiveEndTime = metrics.effectiveEndTime,
+                style = style,
+            )
+            EventsPane(
+                days = metrics.days,
+                events = events,
+                eventConfig = eventConfig,
+                onEventClick = onEventClick,
+                onEventLongPress = onEventLongPress,
+                columnWidth = columnWidth,
+                gridHeightDp = metrics.gridHeightDp,
+                gridStartTime = metrics.gridStartTime,
+                effectiveEndTime = metrics.effectiveEndTime,
+                scalingFactor = weekViewConfig.scalingFactor,
+                locale = weekViewConfig.locale,
+                style = style,
+            )
         }
     }
 }

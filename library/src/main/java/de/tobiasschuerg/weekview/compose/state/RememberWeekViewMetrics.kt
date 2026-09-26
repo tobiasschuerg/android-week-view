@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.compose.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.LocalDateRange
@@ -9,23 +10,37 @@ import de.tobiasschuerg.weekview.util.TimeSpan
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
+/**
+ * @param leftOffsetDp width of the time axis column, measured from the labels it has to fit.
+ * @param minGridHeightDp the height the grid should at least fill (typically the viewport height);
+ *   the visible time span is extended in whole hours until it does, see [extendToFillHeight].
+ */
 @Composable
 internal fun rememberWeekViewMetrics(
     dateRange: LocalDateRange,
     timeRange: TimeSpan,
     events: List<Event.Single>,
     scalingFactor: Float,
+    leftOffsetDp: Dp = WeekViewMetrics.LEFT_OFFSET,
+    minGridHeightDp: Dp = 0.dp,
 ): WeekViewMetrics {
     // Derive stable keys from the event list so remember uses value equality (LocalTime)
     // instead of list reference equality which changes every recomposition
     val earliestEventStart = events.minOfOrNull { it.timeSpan.start } ?: timeRange.start
     val latestEventEnd = events.maxOfOrNull { it.timeSpan.endExclusive } ?: timeRange.endExclusive
 
-    return remember(dateRange, timeRange, earliestEventStart, latestEventEnd, scalingFactor) {
+    return remember(
+        dateRange,
+        timeRange,
+        earliestEventStart,
+        latestEventEnd,
+        scalingFactor,
+        leftOffsetDp,
+        minGridHeightDp,
+    ) {
         val days = dateRange.toList()
         val columnCount = days.size
-        val leftOffsetDp = 48.dp
-        val topOffsetDp = 36.dp
+        val topOffsetDp = WeekViewMetrics.TOP_OFFSET
 
         val effectiveStartTime = if (earliestEventStart.isBefore(timeRange.start)) earliestEventStart else timeRange.start
 
@@ -37,12 +52,15 @@ internal fun rememberWeekViewMetrics(
             } else {
                 LocalTime.MAX
             }
-        val effectiveEndTime = if (gridEndTime.isAfter(timeRange.endExclusive)) gridEndTime else timeRange.endExclusive
+        val eventEndTime = if (gridEndTime.isAfter(timeRange.endExclusive)) gridEndTime else timeRange.endExclusive
 
-        val gridStartTime = effectiveStartTime.truncatedTo(ChronoUnit.HOURS)
-        val visibleTimeSpan = TimeSpan(gridStartTime, effectiveEndTime)
+        val visibleTimeSpan =
+            TimeSpan(effectiveStartTime.truncatedTo(ChronoUnit.HOURS), eventEndTime)
+                .extendToFillHeight(rowHeightDp, minGridHeightDp)
+        val gridStartTime = visibleTimeSpan.start
+        val effectiveEndTime = visibleTimeSpan.endExclusive
 
-        val totalHours = visibleTimeSpan.duration.toHours().toFloat() + (visibleTimeSpan.duration.toMinutes() % 60 / 60f)
+        val totalHours = totalHours(visibleTimeSpan)
         val gridHeightDp = rowHeightDp * totalHours
         val timeLabels = visibleTimeSpan.hourlyTimes().toList()
 
