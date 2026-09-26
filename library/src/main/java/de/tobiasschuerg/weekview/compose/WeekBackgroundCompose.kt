@@ -25,6 +25,7 @@ import de.tobiasschuerg.weekview.compose.components.GridCanvas
 import de.tobiasschuerg.weekview.compose.components.MultiDayEventsRow
 import de.tobiasschuerg.weekview.compose.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.compose.components.TimeAxisColumn
+import de.tobiasschuerg.weekview.compose.components.TimeAxisDefaults
 import de.tobiasschuerg.weekview.compose.state.WeekViewMetrics
 import de.tobiasschuerg.weekview.compose.state.rememberWeekViewMetrics
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
@@ -78,7 +79,8 @@ fun WeekBackgroundCompose(
     }
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val leftOffsetDp = WeekViewMetrics.LEFT_OFFSET
+        // The axis has to fit its widest label, which is wider in 12-hour locales than in 24-hour ones.
+        val leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(weekViewConfig.locale).axisWidth
         val availableWidth = maxWidth - leftOffsetDp
         val dynamicColumnWidthDp = if (days.isNotEmpty()) (availableWidth / days.size) else availableWidth
 
@@ -174,6 +176,7 @@ private fun WeekGridRow(
             leftOffsetDp = metrics.leftOffsetDp,
             scrollState = scrollState,
             showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
+            locale = weekViewConfig.locale,
             style = style,
         )
 

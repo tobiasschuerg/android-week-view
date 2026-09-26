@@ -28,6 +28,37 @@ class LocalTimeExtTest {
     }
 
     @Test
+    fun `toAxisLabel splits off the AM PM marker in 12-hour locales`() {
+        assertEquals(AxisTimeLabel(time = "1:00", dayPeriod = "PM"), LocalTime.of(13, 0).toAxisLabel(Locale.US))
+        assertEquals(AxisTimeLabel(time = "12:05", dayPeriod = "AM"), LocalTime.of(0, 5).toAxisLabel(Locale.US))
+    }
+
+    @Test
+    fun `toAxisLabel keeps a single line in 24-hour locales`() {
+        assertEquals(AxisTimeLabel(time = "13:00", dayPeriod = null), LocalTime.of(13, 0).toAxisLabel(Locale.GERMANY))
+        assertEquals(AxisTimeLabel(time = "00:05", dayPeriod = null), LocalTime.of(0, 5).toAxisLabel(Locale.GERMANY))
+    }
+
+    @Test
+    fun `toAxisLabel keeps the clock time free of the day period in every locale`() {
+        val locales = listOf(Locale.US, Locale.UK, Locale.GERMANY, Locale.FRANCE, Locale.JAPAN, Locale.KOREA)
+
+        locales.forEach { locale ->
+            val label = LocalTime.of(13, 45).toAxisLabel(locale)
+
+            assertFalse(label.time.contains(label.dayPeriod ?: "@"), "$locale rendered its day period twice")
+        }
+    }
+
+    @Test
+    fun `should strip the day period when it is separated by a narrow no-break space`() {
+        assertEquals("h:mm", "h:mm\u202Fa".withoutDayPeriod())
+        assertEquals("h:mm", "h:mm\u00A0a".withoutDayPeriod())
+        assertEquals("h:mm", "h:mm a".withoutDayPeriod())
+        assertEquals("h:mm", "a h:mm".withoutDayPeriod())
+    }
+
+    @Test
     fun `should report a time strictly inside the bounds as between them`() {
         assertTrue(LocalTime.of(9, 30).isStrictlyBetween(LocalTime.of(8, 0), LocalTime.of(12, 0)))
     }

@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.compose.components
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,24 +10,27 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.util.AxisTimeLabel
+import de.tobiasschuerg.weekview.util.isStrictlyBetween
+import de.tobiasschuerg.weekview.util.toAxisLabel
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 @Composable
 internal fun TimeAxisColumn(
@@ -39,8 +43,12 @@ internal fun TimeAxisColumn(
     leftOffsetDp: Dp,
     scrollState: ScrollState,
     showNowIndicator: Boolean,
+    locale: Locale = Locale.getDefault(),
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
+    val labelMetrics = TimeAxisDefaults.rememberLabelMetrics(locale)
+    val showNowPill = showNowIndicator && now.isStrictlyBetween(gridStartTime, gridEndTime)
+
     Box(
         modifier =
             Modifier
@@ -52,17 +60,17 @@ internal fun TimeAxisColumn(
         Column(modifier = Modifier.verticalScroll(scrollState)) {
             timeLabels.forEach { timeLabel ->
                 Box(modifier = Modifier.size(leftOffsetDp, rowHeightDp)) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        text = timeLabel.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)),
-                        style = TextStyle(fontSize = 12.sp, color = style.colors.timeLabelTextColor),
+                    HourLabel(
+                        label = timeLabel.toAxisLabel(locale),
+                        color = style.colors.timeLabelTextColor,
+                        modifier = Modifier.padding(horizontal = TimeAxisDefaults.horizontalPadding),
                     )
                 }
             }
         }
 
-        // Current time indicator label (HH:mm)
-        if (showNowIndicator && now.isAfter(gridStartTime) && now.isBefore(gridEndTime)) {
+        // Current time as a filled pill in the gutter, centered on the indicator line
+        if (showNowPill) {
             val nowPositionMinutes = ChronoUnit.MINUTES.between(gridStartTime, now)
             val nowPositionDp = (nowPositionMinutes / 60f * rowHeightDp.value).dp
 
@@ -72,27 +80,88 @@ internal fun TimeAxisColumn(
                         .offset {
                             // Read the scroll position inside the layout lambda so scrolling
                             // only triggers relayout instead of recomposition.
-                            IntOffset(x = 0, y = (nowPositionDp - 12.dp).roundToPx() - scrollState.value)
+                            IntOffset(
+                                x = 0,
+                                y = (nowPositionDp - labelMetrics.pillHeight / 2).roundToPx() - scrollState.value,
+                            )
                         }
                         .width(leftOffsetDp)
-                        .height(24.dp),
-                contentAlignment = Alignment.Center,
+                        // Padded on the start side only, so the pill ends where the line begins.
+                        .padding(start = TimeAxisDefaults.horizontalPadding / 2),
             ) {
-                Text(
-                    text = now.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)),
-                    style =
-                        TextStyle(
-                            fontSize = 12.sp,
-                            color = style.colors.nowIndicator,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.End,
-                        ),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(end = 8.dp),
+                NowPill(
+                    label = now.toAxisLabel(locale),
+                    style = style,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
+        }
+    }
+}
+
+/** An hour of the axis: the clock time with the AM/PM marker stacked below it in 12-hour locales. */
+@Composable
+private fun HourLabel(
+    label: AxisTimeLabel,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
+    StackedLabel(
+        label = label,
+        timeStyle = TimeAxisDefaults.timeTextStyle.copy(color = color),
+        dayPeriodStyle = TimeAxisDefaults.dayPeriodTextStyle.copy(color = color),
+        modifier = modifier,
+    )
+}
+
+/**
+ * The current time, filled in the indicator color so it stands out against the hour labels.
+ *
+ * Only the clock time is shown: which half of the day it is in is obvious from the hour labels
+ * around the pill, so the AM/PM line would only make it taller.
+ */
+@Composable
+private fun NowPill(
+    label: AxisTimeLabel,
+    style: WeekViewStyle,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier
+                .background(style.colors.nowIndicator, RoundedCornerShape(percent = 50))
+                .padding(
+                    horizontal = TimeAxisDefaults.pillHorizontalPadding,
+                    vertical = TimeAxisDefaults.pillVerticalPadding,
+                ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label.time,
+            style =
+                TimeAxisDefaults.timeTextStyle.copy(
+                    color = style.colors.nowIndicatorLabelText,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                ),
+            maxLines = 1,
+            softWrap = false,
+        )
+    }
+}
+
+@Composable
+private fun StackedLabel(
+    label: AxisTimeLabel,
+    timeStyle: TextStyle,
+    dayPeriodStyle: TextStyle,
+    modifier: Modifier = Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+) {
+    Column(modifier = modifier, horizontalAlignment = horizontalAlignment) {
+        Text(text = label.time, style = timeStyle, maxLines = 1, softWrap = false)
+        if (label.dayPeriod != null) {
+            Text(text = label.dayPeriod, style = dayPeriodStyle, maxLines = 1, softWrap = false)
         }
     }
 }

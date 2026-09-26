@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.time.LocalTime
+import java.util.Locale
 
 /**
  * Previews for [TimeAxisColumn] showcasing German (24h) and US (12h) time formats.
@@ -22,7 +23,6 @@ private fun TimeAxisColumnPreviewDE() {
     val timeLabels = sampleTimeLabels()
     val rowHeight = 60.dp
     val gridHeight = rowHeight * timeLabels.size
-    val leftOffset = 64.dp
     TimeAxisColumn(
         timeLabels = timeLabels,
         now = sampleNow,
@@ -30,9 +30,10 @@ private fun TimeAxisColumnPreviewDE() {
         gridEndTime = sampleEnd,
         rowHeightDp = rowHeight,
         gridHeightDp = gridHeight,
-        leftOffsetDp = leftOffset,
+        leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(Locale.GERMANY).axisWidth,
         scrollState = rememberScrollState(0),
         showNowIndicator = true,
+        locale = Locale.GERMANY,
     )
 }
 
@@ -42,7 +43,6 @@ private fun TimeAxisColumnPreviewUS() {
     val timeLabels = sampleTimeLabels()
     val rowHeight = 60.dp
     val gridHeight = rowHeight * timeLabels.size
-    val leftOffset = 64.dp
     TimeAxisColumn(
         timeLabels = timeLabels,
         now = sampleNow,
@@ -50,8 +50,9 @@ private fun TimeAxisColumnPreviewUS() {
         gridEndTime = sampleEnd,
         rowHeightDp = rowHeight,
         gridHeightDp = gridHeight,
-        leftOffsetDp = leftOffset,
+        leftOffsetDp = TimeAxisDefaults.rememberLabelMetrics(Locale.US).axisWidth,
         scrollState = rememberScrollState(0),
         showNowIndicator = true,
+        locale = Locale.US,
     )
 }

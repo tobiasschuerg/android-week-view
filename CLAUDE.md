@@ -46,7 +46,7 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/` i
 
 ### Compose Layer (`compose/`)
 - **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, and `WeekViewActions` callbacks
-- **`components/`** — extracted composables: grid canvas, day headers, time axis, events pane, all-day/multi-day rows
+- **`components/`** — extracted composables: grid canvas, day headers, time axis (stacked `7:00`/`AM` labels and the current-time pill, sized from `TimeAxisDefaults`), current-time overlay drawn above the events, events pane, all-day/multi-day rows
 - **`state/`** — `WeekViewMetrics` for layout calculations; `rememberWeekViewMetrics` for Compose state integration
 - **`style/`** — `WeekViewStyle` theming with `WeekViewColors` (one file each)
 - **WeekViewGesture** — pinch-zoom via `TransformableState`, swipe navigation
@@ -76,7 +76,7 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `EventFieldLayoutTest` — field visibility, time label mode and title height per available height
 - `DayOfWeekUtilTest` — day-to-column mapping
 - `LocalDateExtTest` — date formatting/pattern helpers
-- `LocalTimeExtTest` — time formatting/locale defaults
+- `LocalTimeExtTest` — time formatting/locale defaults, splitting axis labels into clock time and AM/PM
 - `WeekViewConfigTest` — scaling factor validation
 - `GridTimeSpanFillTest` — extending the visible time span in whole hours so the grid fills the viewport
 
