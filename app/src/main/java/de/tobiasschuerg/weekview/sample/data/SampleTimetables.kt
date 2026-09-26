@@ -22,6 +22,7 @@ object SampleTimetables {
         SCHOOL("School"),
         CONFERENCE("Conference", days = 3),
         SPECIAL_CASES("Special Cases"),
+        SHORT_DAY("Short Day"),
     }
 
     fun create(
@@ -34,11 +35,12 @@ object SampleTimetables {
             Timetable.SCHOOL -> SampleTimetableSchool.create(dateRange)
             Timetable.CONFERENCE -> SampleTimetableConference.create(dateRange)
             Timetable.SPECIAL_CASES -> SampleTimetableSpecialCases.create(dateRange)
+            Timetable.SHORT_DAY -> SampleTimetableShortDay.create(dateRange)
         }
     }
 }
 
-/** Shared helper for the compact `lesson(...)` call style used by [SampleTimetableSchool] and [SampleTimetableSpecialCases]. */
+/** Shared helper for the compact `lesson(...)` call style used by [SampleTimetableSchool], [SampleTimetableSpecialCases] and [SampleTimetableShortDay]. */
 internal fun lesson(
     id: Long,
     date: LocalDate,

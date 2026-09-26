@@ -9,9 +9,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -87,6 +89,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                     }
                 var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
                 var menuExpanded by remember { mutableStateOf(false) }
+                var fillViewport by remember { mutableStateOf(weekViewConfig.fillViewport) }
 
                 Scaffold(
                     topBar = {
@@ -114,6 +117,16 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                             },
                                         )
                                     }
+                                    HorizontalDivider()
+                                    // Pick "Short Day" to see the empty hours added below its last entry.
+                                    DropdownMenuItem(
+                                        text = { Text("Fill viewport") },
+                                        trailingIcon = { Checkbox(checked = fillViewport, onCheckedChange = null) },
+                                        onClick = {
+                                            fillViewport = !fillViewport
+                                            menuExpanded = false
+                                        },
+                                    )
                                 }
                             },
                         )
@@ -122,7 +135,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                     WeekViewCompose(
                         weekData = weekData,
                         eventConfig = eventConfig,
-                        weekViewConfig = weekViewConfig,
+                        weekViewConfig = weekViewConfig.copy(fillViewport = fillViewport),
                         modifier =
                             Modifier
                                 .padding(paddingValues)
