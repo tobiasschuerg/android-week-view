@@ -41,6 +41,7 @@ class BuiltInEventStylesTest {
 
     private val eventColor = Color.Blue
     private val surface = Color(0xFFFAFAFA)
+    private val backdrop = Color.Red
 
     private fun event(subTitle: String? = null): Event.Single =
         Event.Single(
@@ -61,8 +62,8 @@ class BuiltInEventStylesTest {
     ) {
         composeTestRule.setContent {
             MaterialTheme(colorScheme = lightColorScheme(surface = surface)) {
-                // Known backdrop, so the tint can be checked against it.
-                Box(Modifier.fillMaxSize().background(surface)) {
+                // Red backdrop standing in for the grid: no style may let it show through.
+                Box(Modifier.fillMaxSize().background(backdrop)) {
                     EventCompose(
                         event = event,
                         scalingFactor = 1f,
@@ -118,9 +119,10 @@ class BuiltInEventStylesTest {
         val interior = pixels.emptyInterior()
         assertNotEquals(eventColor, interior)
         assertNotEquals(surface, interior)
-        // A blue tint: blue stays strongest, red and green are reduced but not gone.
+        // Blue tint over the opaque surface: red and green reduced equally, so the backdrop doesn't shine through.
         assertEquals(1f, interior.blue, 0.03f)
         assertEquals(0.8f, interior.red, 0.05f)
+        assertEquals(interior.green, interior.red, 0.01f)
     }
 
     @Test
