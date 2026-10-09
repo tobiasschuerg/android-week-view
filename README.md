@@ -129,6 +129,33 @@ under any system font scale:
 - Location and teacher are added back in as the entry gets taller.
 - The title wraps onto a second line instead of eliding once there's room to spare.
 
+### Custom Event Design
+
+Pass `eventContent` to replace how timed entries look. The week view still positions and
+sizes each entry, handles clicks and sets its accessibility description; the slot only
+draws inside it, including the background and shape. `EventContentScope` provides the
+event, the entry's `width` and `height`, the `EventConfig` and the locale.
+
+```kotlin
+WeekViewCompose(
+    weekData = weekData,
+    weekViewConfig = WeekViewConfig(),
+    eventContent = { scope ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color(scope.event.backgroundColor), RoundedCornerShape(8.dp))
+                .padding(4.dp),
+        ) {
+            Text(scope.event.title)
+        }
+    },
+)
+```
+
+Call `DefaultEventContent(scope)` to fall back to the built-in look, e.g. for some events only.
+All-day and multi-day events are not affected.
+
 ### Callbacks
 
 ```kotlin

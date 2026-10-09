@@ -61,6 +61,7 @@ fun WeekBackgroundCompose(
     style: WeekViewStyle = defaultWeekViewStyle(),
     scrollState: ScrollState = rememberScrollState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
+    eventContent: EventContent = { DefaultEventContent(it) },
 ) {
     val days = remember(dateRange) { dateRange.toList() }
     var today by remember { mutableStateOf(LocalDate.now()) }
@@ -149,6 +150,7 @@ fun WeekBackgroundCompose(
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
                     style = style,
+                    eventContent = eventContent,
                 )
             }
         }
@@ -170,6 +172,7 @@ private fun WeekGridRow(
     onEventClick: ((event: Event) -> Unit)?,
     onEventLongPress: ((event: Event) -> Unit)?,
     style: WeekViewStyle,
+    eventContent: EventContent,
 ) {
     // Axis and grid scroll as one container, so the hour labels always stay level with their rows.
     Row(
@@ -223,6 +226,7 @@ private fun WeekGridRow(
                 scalingFactor = weekViewConfig.scalingFactor,
                 locale = weekViewConfig.locale,
                 style = style,
+                eventContent = eventContent,
             )
             if (weekViewConfig.showCurrentTimeIndicator) {
                 // Drawn last so the line and its dot stay visible on top of the events they cross.

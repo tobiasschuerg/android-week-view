@@ -45,7 +45,8 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/` i
 - **DayOfWeekUtil** — locale-aware day-of-week to column index mapping
 
 ### Compose Layer (`compose/`)
-- **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, and `WeekViewActions` callbacks
+- **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks and an optional `eventContent` slot
+- **EventCompose** — places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot, which gets an `EventContentScope`; **DefaultEventContent** is the built-in look
 - **`components/`** — extracted composables: grid canvas, day headers, time axis (stacked `7:00`/`AM` labels and the current-time pill, sized from `TimeAxisDefaults`), current-time overlay drawn above the events, events pane, all-day/multi-day rows
 - **`state/`** — `WeekViewMetrics` for layout calculations; `rememberWeekViewMetrics` for Compose state integration
 - **`style/`** — `WeekViewStyle` theming with `WeekViewColors` (one file each)
@@ -80,6 +81,6 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `WeekViewConfigTest` — scaling factor validation
 - `GridTimeSpanFillTest` — extending the visible time span in whole hours so the grid fills the viewport
 
-Instrumented Compose UI tests in `library/src/androidTest/` stay on JUnit 4 (`androidx.test`/`ui-test-junit4` have no JUnit 5 equivalent for on-device tests).
+Instrumented Compose UI tests in `library/src/androidTest/` (e.g. `EventContentSlotTest` for the custom event content slot) stay on JUnit 4 (`androidx.test`/`ui-test-junit4` have no JUnit 5 equivalent for on-device tests).
 
 Use the sample app (`app/` module) for manual integration testing.
