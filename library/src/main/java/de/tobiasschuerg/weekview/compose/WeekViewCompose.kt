@@ -23,6 +23,7 @@ import java.time.LocalTime
  * Main Composable for the WeekView component.
  * This serves as the entry point for the Compose-based week view implementation.
  * Displays the background grid and renders events from the provided weekData.
+ * Timed entries are drawn by [eventContent], which defaults to [DefaultEventContent].
  *
  * Pinch-to-zoom only activates on multi-touch (2+ fingers) so that single-finger
  * horizontal swipes pass through to a parent HorizontalPager or similar container.
@@ -35,6 +36,7 @@ fun WeekViewCompose(
     eventConfig: EventConfig = EventConfig(),
     actions: WeekViewActions = WeekViewActions(),
     state: WeekViewState = rememberWeekViewState(weekViewConfig.scalingFactor),
+    eventContent: EventContent = { DefaultEventContent(it) },
 ) {
     weekData.changeVersion
     LaunchedEffect(weekViewConfig.scalingFactor) {
@@ -87,6 +89,7 @@ fun WeekViewCompose(
             onDayClick = actions.onDayClick,
             weekViewConfig = activeWeekConfig,
             scrollState = state.scrollState,
+            eventContent = eventContent,
         )
     }
 }
