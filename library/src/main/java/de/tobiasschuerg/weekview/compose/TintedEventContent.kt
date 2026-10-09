@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Entry style with a light tint of the event's background color and a bar in its full color on the
- * left, in the manner of calendar apps. Text uses the theme's `onSurface` color, since the event's
+ * left, in the manner of calendar apps. The tint sits on the theme's surface color, so the grid
+ * doesn't show through. Text uses the theme's `onSurface` color, since the event's
  * text color is meant for the full-strength background.
  */
 @Composable
@@ -29,6 +30,8 @@ fun TintedEventContent(
             modifier
                 .fillMaxSize()
                 .clip(EventCornerShape)
+                // Opaque base, so grid lines don't show through the translucent tint.
+                .background(MaterialTheme.colorScheme.surface)
                 .background(accent.copy(alpha = TINT_ALPHA)),
     ) {
         Box(
