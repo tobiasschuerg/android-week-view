@@ -10,7 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -18,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.lightColorScheme
@@ -89,7 +87,6 @@ class ComposeWeekViewActivity : ComponentActivity() {
                         LocalDateRange(monday, monday.plusDays(selectedTimetable.days.toLong() - 1))
                     }
                 var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
-                var menuExpanded by remember { mutableStateOf(false) }
                 var fillViewport by remember { mutableStateOf(weekViewConfig.fillViewport) }
                 var eventStyle by remember { mutableStateOf(SampleEventStyle.FILLED) }
 
@@ -103,19 +100,14 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                                 ),
                             actions = {
-                                TextButton(onClick = { menuExpanded = true }) {
-                                    Text("Switch", color = MaterialTheme.colorScheme.onPrimary)
-                                }
-                                DropdownMenu(
-                                    expanded = menuExpanded,
-                                    onDismissRequest = { menuExpanded = false },
-                                ) {
+                                TopBarMenu(label = "Data") { dismiss ->
                                     SampleTimetables.Timetable.entries.forEach { timetable ->
                                         DropdownMenuItem(
                                             text = { Text(timetable.label) },
+                                            trailingIcon = { RadioButton(selected = selectedTimetable == timetable, onClick = null) },
                                             onClick = {
                                                 selectedTimetable = timetable
-                                                menuExpanded = false
+                                                dismiss()
                                             },
                                         )
                                     }
@@ -126,17 +118,18 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                         trailingIcon = { Checkbox(checked = fillViewport, onCheckedChange = null) },
                                         onClick = {
                                             fillViewport = !fillViewport
-                                            menuExpanded = false
+                                            dismiss()
                                         },
                                     )
-                                    HorizontalDivider()
+                                }
+                                TopBarMenu(label = "Style") { dismiss ->
                                     SampleEventStyle.entries.forEach { style ->
                                         DropdownMenuItem(
-                                            text = { Text("${style.label} events") },
+                                            text = { Text(style.label) },
                                             trailingIcon = { RadioButton(selected = eventStyle == style, onClick = null) },
                                             onClick = {
                                                 eventStyle = style
-                                                menuExpanded = false
+                                                dismiss()
                                             },
                                         )
                                     }

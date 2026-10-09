@@ -32,6 +32,8 @@ fun CustomEventContent(scope: EventContentScope) {
             Modifier
                 .fillMaxSize()
                 .clip(shape)
+                // Opaque base, so grid lines don't show through the translucent tint.
+                .background(MaterialTheme.colorScheme.surface)
                 .background(accent.copy(alpha = 0.15f))
                 .border(1.dp, accent.copy(alpha = 0.4f), shape),
     ) {
