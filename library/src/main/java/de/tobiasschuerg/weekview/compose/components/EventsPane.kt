@@ -9,9 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.times
-import de.tobiasschuerg.weekview.compose.DefaultEventContent
 import de.tobiasschuerg.weekview.compose.EventContent
 import de.tobiasschuerg.weekview.compose.EventsWithOverlapHandling
+import de.tobiasschuerg.weekview.compose.FilledEventContent
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import de.tobiasschuerg.weekview.data.Event
@@ -34,7 +34,7 @@ internal fun EventsPane(
     scalingFactor: Float,
     locale: Locale = Locale.getDefault(),
     style: WeekViewStyle = defaultWeekViewStyle(),
-    eventContent: EventContent = { DefaultEventContent(it) },
+    eventContent: EventContent = { FilledEventContent(it) },
 ) {
     val eventsByDate = remember(events) { events.groupBy { it.date } }
 

@@ -15,6 +15,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import de.tobiasschuerg.weekview.compose.DefaultEventContent
 import de.tobiasschuerg.weekview.compose.WeekViewActions
 import de.tobiasschuerg.weekview.compose.WeekViewCompose
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -91,7 +91,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
                 var menuExpanded by remember { mutableStateOf(false) }
                 var fillViewport by remember { mutableStateOf(weekViewConfig.fillViewport) }
-                var customEventContent by remember { mutableStateOf(false) }
+                var eventStyle by remember { mutableStateOf(SampleEventStyle.FILLED) }
 
                 Scaffold(
                     topBar = {
@@ -129,14 +129,17 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                             menuExpanded = false
                                         },
                                     )
-                                    DropdownMenuItem(
-                                        text = { Text("Custom event design") },
-                                        trailingIcon = { Checkbox(checked = customEventContent, onCheckedChange = null) },
-                                        onClick = {
-                                            customEventContent = !customEventContent
-                                            menuExpanded = false
-                                        },
-                                    )
+                                    HorizontalDivider()
+                                    SampleEventStyle.entries.forEach { style ->
+                                        DropdownMenuItem(
+                                            text = { Text("${style.label} events") },
+                                            trailingIcon = { RadioButton(selected = eventStyle == style, onClick = null) },
+                                            onClick = {
+                                                eventStyle = style
+                                                menuExpanded = false
+                                            },
+                                        )
+                                    }
                                 }
                             },
                         )
@@ -165,9 +168,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                     Toast.makeText(this@ComposeWeekViewActivity, "Clicked day: $date", Toast.LENGTH_SHORT).show()
                                 },
                             ),
-                        eventContent = { scope ->
-                            if (customEventContent) CustomEventContent(scope) else DefaultEventContent(scope)
-                        },
+                        eventContent = { scope -> eventStyle.Content(scope) },
                     )
                 }
             }

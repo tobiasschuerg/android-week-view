@@ -37,7 +37,7 @@ fun EventCompose(
     locale: Locale = Locale.getDefault(),
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
-    eventContent: EventContent = { DefaultEventContent(it) },
+    eventContent: EventContent = { FilledEventContent(it) },
 ) {
     val (topOffset, eventHeight) =
         EventPositionUtil.calculateVerticalOffsets(

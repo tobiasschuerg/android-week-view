@@ -61,7 +61,7 @@ fun WeekBackgroundCompose(
     style: WeekViewStyle = defaultWeekViewStyle(),
     scrollState: ScrollState = rememberScrollState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
-    eventContent: EventContent = { DefaultEventContent(it) },
+    eventContent: EventContent = { FilledEventContent(it) },
 ) {
     val days = remember(dateRange) { dateRange.toList() }
     var today by remember { mutableStateOf(LocalDate.now()) }

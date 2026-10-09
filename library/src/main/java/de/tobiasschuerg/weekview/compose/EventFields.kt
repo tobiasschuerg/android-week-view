@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.compose
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -30,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.data.Event
@@ -40,13 +39,17 @@ import de.tobiasschuerg.weekview.util.TimeLabelMode
 import de.tobiasschuerg.weekview.util.toLocalString
 
 /**
- * The built-in look of a timed entry: a rounded box in the event's background color with the
- * title, time labels, location, teacher and lower text, showing as many fields as fit its height.
+ * The text of a timed entry, shared by all built-in styles: title, time labels, location, teacher
+ * and lower text, showing as many fields as fit [height]. Draws no background; the style does.
+ *
+ * @param height the height the fields may use, i.e. the entry height minus any border the style draws.
  */
 @Composable
-fun DefaultEventContent(
+internal fun EventFields(
     scope: EventContentScope,
+    textColor: Color,
     modifier: Modifier = Modifier,
+    height: Dp = scope.height,
 ) {
     val event = scope.event
     val eventConfig = scope.eventConfig
@@ -59,8 +62,8 @@ fun DefaultEventContent(
     // Which optional fields fit, and how the time labels are laid out, is decided from the
     // real (font-scaled) line heights; the title is always shown. See EventFieldLayout.
     val lineHeights = LocalDensity.current.eventLineHeights()
-    val verticalPadding = EventFieldLayout.verticalPadding(scope.height, lineHeights)
-    val availableHeight = scope.height - verticalPadding * 2
+    val verticalPadding = EventFieldLayout.verticalPadding(height, lineHeights)
+    val availableHeight = height - verticalPadding * 2
     val fields =
         EventFieldLayout.resolve(
             availableHeight = availableHeight,
@@ -78,15 +81,12 @@ fun DefaultEventContent(
     val titleLineHeight = (TITLE_LINE_HEIGHT.value * titleFontSize.value / TITLE_FONT_SIZE.value).sp
     val fitsTitleLine = titleScale >= 1f
 
-    val textColor = Color(event.textColor)
     val displayTitle = displayTitle(event, eventConfig)
 
     Box(
         modifier =
             modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(CORNER_RADIUS))
-                .background(Color(event.backgroundColor))
                 .padding(horizontal = 4.dp, vertical = verticalPadding),
     ) {
         Column(
@@ -268,4 +268,6 @@ private val COMPACT_TIME_LINE_HEIGHT = 9.sp
 private val TITLE_LINE_HEIGHT = 14.sp
 private val LOCATION_LINE_HEIGHT = 12.sp
 private val TEACHER_LINE_HEIGHT = 10.sp
-private val CORNER_RADIUS = 4.dp
+
+/** Corner radius shared by the built-in entry styles. */
+internal val EventCornerShape = RoundedCornerShape(4.dp)

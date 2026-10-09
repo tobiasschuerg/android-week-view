@@ -28,7 +28,7 @@ fun EventsWithOverlapHandling(
     locale: Locale = Locale.getDefault(),
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
-    eventContent: EventContent = { DefaultEventContent(it) },
+    eventContent: EventContent = { FilledEventContent(it) },
 ) {
     // Filter events for the current day and time range
     val visibleEvents =
