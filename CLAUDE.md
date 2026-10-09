@@ -46,7 +46,7 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/` i
 
 ### Compose Layer (`compose/`)
 - **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks and an optional `eventContent` slot
-- **EventCompose** — places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot, which gets an `EventContentScope`; **DefaultEventContent** is the built-in look
+- **EventCompose** — places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot, which gets an `EventContentScope`. Built-in styles: **FilledEventContent** (default), **TintedEventContent**, **OutlinedEventContent**; they differ only in container and colors and share the internal `EventFields` for the auto-fitting text
 - **`components/`** — extracted composables: grid canvas, day headers, time axis (stacked `7:00`/`AM` labels and the current-time pill, sized from `TimeAxisDefaults`), current-time overlay drawn above the events, events pane, all-day/multi-day rows
 - **`state/`** — `WeekViewMetrics` for layout calculations; `rememberWeekViewMetrics` for Compose state integration
 - **`style/`** — `WeekViewStyle` theming with `WeekViewColors` (one file each)

@@ -153,7 +153,24 @@ WeekViewCompose(
 )
 ```
 
-Call `DefaultEventContent(scope)` to fall back to the built-in look, e.g. for some events only.
+The library ships three ready-made styles. All of them fit the fields to the entry height as
+described above; they only differ in container and colors:
+
+| Style | Look |
+|---|---|
+| `FilledEventContent` (default) | Filled with the event's background color, text in its text color |
+| `TintedEventContent` | Light tint of the event color with a full-color bar on the left |
+| `OutlinedEventContent` | Theme surface with a border in the event color |
+
+```kotlin
+WeekViewCompose(
+    weekData = weekData,
+    weekViewConfig = WeekViewConfig(),
+    eventContent = { TintedEventContent(it) },
+)
+```
+
+Built-in styles can also be mixed with your own, e.g. a custom design for some events only.
 All-day and multi-day events are not affected.
 
 ### Callbacks
