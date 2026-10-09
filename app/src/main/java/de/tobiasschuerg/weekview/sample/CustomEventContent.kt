@@ -47,6 +47,7 @@ fun CustomEventContent(scope: EventContentScope) {
             Text(
                 text = scope.event.title,
                 fontSize = 11.sp,
+                lineHeight = 13.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
@@ -58,6 +59,7 @@ fun CustomEventContent(scope: EventContentScope) {
                 Text(
                     text = room,
                     fontSize = 9.sp,
+                    lineHeight = 11.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
