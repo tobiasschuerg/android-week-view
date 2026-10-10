@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Android Week View is a Kotlin Android library for displaying weekly schedules/timetables using Jetpack Compose. The legacy View-based implementation was removed in 3.0.0; the library is now Compose-only.
 
 - **Package**: `de.tobiasschuerg.weekview`
-- **Modules**: `library/` (the published library) and `app/` (sample/demo app)
+- **Modules**: `library/` (the published library), `app/` (sample/demo app) and `baselineprofile/` (drives the sample app to record the library's baseline profile, committed at `library/src/main/generated/baselineProfiles/` and shipped in the AAR)
 - **Distribution**: JitPack from GitHub tags
 - **Min SDK**: 26, **Compile/Target SDK**: 37, **Java**: 17 toolchain
 - Kotlin uses AGP 9.0 built-in Kotlin support (no separate `kotlin-android` plugin)
@@ -24,6 +24,7 @@ Android Week View is a Kotlin Android library for displaying weekly schedules/ti
 ./gradlew ktlintCheck          # Verify code style
 ./gradlew ktlintFormat         # Auto-format code
 ./gradlew assembleDebug        # Build debug APK (sample app)
+ANDROID_SERIAL=<emulator> ./gradlew :library:generateBaselineProfile  # Regenerate the shipped baseline profile (API 33+ device or emulator)
 ```
 
 Always run `./gradlew ktlintFormat` before committing. One top-level class/object/enum per file. Use conventional commit messages (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`).

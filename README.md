@@ -18,11 +18,12 @@ Initially created for [Schedule Deluxe](https://play.google.com/store/apps/detai
 - Jetpack Compose implementation (Compose-only since 3.0)
 - Three event types: timed, all-day, and multi-day (spanning bars)
 - Automatic overlap handling for concurrent events
-- Pinch-to-zoom
+- Pinch-to-zoom that keeps the time under your fingers in place
 - Current time indicator and day highlighting
 - Configurable event display, spacing, and time range
 - Flexible day counts (3-day, 5-day, 7-day, etc.)
 - Navigation handled externally for full control (e.g. `HorizontalPager`, buttons)
+- Ships a baseline profile, so scrolling and zooming are smooth from the first launch
 
 ## Usage
 

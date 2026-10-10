@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "android-week-view"
 
-include(":app", ":library")
+include(":app", ":library", ":baselineprofile")

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.baselineprofile)
     `maven-publish`
 }
 
@@ -60,7 +61,16 @@ android {
     }
 }
 
+baselineProfile {
+    // Recorded by :baselineprofile against the sample app; only the library's own classes are shipped.
+    filter {
+        include("de.tobiasschuerg.weekview.**")
+        exclude("de.tobiasschuerg.weekview.sample.**")
+    }
+}
+
 dependencies {
+    baselineProfile(project(":baselineprofile"))
     // Compose BOM
     implementation(platform(libs.compose.bom))
 

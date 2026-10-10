@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    // Adds the non-minified release build that :baselineprofile drives to record the library's profile.
+    alias(libs.plugins.baselineprofile)
 }
 
 val libVersion = rootProject.extra["libVersion"] as String
@@ -33,6 +35,8 @@ android {
 
     buildTypes {
         release {
+            // Sample app only: signed with the debug key so profile generation can install it.
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
