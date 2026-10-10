@@ -188,6 +188,22 @@ WeekView(
 Built-in styles can also be mixed with your own, e.g. a custom design for some events only.
 All-day and multi-day events are not affected.
 
+### Scroll position and zoom
+
+`rememberWeekViewState` keeps the zoom level and scroll position across rotation and process death.
+Pass `initialTime` to open the week view at a given time, and scroll there later with
+`scrollToTime` or `animateScrollToTime`:
+
+```kotlin
+val state = rememberWeekViewState(initialTime = LocalTime.of(8, 0))
+val scope = rememberCoroutineScope()
+
+WeekView(weekData = weekData, weekViewConfig = WeekViewConfig(), state = state)
+Button(onClick = { scope.launch { state.animateScrollToTime(LocalTime.now()) } }) { Text("Now") }
+```
+
+Pinch-zooming keeps the time under the fingers in place.
+
 ### Callbacks
 
 ```kotlin

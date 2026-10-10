@@ -17,12 +17,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,9 +34,12 @@ import de.tobiasschuerg.weekview.WeekView
 import de.tobiasschuerg.weekview.WeekViewActions
 import de.tobiasschuerg.weekview.WeekViewConfig
 import de.tobiasschuerg.weekview.model.LocalDateRange
+import de.tobiasschuerg.weekview.rememberWeekViewState
 import de.tobiasschuerg.weekview.sample.data.SampleTimetables
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 
 class ComposeWeekViewActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -89,6 +94,8 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
                 var fillViewport by remember { mutableStateOf(weekViewConfig.fillViewport) }
                 var eventStyle by remember { mutableStateOf(SampleEventStyle.FILLED) }
+                val weekViewState = rememberWeekViewState(initialTime = LocalTime.now())
+                val scope = rememberCoroutineScope()
 
                 Scaffold(
                     topBar = {
@@ -100,6 +107,9 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                                 ),
                             actions = {
+                                TextButton(onClick = { scope.launch { weekViewState.animateScrollToTime(LocalTime.now()) } }) {
+                                    Text("Now", color = MaterialTheme.colorScheme.onPrimary)
+                                }
                                 TopBarMenu(label = "Data") { dismiss ->
                                     SampleTimetables.Timetable.entries.forEach { timetable ->
                                         DropdownMenuItem(
@@ -146,6 +156,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                             Modifier
                                 .padding(paddingValues)
                                 .fillMaxSize(),
+                        state = weekViewState,
                         actions =
                             WeekViewActions(
                                 onEventClick = { event ->
