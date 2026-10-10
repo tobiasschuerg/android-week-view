@@ -91,6 +91,8 @@ weekData.add(holiday)
 weekData.add(conference)
 ```
 
+Event IDs must be unique across all event types in a `WeekData`. If your events come from several sources (for example two database tables with their own auto-increment keys), prefix the IDs, e.g. `"lesson-12"` and `"holiday-12"`.
+
 ## Customization
 
 ### Week View Configuration
@@ -214,6 +216,8 @@ dependencies {
 ```
 
 ## Version History
+
+**5.0.0** — `Event.id` is now a `String` instead of a `Long`. Migrate by passing `id.toString()`, or namespace IDs per source.
 
 **4.0.0** — Bumped minSdk to 26. Removed core library desugaring dependency.
 
