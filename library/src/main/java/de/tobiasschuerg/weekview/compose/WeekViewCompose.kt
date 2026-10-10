@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import de.tobiasschuerg.weekview.compose.state.WeekViewState
@@ -45,11 +46,13 @@ fun WeekViewCompose(
     val clampedScalingFactor =
         state.scalingFactor.coerceIn(weekViewConfig.minScalingFactor, weekViewConfig.maxScalingFactor)
     val activeWeekConfig = weekViewConfig.copy(scalingFactor = clampedScalingFactor)
+    // The gesture handler outlives recompositions, so it reads the latest callback instead of capturing the first one.
+    val onScalingFactorChange by rememberUpdatedState(actions.onScalingFactorChange)
 
     Box(
         modifier =
             modifier
-                .pointerInput(weekViewConfig.minScalingFactor, weekViewConfig.maxScalingFactor) {
+                .pointerInput(state, weekViewConfig.minScalingFactor, weekViewConfig.maxScalingFactor) {
                     awaitEachGesture {
                         awaitFirstDown(requireUnconsumed = false)
                         do {
@@ -62,7 +65,7 @@ fun WeekViewCompose(
                                         minScalingFactor = weekViewConfig.minScalingFactor,
                                         maxScalingFactor = weekViewConfig.maxScalingFactor,
                                     )?.let { newScalingFactor ->
-                                        actions.onScalingFactorChange?.invoke(newScalingFactor)
+                                        onScalingFactorChange?.invoke(newScalingFactor)
                                     }
                                     event.changes.forEach { it.consume() }
                                 }

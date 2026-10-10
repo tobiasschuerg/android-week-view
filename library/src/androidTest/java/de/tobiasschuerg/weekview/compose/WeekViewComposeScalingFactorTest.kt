@@ -18,6 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.tobiasschuerg.weekview.data.LocalDateRange
 import de.tobiasschuerg.weekview.data.WeekData
 import de.tobiasschuerg.weekview.data.WeekViewConfig
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,18 +55,7 @@ class WeekViewComposeScalingFactorTest {
         }
 
         // Pinch in to drive the persisted zoom state down to the current minimum (0.5f).
-        composeTestRule.onNodeWithTag("WeekView").performTouchInput {
-            val p1Start = Offset(center.x - 100f, center.y)
-            val p2Start = Offset(center.x + 100f, center.y)
-            down(1, p1Start)
-            down(2, p2Start)
-            updatePointerTo(1, Offset(center.x - 10f, center.y))
-            updatePointerTo(2, Offset(center.x + 10f, center.y))
-            move()
-            up(1)
-            up(2)
-        }
-        composeTestRule.waitForIdle()
+        pinchIn()
 
         // Tighten minScalingFactor without changing weekViewConfig.scalingFactor, so the
         // stale persisted zoom state (0.5f) is never resynced before the next recomposition.
@@ -74,5 +64,55 @@ class WeekViewComposeScalingFactorTest {
 
         // Should recompose without WeekViewConfig's init `require` throwing.
         composeTestRule.onNodeWithTag("WeekView").assertIsDisplayed()
+    }
+
+    @Test
+    fun shouldReportZoomToTheLatestCallbackWhenActionsChangeAfterTheFirstComposition() {
+        val today = LocalDate.of(2025, 9, 2)
+        val weekData = WeekData(LocalDateRange(today, today), LocalTime.of(8, 0), LocalTime.of(18, 0))
+        val firstCalls = mutableListOf<Float>()
+        val latestCalls = mutableListOf<Float>()
+        var actions by mutableStateOf(WeekViewActions(onScalingFactorChange = { firstCalls += it }))
+
+        composeTestRule.setContent {
+            MaterialTheme {
+                WeekViewCompose(
+                    weekData = weekData,
+                    weekViewConfig = WeekViewConfig(),
+                    modifier = Modifier.testTag("WeekView").size(300.dp, 600.dp),
+                    actions = actions,
+                )
+            }
+        }
+        // The gesture handler only starts on the first touch, so pinch once before swapping the callback.
+        pinch(from = 100f, to = 70f)
+        assertTrue("first callback was not called", firstCalls.isNotEmpty())
+        firstCalls.clear()
+
+        actions = WeekViewActions(onScalingFactorChange = { latestCalls += it })
+        composeTestRule.waitForIdle()
+        pinch(from = 70f, to = 40f)
+
+        assertTrue("latest callback was not called", latestCalls.isNotEmpty())
+        assertTrue("stale callback was called: $firstCalls", firstCalls.isEmpty())
+    }
+
+    private fun pinchIn() = pinch(from = 100f, to = 10f)
+
+    /** Two-finger pinch around the center; [from] and [to] are each finger's distance from it. */
+    private fun pinch(
+        from: Float,
+        to: Float,
+    ) {
+        composeTestRule.onNodeWithTag("WeekView").performTouchInput {
+            down(1, Offset(center.x - from, center.y))
+            down(2, Offset(center.x + from, center.y))
+            updatePointerTo(1, Offset(center.x - to, center.y))
+            updatePointerTo(2, Offset(center.x + to, center.y))
+            move()
+            up(1)
+            up(2)
+        }
+        composeTestRule.waitForIdle()
     }
 }
