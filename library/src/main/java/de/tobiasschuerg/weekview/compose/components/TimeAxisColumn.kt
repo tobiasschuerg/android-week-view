@@ -49,7 +49,7 @@ internal fun TimeAxisColumn(
     /** Measured by the caller, which also needs the axis width to lay out the columns next to it. */
     labelMetrics: TimeAxisLabelMetrics,
     showNowIndicator: Boolean,
-    locale: Locale = Locale.getDefault(),
+    locale: Locale,
     style: WeekViewStyle = defaultWeekViewStyle(),
 ) {
     // Formatted once per set of hours: the axis recomposes on every zoom step, the hours rarely change.

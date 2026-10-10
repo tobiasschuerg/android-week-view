@@ -32,7 +32,7 @@ internal fun EventsPane(
     gridStartTime: LocalTime,
     effectiveEndTime: LocalTime,
     scalingFactor: Float,
-    locale: Locale = Locale.getDefault(),
+    locale: Locale,
     style: WeekViewStyle = defaultWeekViewStyle(),
     eventContent: EventContent = { FilledEventContent(it) },
 ) {

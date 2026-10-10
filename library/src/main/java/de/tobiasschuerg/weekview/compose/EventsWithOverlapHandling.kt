@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
@@ -25,7 +26,7 @@ fun EventsWithOverlapHandling(
     startTime: LocalTime,
     endTime: LocalTime,
     columnWidth: Dp,
-    locale: Locale = Locale.getDefault(),
+    locale: Locale = LocalConfiguration.current.locales[0],
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
     eventContent: EventContent = { FilledEventContent(it) },

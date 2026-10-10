@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -50,7 +49,7 @@ internal fun DayHeaderRow(
     style: WeekViewStyle = defaultWeekViewStyle(),
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
-    locale: Locale = LocalLocale.current.platformLocale,
+    locale: Locale,
     onDayClick: ((date: LocalDate) -> Unit)? = null,
 ) {
     val useFullNames = eventConfig.alwaysUseFullName && fullDayNamesFit(days, columnWidth, locale)

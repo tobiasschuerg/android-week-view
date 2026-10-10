@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.compose.components.AllDayEventsRow
@@ -40,6 +41,7 @@ import de.tobiasschuerg.weekview.util.TimeSpan
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 /**
  * Composable that renders the background grid for the week view.
@@ -81,10 +83,12 @@ fun WeekBackgroundCompose(
         }
     }
 
+    val locale = weekViewConfig.locale ?: LocalConfiguration.current.locales[0]
+
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         // The axis has to fit its widest label, which is wider in 12-hour locales than in 24-hour ones.
         // Measured once here and handed to the axis, which needs the same sizes.
-        val labelMetrics = TimeAxisDefaults.rememberLabelMetrics(weekViewConfig.locale)
+        val labelMetrics = TimeAxisDefaults.rememberLabelMetrics(locale)
         val leftOffsetDp = labelMetrics.axisWidth
         val availableWidth = maxWidth - leftOffsetDp
         val dynamicColumnWidthDp = if (days.isNotEmpty()) (availableWidth / days.size) else availableWidth
@@ -99,7 +103,7 @@ fun WeekBackgroundCompose(
                 style = style,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
-                locale = weekViewConfig.locale,
+                locale = locale,
                 onDayClick = onDayClick,
             )
 
@@ -143,6 +147,7 @@ fun WeekBackgroundCompose(
                     events = events,
                     eventConfig = eventConfig,
                     weekViewConfig = weekViewConfig,
+                    locale = locale,
                     columnWidth = dynamicColumnWidthDp,
                     today = today,
                     now = now,
@@ -165,6 +170,7 @@ private fun WeekGridRow(
     events: List<Event.Single>,
     eventConfig: EventConfig,
     weekViewConfig: WeekViewConfig,
+    locale: Locale,
     columnWidth: Dp,
     today: LocalDate,
     now: LocalTime,
@@ -190,7 +196,7 @@ private fun WeekGridRow(
             gridHeightDp = metrics.gridHeightDp,
             labelMetrics = labelMetrics,
             showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
-            locale = weekViewConfig.locale,
+            locale = locale,
             style = style,
         )
 
@@ -224,7 +230,7 @@ private fun WeekGridRow(
                 gridStartTime = metrics.gridStartTime,
                 effectiveEndTime = metrics.effectiveEndTime,
                 scalingFactor = weekViewConfig.scalingFactor,
-                locale = weekViewConfig.locale,
+                locale = locale,
                 style = style,
                 eventContent = eventContent,
             )

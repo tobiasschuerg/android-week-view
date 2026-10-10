@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -34,7 +35,7 @@ fun EventCompose(
     startTime: LocalTime,
     columnWidth: Dp,
     eventLayout: EventOverlapCalculator.EventLayout,
-    locale: Locale = Locale.getDefault(),
+    locale: Locale = LocalConfiguration.current.locales[0],
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
     eventContent: EventContent = { FilledEventContent(it) },
