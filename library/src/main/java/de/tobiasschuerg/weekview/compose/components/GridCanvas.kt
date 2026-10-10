@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.compose.style.WeekViewStyle
 import de.tobiasschuerg.weekview.compose.style.defaultWeekViewStyle
 import java.time.LocalDate
@@ -32,7 +33,7 @@ internal fun GridCanvas(
                 color = style.colors.gridLineColor,
                 start = Offset(x, 0f),
                 end = Offset(x, size.height),
-                strokeWidth = 2f,
+                strokeWidth = GRID_LINE_WIDTH.toPx(),
             )
         }
 
@@ -44,7 +45,7 @@ internal fun GridCanvas(
                 color = style.colors.gridLineColor,
                 start = Offset(0f, y),
                 end = Offset(size.width, y),
-                strokeWidth = 2f,
+                strokeWidth = GRID_LINE_WIDTH.toPx(),
             )
         }
 
@@ -60,3 +61,6 @@ internal fun GridCanvas(
         }
     }
 }
+
+/** Grid line thickness; in dp so it looks the same on every screen density. */
+internal val GRID_LINE_WIDTH = 0.75.dp
