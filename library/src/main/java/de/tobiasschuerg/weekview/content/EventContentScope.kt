@@ -14,7 +14,7 @@ import java.util.Locale
  * after [EventConfig.eventSpacingDp], so the content should fill exactly that space.
  */
 @Immutable
-data class EventContentScope(
+public data class EventContentScope(
     val event: Event.Single,
     val width: Dp,
     val height: Dp,

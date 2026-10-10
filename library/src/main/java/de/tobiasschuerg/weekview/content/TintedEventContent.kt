@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
  * text color is meant for the full-strength background.
  */
 @Composable
-fun TintedEventContent(
+public fun TintedEventContent(
     scope: EventContentScope,
     modifier: Modifier = Modifier,
 ) {

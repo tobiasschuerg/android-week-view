@@ -6,10 +6,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 /** Default values used by the week view. */
-object WeekViewDefaults {
+public object WeekViewDefaults {
     /** Colors derived from the current Material theme; override the ones you need. */
     @Composable
-    fun colors(
+    public fun colors(
         todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
         nowIndicator: Color = MaterialTheme.colorScheme.error,
         dayHeaderText: Color = MaterialTheme.colorScheme.onSurfaceVariant,

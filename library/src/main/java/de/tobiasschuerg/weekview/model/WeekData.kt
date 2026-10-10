@@ -11,7 +11,7 @@ import java.time.LocalTime
  * events must overlap it), and event IDs must be unique across all event types.
  */
 @Immutable
-data class WeekData(
+public data class WeekData(
     val dateRange: LocalDateRange,
     val start: LocalTime,
     val end: LocalTime,
@@ -34,7 +34,7 @@ data class WeekData(
         timeSpan = if (earliestStart.isBefore(latestEnd)) TimeSpan(earliestStart, latestEnd) else null
     }
 
-    fun isEmpty(): Boolean = events.isEmpty()
+    public fun isEmpty(): Boolean = events.isEmpty()
 
     private fun requireWithinDateRange(event: Event) {
         when (event) {

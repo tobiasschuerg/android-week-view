@@ -4,13 +4,13 @@ import androidx.compose.ui.graphics.Color
 import java.time.Duration
 import java.time.LocalDate
 
-sealed class Event {
-    abstract val id: String
-    abstract val date: LocalDate
-    abstract val title: String
-    abstract val shortTitle: String
+public sealed class Event {
+    public abstract val id: String
+    public abstract val date: LocalDate
+    public abstract val title: String
+    public abstract val shortTitle: String
 
-    data class Single(
+    public data class Single(
         override val id: String,
         override val date: LocalDate,
         override val title: String,
@@ -25,7 +25,7 @@ sealed class Event {
         val duration: Duration = timeSpan.duration
     }
 
-    data class AllDay(
+    public data class AllDay(
         override val id: String,
         override val date: LocalDate,
         override val title: String,
@@ -34,7 +34,7 @@ sealed class Event {
         val backgroundColor: Color,
     ) : Event()
 
-    data class MultiDay(
+    public data class MultiDay(
         override val id: String,
         override val date: LocalDate,
         override val title: String,

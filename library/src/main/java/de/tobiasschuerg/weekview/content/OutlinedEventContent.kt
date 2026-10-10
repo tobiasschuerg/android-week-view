@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
  * text in the theme's `onSurface` color. The surface keeps grid lines from showing through.
  */
 @Composable
-fun OutlinedEventContent(
+public fun OutlinedEventContent(
     scope: EventContentScope,
     modifier: Modifier = Modifier,
 ) {

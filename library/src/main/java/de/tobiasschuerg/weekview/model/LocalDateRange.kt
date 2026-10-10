@@ -5,7 +5,7 @@ import java.time.LocalDate
 /**
  * A range of [LocalDate] values.
  */
-data class LocalDateRange(
+public data class LocalDateRange(
     override val start: LocalDate,
     override val endInclusive: LocalDate,
 ) : ClosedRange<LocalDate>,

@@ -10,6 +10,11 @@ java {
     }
 }
 
+kotlin {
+    // Every public declaration must be marked as such, so nothing becomes API by accident.
+    explicitApi()
+}
+
 android {
     defaultConfig {
         minSdk = 26

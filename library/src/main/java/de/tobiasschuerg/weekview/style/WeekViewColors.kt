@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 /** Colors used by the week view; build one with [WeekViewDefaults.colors] and override what you need. */
 @Immutable
-data class WeekViewColors(
+public data class WeekViewColors(
     val todayHighlight: Color,
     val nowIndicator: Color,
     val dayHeaderText: Color,

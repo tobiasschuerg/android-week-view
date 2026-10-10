@@ -11,7 +11,7 @@ import androidx.compose.ui.draw.clip
  * Shows as many fields as fit the entry height.
  */
 @Composable
-fun FilledEventContent(
+public fun FilledEventContent(
     scope: EventContentScope,
     modifier: Modifier = Modifier,
 ) {

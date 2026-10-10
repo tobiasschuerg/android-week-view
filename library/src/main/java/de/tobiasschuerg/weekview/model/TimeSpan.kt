@@ -6,7 +6,7 @@ import java.time.LocalTime
 /**
  * Holds a duration of time.
  */
-data class TimeSpan(
+public data class TimeSpan(
     val start: LocalTime,
     val endExclusive: LocalTime,
 ) {
@@ -24,7 +24,7 @@ data class TimeSpan(
      *
      * Example: TimeSpan from 08:30 to 12:15 would return [08:00, 09:00, 10:00, 11:00, 12:00]
      */
-    fun hourlyTimes(): Sequence<LocalTime> =
+    public fun hourlyTimes(): Sequence<LocalTime> =
         sequence {
             var currentHour = start.hour
             val endHour = endExclusive.hour
@@ -42,8 +42,8 @@ data class TimeSpan(
             }
         }
 
-    companion object {
-        fun of(
+    public companion object {
+        public fun of(
             start: LocalTime,
             duration: Duration,
         ): TimeSpan {

@@ -32,7 +32,7 @@ import java.time.LocalTime
  * horizontal swipes pass through to a parent HorizontalPager or similar container.
  */
 @Composable
-fun WeekView(
+public fun WeekView(
     weekData: WeekData,
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,

@@ -2,7 +2,7 @@ package de.tobiasschuerg.weekview
 
 import java.util.Locale
 
-data class WeekViewConfig(
+public data class WeekViewConfig(
     val scalingFactor: Float = 1f,
     val minScalingFactor: Float = 0.5f,
     val maxScalingFactor: Float = 2f,

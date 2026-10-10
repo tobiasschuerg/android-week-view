@@ -11,11 +11,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 
 @Stable
-class WeekViewState internal constructor(
+public class WeekViewState internal constructor(
     initialScalingFactor: Float,
-    val scrollState: ScrollState,
+    public val scrollState: ScrollState,
 ) {
-    var scalingFactor by mutableFloatStateOf(initialScalingFactor)
+    public var scalingFactor: Float by mutableFloatStateOf(initialScalingFactor)
         private set
 
     private var lastConfiguredScalingFactor by mutableFloatStateOf(initialScalingFactor)
@@ -54,7 +54,7 @@ class WeekViewState internal constructor(
 }
 
 @Composable
-fun rememberWeekViewState(initialScalingFactor: Float = 1f): WeekViewState {
+public fun rememberWeekViewState(initialScalingFactor: Float = 1f): WeekViewState {
     val scrollState = rememberScrollState()
     return rememberSaveable(saver = WeekViewState.saver(scrollState)) {
         WeekViewState(

@@ -12,7 +12,7 @@ import de.tobiasschuerg.weekview.internal.layout.EventFieldLayout
  * survives rather than whatever happens to be first in the layout. See
  * [de.tobiasschuerg.weekview.internal.layout.EventFieldLayout] for how the room is divided.
  */
-data class EventConfig(
+public data class EventConfig(
     /** If true, always uses the full event title in both portrait and landscape mode.
      * If false (default), uses short event names in portrait mode and full names in landscape mode. */
     val alwaysUseFullName: Boolean = false,

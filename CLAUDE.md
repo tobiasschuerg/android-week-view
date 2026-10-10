@@ -30,7 +30,7 @@ Always run `./gradlew ktlintFormat` before committing. One top-level class/objec
 
 ## Architecture
 
-All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. The package tells public API from implementation: everything under `internal/` has Kotlin `internal` visibility.
+All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. The package tells public API from implementation: everything under `internal/` has Kotlin `internal` visibility. The library builds in Kotlin explicit API mode, so every public declaration needs an explicit `public` modifier.
 
 ### Public API
 - **Root package** — **WeekView** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, `WeekViewColors` and an optional `eventContent` slot), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
