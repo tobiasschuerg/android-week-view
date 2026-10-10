@@ -2,10 +2,10 @@ package de.tobiasschuerg.weekview.sample.data
 
 import android.graphics.Color
 import androidx.core.graphics.toColorInt
-import de.tobiasschuerg.weekview.data.Event
-import de.tobiasschuerg.weekview.data.LocalDateRange
-import de.tobiasschuerg.weekview.data.WeekData
-import de.tobiasschuerg.weekview.util.TimeSpan
+import de.tobiasschuerg.weekview.model.Event
+import de.tobiasschuerg.weekview.model.LocalDateRange
+import de.tobiasschuerg.weekview.model.TimeSpan
+import de.tobiasschuerg.weekview.model.WeekData
 import java.time.LocalTime
 
 /**

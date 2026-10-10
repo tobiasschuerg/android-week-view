@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.tobiasschuerg.weekview.compose.EventContentScope
+import de.tobiasschuerg.weekview.content.EventContentScope
 
 /** Example of a custom entry design: a light card with a colored bar on the left, title and room. */
 @Composable

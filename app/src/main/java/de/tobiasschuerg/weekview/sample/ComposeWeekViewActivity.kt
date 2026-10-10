@@ -27,11 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import de.tobiasschuerg.weekview.compose.WeekViewActions
-import de.tobiasschuerg.weekview.compose.WeekViewCompose
-import de.tobiasschuerg.weekview.data.EventConfig
-import de.tobiasschuerg.weekview.data.LocalDateRange
-import de.tobiasschuerg.weekview.data.WeekViewConfig
+import de.tobiasschuerg.weekview.EventConfig
+import de.tobiasschuerg.weekview.WeekViewActions
+import de.tobiasschuerg.weekview.WeekViewCompose
+import de.tobiasschuerg.weekview.WeekViewConfig
+import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.sample.data.SampleTimetables
 import java.time.DayOfWeek
 import java.time.LocalDate

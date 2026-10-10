@@ -20,7 +20,7 @@ Android Week View is a Kotlin Android library for displaying weekly schedules/ti
 ./gradlew library:build        # Library only
 ./gradlew test                 # Run unit tests (library/src/test/)
 ./gradlew library:testDebugUnitTest  # Library unit tests only
-./gradlew library:testDebugUnitTest --tests "de.tobiasschuerg.weekview.data.WeekDataTest"  # Single test class
+./gradlew library:testDebugUnitTest --tests "de.tobiasschuerg.weekview.model.WeekDataTest"  # Single test class
 ./gradlew ktlintCheck          # Verify code style
 ./gradlew ktlintFormat         # Auto-format code
 ./gradlew assembleDebug        # Build debug APK (sample app)
@@ -30,26 +30,19 @@ Always run `./gradlew ktlintFormat` before committing. One top-level class/objec
 
 ## Architecture
 
-All library source is under `library/src/main/java/de/tobiasschuerg/weekview/` in three layers:
+All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. The package tells public API from implementation: everything under `internal/` has Kotlin `internal` visibility.
 
-### Data Layer (`data/`)
-- **Event** — sealed class: `Event.Single` (timed), `Event.AllDay`, `Event.MultiDay`
-- **WeekData** — event container that auto-expands its visible time span as events are added; validates events fall within its `LocalDateRange`
-- **TimeSpan** — start/end `LocalTime` pair with lazy `Duration`. Factory: `TimeSpan.of(startTime, duration)`
-- **EventConfig** / **WeekViewConfig** — display configuration data classes
+### Public API
+- **Root package** — **WeekViewCompose** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, a `WeekViewStyle` and an optional `eventContent` slot), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
+- **`model/`** — **Event** (sealed: `Event.Single` timed, `Event.AllDay`, `Event.MultiDay`), **WeekData** (event container that auto-expands its visible time span as events are added; validates events fall within its `LocalDateRange`), **TimeSpan** (start/end `LocalTime`; factory `TimeSpan.of(startTime, duration)`), **LocalDateRange**
+- **`content/`** — the `EventContent` slot that draws a timed entry, its `EventContentScope`, and the built-in styles **FilledEventContent** (default), **TintedEventContent**, **OutlinedEventContent**; they differ only in container and colors and share the internal `EventFields` for the auto-fitting text
+- **`style/`** — `WeekViewStyle` theming with `WeekViewColors`, defaults taken from the Material theme
 
-### Utility Layer (`util/`)
-- **EventOverlapCalculator** — BFS graph algorithm to find connected components of overlapping events, returns layout fractions (widthFraction, offsetFraction)
-- **EventPositionUtil** — vertical offset and height from scaling factor and visible time range
-- **EventFieldLayout** — decides which entry fields (time labels, location, teacher) fit the entry height, using real line heights; result types `EventFieldVisibility`, `TimeLabelMode`, `EventLineHeights` live in their own files
-
-### Compose Layer (`compose/`)
-- **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks and an optional `eventContent` slot
-- **EventCompose** — places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot, which gets an `EventContentScope`. Built-in styles: **FilledEventContent** (default), **TintedEventContent**, **OutlinedEventContent**; they differ only in container and colors and share the internal `EventFields` for the auto-fitting text
-- **`components/`** — extracted composables: grid canvas, day headers, time axis (stacked `7:00`/`AM` labels and the current-time pill, sized from `TimeAxisDefaults`), current-time overlay drawn above the events, events pane, all-day/multi-day rows
-- **`state/`** — `WeekViewMetrics` for layout calculations; `rememberWeekViewMetrics` for Compose state integration
-- **`style/`** — `WeekViewStyle` theming with `WeekViewColors` (one file each)
-- **WeekViewGesture** — pinch-zoom via `TransformableState`, swipe navigation
+### Implementation (`internal/`)
+- **WeekBackgroundCompose** — lays out headers, all-day/multi-day rows, time axis, grid, events and current-time overlay; **EventCompose** places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot
+- **`components/`** — grid canvas, day headers, time axis (stacked `7:00`/`AM` labels and the current-time pill, sized from `TimeAxisDefaults`), current-time overlay drawn above the events, events pane, all-day/multi-day rows
+- **`layout/`** — **EventOverlapCalculator** (BFS over overlapping events, returns width/offset fractions), **EventPositionUtil** (vertical offset and height), **EventFieldLayout** (which entry fields fit the entry height, using real line heights), `WeekViewMetrics` / `rememberWeekViewMetrics` and `GridTimeSpanFill`
+- **`time/`** — locale-aware date and time formatting helpers
 
 ## Key Patterns
 

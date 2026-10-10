@@ -1,0 +1,31 @@
+package de.tobiasschuerg.weekview.model
+
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import java.time.Duration
+import java.time.LocalTime
+
+/**
+ * Created by Tobias Schrg on 11.02.2022.
+ */
+class TimeSpanTest {
+    @Test
+    fun testDuration() {
+        val timeSpan =
+            TimeSpan(
+                start = LocalTime.of(10, 15),
+                endExclusive = LocalTime.of(10, 45),
+            )
+        assertEquals(Duration.ofMinutes(30), timeSpan.duration)
+    }
+
+    @Test
+    fun testDuration2() {
+        val timeSpan =
+            TimeSpan.of(
+                start = LocalTime.of(10, 15),
+                duration = Duration.ofMinutes(30),
+            )
+        assertEquals(Duration.ofMinutes(30), timeSpan.duration)
+    }
+}
