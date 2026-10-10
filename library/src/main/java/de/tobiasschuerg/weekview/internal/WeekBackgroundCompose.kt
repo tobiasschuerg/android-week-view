@@ -40,8 +40,8 @@ import de.tobiasschuerg.weekview.internal.layout.totalHours
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalTime
@@ -64,7 +64,7 @@ internal fun WeekBackgroundCompose(
     weekViewConfig: WeekViewConfig,
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
     scrollState: ScrollState = rememberScrollState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
     eventContent: EventContent = { FilledEventContent(it) },
@@ -104,7 +104,7 @@ internal fun WeekBackgroundCompose(
                 leftOffsetDp = leftOffsetDp,
                 topOffsetDp = WeekViewMetrics.TOP_OFFSET,
                 columnWidth = dynamicColumnWidthDp,
-                style = style,
+                colors = colors,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
                 eventConfig = eventConfig,
                 locale = locale,
@@ -159,7 +159,7 @@ internal fun WeekBackgroundCompose(
                     scrollState = scrollState,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
-                    style = style,
+                    colors = colors,
                     eventContent = eventContent,
                 )
             }
@@ -182,7 +182,7 @@ private fun WeekGridRow(
     scrollState: ScrollState,
     onEventClick: ((event: Event) -> Unit)?,
     onEventLongPress: ((event: Event) -> Unit)?,
-    style: WeekViewStyle,
+    colors: WeekViewColors,
     eventContent: EventContent,
 ) {
     // Axis and grid scroll as one container, so the hour labels always stay level with their rows.
@@ -202,7 +202,7 @@ private fun WeekGridRow(
             labelMetrics = labelMetrics,
             showNowIndicator = weekViewConfig.showCurrentTimeIndicator,
             locale = locale,
-            style = style,
+            colors = colors,
         )
 
         // Grid area (canvas + events). Clipped because the canvas draws hour lines up to the next full
@@ -222,7 +222,7 @@ private fun WeekGridRow(
                 days = metrics.days,
                 today = today,
                 highlightCurrentDay = weekViewConfig.highlightCurrentDay,
-                style = style,
+                colors = colors,
             )
             EventsPane(
                 days = metrics.days,
@@ -236,7 +236,7 @@ private fun WeekGridRow(
                 effectiveEndTime = metrics.effectiveEndTime,
                 scalingFactor = weekViewConfig.scalingFactor,
                 locale = locale,
-                style = style,
+                colors = colors,
                 eventContent = eventContent,
             )
             if (weekViewConfig.showCurrentTimeIndicator) {
@@ -251,7 +251,7 @@ private fun WeekGridRow(
                     gridStartTime = metrics.gridStartTime,
                     effectiveEndTime = metrics.effectiveEndTime,
                     onlyToday = weekViewConfig.currentTimeLineOnlyToday,
-                    style = style,
+                    colors = colors,
                 )
             }
         }

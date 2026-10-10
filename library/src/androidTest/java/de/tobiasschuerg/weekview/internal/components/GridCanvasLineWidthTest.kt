@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.tobiasschuerg.weekview.internal.layout.totalHours
 import de.tobiasschuerg.weekview.style.WeekViewColors
-import de.tobiasschuerg.weekview.style.WeekViewStyle
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -45,7 +44,7 @@ class GridCanvasLineWidthTest {
                         days = listOf(LocalDate.of(2025, 9, 1)),
                         today = LocalDate.of(2025, 9, 8),
                         highlightCurrentDay = false,
-                        style = WeekViewStyle(colors = blackGrid),
+                        colors = blackGrid,
                     )
                 }
             }

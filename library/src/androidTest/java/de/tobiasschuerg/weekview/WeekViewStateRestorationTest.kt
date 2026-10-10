@@ -37,7 +37,7 @@ class WeekViewStateRestorationTest {
         restorationTester.setContent {
             state = rememberWeekViewState()
             MaterialTheme {
-                WeekViewCompose(
+                WeekView(
                     weekData = weekData,
                     weekViewConfig = WeekViewConfig(),
                     modifier = Modifier.testTag("WeekView").size(300.dp, 600.dp),

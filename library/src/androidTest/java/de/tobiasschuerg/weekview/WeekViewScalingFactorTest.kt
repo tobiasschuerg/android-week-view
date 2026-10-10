@@ -25,14 +25,14 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @RunWith(AndroidJUnit4::class)
-class WeekViewComposeScalingFactorTest {
+class WeekViewScalingFactorTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     /**
      * Reproduces the crash where a persisted (unsynced) zoom level falls outside a
      * subsequently tightened [WeekViewConfig.minScalingFactor]/[WeekViewConfig.maxScalingFactor],
-     * causing [WeekViewConfig]'s own `require` check to throw when `WeekViewCompose` rebuilds its
+     * causing [WeekViewConfig]'s own `require` check to throw when `WeekView` rebuilds its
      * active config from the raw persisted scaling factor.
      */
     @Test
@@ -45,7 +45,7 @@ class WeekViewComposeScalingFactorTest {
 
         composeTestRule.setContent {
             MaterialTheme {
-                WeekViewCompose(
+                WeekView(
                     weekData = weekData,
                     weekViewConfig = config,
                     modifier = Modifier.testTag("WeekView").size(300.dp, 600.dp),
@@ -75,7 +75,7 @@ class WeekViewComposeScalingFactorTest {
 
         composeTestRule.setContent {
             MaterialTheme {
-                WeekViewCompose(
+                WeekView(
                     weekData = weekData,
                     weekViewConfig = WeekViewConfig(),
                     modifier = Modifier.testTag("WeekView").size(300.dp, 600.dp),

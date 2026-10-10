@@ -27,8 +27,8 @@ import de.tobiasschuerg.weekview.internal.layout.gridHeightDp
 import de.tobiasschuerg.weekview.internal.time.AxisTimeLabel
 import de.tobiasschuerg.weekview.internal.time.isStrictlyBetween
 import de.tobiasschuerg.weekview.internal.time.toAxisLabel
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -51,7 +51,7 @@ internal fun TimeAxisColumn(
     labelMetrics: TimeAxisLabelMetrics,
     showNowIndicator: Boolean,
     locale: Locale,
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
 ) {
     // Formatted once per set of hours: the axis recomposes on every zoom step, the hours rarely change.
     val hourLabels = remember(timeLabels, locale) { timeLabels.map { it.toAxisLabel(locale) } }
@@ -70,7 +70,7 @@ internal fun TimeAxisColumn(
                 Box(modifier = Modifier.size(labelMetrics.axisWidth, rowHeightDp)) {
                     HourLabel(
                         label = hourLabel,
-                        color = style.colors.timeLabelTextColor,
+                        color = colors.timeLabelTextColor,
                         modifier = Modifier.padding(horizontal = TimeAxisDefaults.horizontalPadding),
                     )
                 }
@@ -99,7 +99,7 @@ internal fun TimeAxisColumn(
             ) {
                 NowPill(
                     label = now.toAxisLabel(locale),
-                    style = style,
+                    colors = colors,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -131,13 +131,13 @@ private fun HourLabel(
 @Composable
 private fun NowPill(
     label: AxisTimeLabel,
-    style: WeekViewStyle,
+    colors: WeekViewColors,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier =
             modifier
-                .background(style.colors.nowIndicator, RoundedCornerShape(percent = 50))
+                .background(colors.nowIndicator, RoundedCornerShape(percent = 50))
                 .padding(
                     horizontal = TimeAxisDefaults.pillHorizontalPadding,
                     vertical = TimeAxisDefaults.pillVerticalPadding,
@@ -148,7 +148,7 @@ private fun NowPill(
             text = label.time,
             style =
                 TimeAxisDefaults.timeTextStyle.copy(
-                    color = style.colors.nowIndicatorLabelText,
+                    color = colors.nowIndicatorLabelText,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                 ),

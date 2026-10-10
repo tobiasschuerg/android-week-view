@@ -28,8 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import de.tobiasschuerg.weekview.EventConfig
+import de.tobiasschuerg.weekview.WeekView
 import de.tobiasschuerg.weekview.WeekViewActions
-import de.tobiasschuerg.weekview.WeekViewCompose
 import de.tobiasschuerg.weekview.WeekViewConfig
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.sample.data.SampleTimetables
@@ -138,7 +138,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                         )
                     },
                 ) { paddingValues ->
-                    WeekViewCompose(
+                    WeekView(
                         weekData = weekData,
                         eventConfig = eventConfig,
                         weekViewConfig = weekViewConfig.copy(fillViewport = fillViewport),

@@ -15,8 +15,8 @@ import de.tobiasschuerg.weekview.content.FilledEventContent
 import de.tobiasschuerg.weekview.internal.EventsWithOverlapHandling
 import de.tobiasschuerg.weekview.internal.layout.gridHeightDp
 import de.tobiasschuerg.weekview.model.Event
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
@@ -34,7 +34,7 @@ internal fun EventsPane(
     effectiveEndTime: LocalTime,
     scalingFactor: Float,
     locale: Locale,
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
     eventContent: EventContent = { FilledEventContent(it) },
 ) {
     val eventsByDate = remember(events) { events.groupBy { it.date } }

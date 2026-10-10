@@ -8,8 +8,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.internal.layout.totalHours
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import java.time.LocalDate
 
 @Composable
@@ -21,7 +21,7 @@ internal fun GridCanvas(
     days: List<LocalDate>,
     today: LocalDate,
     highlightCurrentDay: Boolean,
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
 ) {
     Canvas(modifier = modifier) {
         val columnWidthPx = if (columnCount > 0) size.width / columnCount else size.width // Avoid division by zero
@@ -31,7 +31,7 @@ internal fun GridCanvas(
         for (i in 0..columnCount) {
             val x = i * columnWidthPx
             drawLine(
-                color = style.colors.gridLineColor,
+                color = colors.gridLineColor,
                 start = Offset(x, 0f),
                 end = Offset(x, size.height),
                 strokeWidth = GRID_LINE_WIDTH.toPx(),
@@ -43,7 +43,7 @@ internal fun GridCanvas(
         for (i in 0..hourLineCount) {
             val y = i * rowHeightPx
             drawLine(
-                color = style.colors.gridLineColor,
+                color = colors.gridLineColor,
                 start = Offset(0f, y),
                 end = Offset(size.width, y),
                 strokeWidth = GRID_LINE_WIDTH.toPx(),
@@ -55,7 +55,7 @@ internal fun GridCanvas(
             val todayColumnIndex = days.indexOf(today)
             val left = todayColumnIndex * columnWidthPx
             drawRect(
-                color = style.colors.todayHighlight,
+                color = colors.todayHighlight,
                 topLeft = Offset(left, 0f),
                 size = Size(columnWidthPx, size.height),
             )

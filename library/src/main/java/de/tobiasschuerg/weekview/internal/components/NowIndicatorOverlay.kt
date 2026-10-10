@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.internal.time.isStrictlyBetween
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -48,7 +48,7 @@ internal fun NowIndicatorOverlay(
     gridStartTime: LocalTime,
     effectiveEndTime: LocalTime,
     onlyToday: Boolean,
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
 ) {
     // Same bounds as the pill in the time axis, so the line never shows without it.
     if (!now.isStrictlyBetween(gridStartTime, effectiveEndTime)) return
@@ -63,7 +63,7 @@ internal fun NowIndicatorOverlay(
         if (!onlyToday) {
             // No halo here: a second line next to this faint one is more than the other days need.
             drawLine(
-                color = style.colors.nowIndicator.copy(alpha = WEEK_LINE_ALPHA),
+                color = colors.nowIndicator.copy(alpha = WEEK_LINE_ALPHA),
                 start = Offset(0f, nowY),
                 end = Offset(size.width, nowY),
                 strokeWidth = WEEK_LINE_STROKE.toPx(),
@@ -75,13 +75,13 @@ internal fun NowIndicatorOverlay(
         drawHaloedLine(
             start = Offset(left, nowY),
             end = Offset(left + columnWidthPx, nowY),
-            color = style.colors.nowIndicator,
-            haloColor = style.colors.nowIndicatorHalo,
+            color = colors.nowIndicator,
+            haloColor = colors.nowIndicatorHalo,
             strokeWidth = TODAY_LINE_STROKE,
         )
         val dotCenter = Offset(left, nowY)
-        drawCircle(color = style.colors.nowIndicatorHalo, radius = (DOT_RADIUS + DOT_RING).toPx(), center = dotCenter)
-        drawCircle(color = style.colors.nowIndicator, radius = DOT_RADIUS.toPx(), center = dotCenter)
+        drawCircle(color = colors.nowIndicatorHalo, radius = (DOT_RADIUS + DOT_RING).toPx(), center = dotCenter)
+        drawCircle(color = colors.nowIndicator, radius = DOT_RADIUS.toPx(), center = dotCenter)
     }
 }
 

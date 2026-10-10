@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.tobiasschuerg.weekview.EventConfig
 import de.tobiasschuerg.weekview.internal.time.toShortDateStringWithoutYear
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import java.time.LocalDate
 import java.time.format.TextStyle.FULL
 import java.time.format.TextStyle.SHORT
@@ -46,7 +46,7 @@ internal fun DayHeaderRow(
     leftOffsetDp: Dp,
     topOffsetDp: Dp,
     columnWidth: Dp,
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
     highlightCurrentDay: Boolean = true,
     eventConfig: EventConfig = EventConfig(),
     locale: Locale,
@@ -66,7 +66,7 @@ internal fun DayHeaderRow(
                         .width(columnWidth)
                         .heightIn(min = topOffsetDp)
                         .fillMaxHeight()
-                        .background(style.colors.currentDayBackground)
+                        .background(colors.currentDayBackground)
                 } else {
                     Modifier
                         .width(columnWidth)
@@ -75,9 +75,9 @@ internal fun DayHeaderRow(
                 }
             val textStyle =
                 if (highlightCurrentDay && isToday) {
-                    HEADER_TODAY_STYLE.copy(color = style.colors.currentDayText)
+                    HEADER_TODAY_STYLE.copy(color = colors.currentDayText)
                 } else {
-                    HEADER_STYLE.copy(color = style.colors.dayHeaderText)
+                    HEADER_STYLE.copy(color = colors.dayHeaderText)
                 }
             val dayName = date.dayOfWeek.getDisplayName(if (useFullNames) FULL else SHORT, locale)
             val shortDate = date.toShortDateStringWithoutYear(locale)

@@ -39,7 +39,7 @@ class WeekViewLocaleTest {
             val configuration = Configuration(LocalConfiguration.current).apply { setLocale(compositionLocale) }
             CompositionLocalProvider(LocalConfiguration provides configuration) {
                 MaterialTheme {
-                    WeekViewCompose(weekData = weekData, weekViewConfig = config, modifier = Modifier.size(300.dp, 600.dp))
+                    WeekView(weekData = weekData, weekViewConfig = config, modifier = Modifier.size(300.dp, 600.dp))
                 }
             }
         }

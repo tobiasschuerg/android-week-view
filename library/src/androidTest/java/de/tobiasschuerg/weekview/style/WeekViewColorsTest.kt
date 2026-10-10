@@ -12,7 +12,7 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import de.tobiasschuerg.weekview.WeekViewCompose
+import de.tobiasschuerg.weekview.WeekView
 import de.tobiasschuerg.weekview.WeekViewConfig
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.WeekData
@@ -40,7 +40,7 @@ class WeekViewColorsTest {
 
         composeTestRule.setContent {
             MaterialTheme(colorScheme = scheme) {
-                colors = defaultWeekViewColors()
+                colors = WeekViewDefaults.colors()
             }
         }
         composeTestRule.waitForIdle()
@@ -59,11 +59,11 @@ class WeekViewColorsTest {
 
         composeTestRule.setContent {
             MaterialTheme {
-                WeekViewCompose(
+                WeekView(
                     weekData = weekData,
                     weekViewConfig = WeekViewConfig(),
                     modifier = Modifier.size(300.dp, 600.dp),
-                    style = WeekViewStyle(colors = defaultWeekViewColors().copy(currentDayBackground = todayHeader)),
+                    colors = WeekViewDefaults.colors().copy(currentDayBackground = todayHeader),
                 )
             }
         }

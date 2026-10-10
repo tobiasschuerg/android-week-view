@@ -16,8 +16,8 @@ import de.tobiasschuerg.weekview.content.FilledEventContent
 import de.tobiasschuerg.weekview.internal.WeekBackgroundCompose
 import de.tobiasschuerg.weekview.model.TimeSpan
 import de.tobiasschuerg.weekview.model.WeekData
-import de.tobiasschuerg.weekview.style.WeekViewStyle
-import de.tobiasschuerg.weekview.style.defaultWeekViewStyle
+import de.tobiasschuerg.weekview.style.WeekViewColors
+import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import java.time.Duration
 import java.time.LocalTime
 
@@ -26,20 +26,20 @@ import java.time.LocalTime
  * This serves as the entry point for the Compose-based week view implementation.
  * Displays the background grid and renders events from the provided weekData.
  * Timed entries are drawn by [eventContent], which defaults to [FilledEventContent].
- * Colors come from [style], which defaults to the current Material theme.
+ * Colors come from [colors], which default to the current Material theme.
  *
  * Pinch-to-zoom only activates on multi-touch (2+ fingers) so that single-finger
  * horizontal swipes pass through to a parent HorizontalPager or similar container.
  */
 @Composable
-fun WeekViewCompose(
+fun WeekView(
     weekData: WeekData,
     weekViewConfig: WeekViewConfig,
     modifier: Modifier = Modifier,
     eventConfig: EventConfig = EventConfig(),
     actions: WeekViewActions = WeekViewActions(),
     state: WeekViewState = rememberWeekViewState(weekViewConfig.scalingFactor),
-    style: WeekViewStyle = defaultWeekViewStyle(),
+    colors: WeekViewColors = WeekViewDefaults.colors(),
     eventContent: EventContent = { FilledEventContent(it) },
 ) {
     weekData.changeVersion
@@ -94,7 +94,7 @@ fun WeekViewCompose(
             onEventLongPress = actions.onEventLongPress,
             onDayClick = actions.onDayClick,
             weekViewConfig = activeWeekConfig,
-            style = style,
+            colors = colors,
             scrollState = state.scrollState,
             eventContent = eventContent,
         )

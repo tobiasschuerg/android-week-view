@@ -14,8 +14,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.tobiasschuerg.weekview.EventConfig
+import de.tobiasschuerg.weekview.WeekView
 import de.tobiasschuerg.weekview.WeekViewActions
-import de.tobiasschuerg.weekview.WeekViewCompose
 import de.tobiasschuerg.weekview.WeekViewConfig
 import de.tobiasschuerg.weekview.internal.EventCompose
 import de.tobiasschuerg.weekview.internal.layout.EventOverlapCalculator
@@ -56,7 +56,7 @@ class EventContentSlotTest {
     fun shouldRenderCustomContentInsteadOfDefaultWhenEventContentIsGiven() {
         composeTestRule.setContent {
             MaterialTheme {
-                WeekViewCompose(
+                WeekView(
                     weekData = weekData(),
                     weekViewConfig = WeekViewConfig(),
                     eventContent = { scope -> Text(scope.event.title, Modifier.testTag("Custom_${scope.event.id}")) },
@@ -72,7 +72,7 @@ class EventContentSlotTest {
     fun shouldRenderDefaultContentWhenNoEventContentIsGiven() {
         composeTestRule.setContent {
             MaterialTheme {
-                WeekViewCompose(weekData = weekData(), weekViewConfig = WeekViewConfig())
+                WeekView(weekData = weekData(), weekViewConfig = WeekViewConfig())
             }
         }
 
@@ -84,7 +84,7 @@ class EventContentSlotTest {
         var clicked: Event? = null
         composeTestRule.setContent {
             MaterialTheme {
-                WeekViewCompose(
+                WeekView(
                     weekData = weekData(),
                     weekViewConfig = WeekViewConfig(),
                     actions = WeekViewActions(onEventClick = { clicked = it }),

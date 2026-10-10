@@ -33,10 +33,10 @@ Always run `./gradlew ktlintFormat` before committing. One top-level class/objec
 All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. The package tells public API from implementation: everything under `internal/` has Kotlin `internal` visibility.
 
 ### Public API
-- **Root package** — **WeekViewCompose** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, a `WeekViewStyle` and an optional `eventContent` slot), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
+- **Root package** — **WeekView** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, `WeekViewColors` and an optional `eventContent` slot), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
 - **`model/`** — **Event** (sealed: `Event.Single` timed, `Event.AllDay`, `Event.MultiDay`), **WeekData** (event container that auto-expands its visible time span as events are added; validates events fall within its `LocalDateRange`), **TimeSpan** (start/end `LocalTime`; factory `TimeSpan.of(startTime, duration)`), **LocalDateRange**
 - **`content/`** — the `EventContent` slot that draws a timed entry, its `EventContentScope`, and the built-in styles **FilledEventContent** (default), **TintedEventContent**, **OutlinedEventContent**; they differ only in container and colors and share the internal `EventFields` for the auto-fitting text
-- **`style/`** — `WeekViewStyle` theming with `WeekViewColors`, defaults taken from the Material theme
+- **`style/`** — `WeekViewColors`, with defaults from the Material theme via `WeekViewDefaults.colors()`
 
 ### Implementation (`internal/`)
 - **WeekBackgroundCompose** — lays out headers, all-day/multi-day rows, time axis, grid, events and current-time overlay; **EventCompose** places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot

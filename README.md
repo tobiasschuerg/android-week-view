@@ -39,7 +39,7 @@ fun MyWeekView() {
         WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0))
     }
 
-    WeekViewCompose(
+    WeekView(
         weekData = weekData,
         weekViewConfig = WeekViewConfig(),
         eventConfig = EventConfig(),
@@ -105,6 +105,19 @@ val weekViewConfig = WeekViewConfig(
 )
 ```
 
+### Colors
+
+The week view takes its colors from the current `MaterialTheme`, so it follows light and dark mode.
+Override single colors with `WeekViewDefaults.colors()`:
+
+```kotlin
+WeekView(
+    weekData = weekData,
+    weekViewConfig = WeekViewConfig(),
+    colors = WeekViewDefaults.colors(gridLineColor = Color.LightGray),
+)
+```
+
 ### Event Configuration
 
 ```kotlin
@@ -139,7 +152,7 @@ draws inside it, including the background and shape. `EventContentScope` provide
 event, the entry's `width` and `height`, the `EventConfig` and the locale.
 
 ```kotlin
-WeekViewCompose(
+WeekView(
     weekData = weekData,
     weekViewConfig = WeekViewConfig(),
     eventContent = { scope ->
@@ -165,7 +178,7 @@ described above; they only differ in container and colors:
 | `OutlinedEventContent` | Theme surface with a border in the event color |
 
 ```kotlin
-WeekViewCompose(
+WeekView(
     weekData = weekData,
     weekViewConfig = WeekViewConfig(),
     eventContent = { TintedEventContent(it) },
