@@ -44,6 +44,7 @@ android {
     }
 
     namespace = "de.tobiasschuerg.weekview"
+    resourcePrefix = "weekview_"
 
     lint {
         targetSdk = 37

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="weekview_all_day_event_description">%1$s, ganztägig</string>
+    <string name="weekview_multi_day_event_description">%1$s, %2$s bis %3$s</string>
+</resources>

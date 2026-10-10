@@ -13,11 +13,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -25,9 +27,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 @Composable
 internal fun MultiDayEventsRow(
@@ -35,6 +41,7 @@ internal fun MultiDayEventsRow(
     multiDayEvents: List<Event.MultiDay>,
     leftOffsetDp: Dp,
     columnWidth: Dp,
+    locale: Locale,
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
 ) {
@@ -45,6 +52,7 @@ internal fun MultiDayEventsRow(
 
     // Pack events into rows where events don't horizontally overlap
     val rows = packEventsIntoRows(multiDayEvents, firstDay, lastDay)
+    val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         rows.forEachIndexed { rowIndex, row ->
@@ -57,6 +65,13 @@ internal fun MultiDayEventsRow(
                 ) {
                     row.forEach { event ->
                         key(event.id) {
+                            val description =
+                                stringResource(
+                                    R.string.weekview_multi_day_event_description,
+                                    event.title,
+                                    dateFormatter.format(event.date),
+                                    dateFormatter.format(event.lastDate),
+                                )
                             val clippedStart = maxOf(event.date, firstDay)
                             val clippedEnd = minOf(event.lastDate, lastDay)
                             val startIndex = ChronoUnit.DAYS.between(firstDay, clippedStart).toInt()
@@ -79,7 +94,7 @@ internal fun MultiDayEventsRow(
                                             onLongClick = onEventLongPress?.let { { it(event) } },
                                         )
                                         .semantics {
-                                            contentDescription = "${event.title}, ${event.date} to ${event.lastDate}"
+                                            contentDescription = description
                                         }
                                         .padding(horizontal = 4.dp),
                                 contentAlignment = Alignment.CenterStart,

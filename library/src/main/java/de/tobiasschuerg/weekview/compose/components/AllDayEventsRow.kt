@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.tobiasschuerg.weekview.R
 import de.tobiasschuerg.weekview.data.Event
 import java.time.LocalDate
 
@@ -48,6 +50,7 @@ internal fun AllDayEventsRow(
                 ) {
                     eventsForDay.forEach { event ->
                         key(event.id) {
+                            val description = stringResource(R.string.weekview_all_day_event_description, event.title)
                             Box(
                                 modifier =
                                     Modifier
@@ -64,7 +67,7 @@ internal fun AllDayEventsRow(
                                             onLongClick = onEventLongPress?.let { { it(event) } },
                                         )
                                         .semantics {
-                                            contentDescription = "${event.title}, all day"
+                                            contentDescription = description
                                         }
                                         .padding(horizontal = 4.dp),
                                 contentAlignment = Alignment.CenterStart,

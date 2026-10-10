@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Screen reader description of an all-day event. %1$s: event title. -->
+    <string name="weekview_all_day_event_description">%1$s, all day</string>
+    <!-- Screen reader description of an event spanning several days. %1$s: event title, %2$s: first day, %3$s: last day. -->
+    <string name="weekview_multi_day_event_description">%1$s, %2$s to %3$s</string>
+</resources>

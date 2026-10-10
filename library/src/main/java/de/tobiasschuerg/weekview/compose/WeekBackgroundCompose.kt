@@ -113,6 +113,7 @@ fun WeekBackgroundCompose(
                     multiDayEvents = multiDayEvents,
                     leftOffsetDp = leftOffsetDp,
                     columnWidth = dynamicColumnWidthDp,
+                    locale = locale,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
                 )
