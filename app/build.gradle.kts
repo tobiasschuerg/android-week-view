@@ -46,6 +46,7 @@ android {
 
 dependencies {
     implementation(project(":library"))
+    implementation(libs.androidx.core.ktx)
 
     // Compose BOM
     implementation(platform(libs.compose.bom))
@@ -58,5 +59,4 @@ dependencies {
 
     // Compose debugging tools
     debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.test.manifest)
 }

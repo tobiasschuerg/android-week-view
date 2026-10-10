@@ -23,7 +23,6 @@ android {
     }
 
     buildFeatures {
-        buildConfig = true
         compose = true
     }
 
@@ -56,9 +55,6 @@ android {
 }
 
 dependencies {
-    // Core Android dependencies
-    implementation(libs.androidx.core.ktx)
-
     // Compose BOM
     implementation(platform(libs.compose.bom))
 
@@ -84,8 +80,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.activity.compose)
 }
 
 tasks.withType<Test> {

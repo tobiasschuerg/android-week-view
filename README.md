@@ -202,30 +202,22 @@ dependencyResolutionManagement {
 
 ### Step 2: Add the dependency
 
-In your **app** `build.gradle.kts`:
+In your **app** `build.gradle.kts`, replacing `<version>` with the latest release shown by the JitPack badge above:
 
 ```kotlin
 dependencies {
-    implementation("com.github.tobiasschuerg:android-week-view:4.2.0")
+    implementation("com.github.tobiasschuerg:android-week-view:<version>")
 
     // Required for Compose
-    implementation(platform("androidx.compose:compose-bom:2026.02.00"))
+    implementation(platform("androidx.compose:compose-bom:<compose-bom-version>"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
 }
 ```
 
-## Version History
+## Releases
 
-**5.0.0** — `Event.id` is now a `String` instead of a `Long`. Migrate by passing `id.toString()`, or namespace IDs per source.
-
-**4.0.0** — Bumped minSdk to 26. Removed core library desugaring dependency.
-
-**3.0.0** — Removed legacy View-based implementation. Compose only.
-
-**2.0.0** — Added Compose implementation alongside deprecated View-based code.
-
-**1.8.0** — Switched from ThreeTen Backport to core library desugaring.
+Changes for each version are listed on the [GitHub Releases](https://github.com/tobiasschuerg/android-week-view/releases) page.
 
 ## Sample App
 

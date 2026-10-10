@@ -5,7 +5,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import de.tobiasschuerg.weekview.data.Event
 import de.tobiasschuerg.weekview.data.EventConfig
 import de.tobiasschuerg.weekview.util.EventOverlapCalculator
@@ -48,8 +47,8 @@ private fun sampleEvent(
         shortTitle = shortTitle,
         subTitle = subTitle,
         timeSpan = TimeSpan.of(startTime, duration),
-        backgroundColor = "#90323D".toColorInt(),
-        textColor = "#dddddd".toColorInt(),
+        backgroundColor = 0xFF90323D.toInt(),
+        textColor = 0xFFDDDDDD.toInt(),
         upperText = upperText,
         lowerText = lowerText,
     )
