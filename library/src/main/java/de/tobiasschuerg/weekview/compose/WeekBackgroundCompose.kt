@@ -49,7 +49,7 @@ import java.util.Locale
  * today highlight, optional now indicator, and events.
  */
 @Composable
-fun WeekBackgroundCompose(
+internal fun WeekBackgroundCompose(
     modifier: Modifier = Modifier,
     dateRange: LocalDateRange,
     timeRange: TimeSpan,

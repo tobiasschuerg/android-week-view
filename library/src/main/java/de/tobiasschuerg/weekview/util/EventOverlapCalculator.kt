@@ -7,7 +7,7 @@ import de.tobiasschuerg.weekview.data.Event
  * Handles the logic for determining which events overlap and how to position them
  * side by side within the same day column.
  */
-object EventOverlapCalculator {
+internal object EventOverlapCalculator {
     /**
      * Data class representing the position and sizing information for an event
      * when it has overlaps with other events.

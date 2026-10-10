@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
  * line heights rather than fixed dp thresholds keeps the decision correct under any
  * system font scale.
  */
-object EventFieldLayout {
+internal object EventFieldLayout {
     fun resolve(
         availableHeight: Dp,
         lines: EventLineHeights,

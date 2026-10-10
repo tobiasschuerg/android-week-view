@@ -18,7 +18,7 @@ import java.util.Locale
  * Calculates overlap layouts and renders each event with proper positioning.
  */
 @Composable
-fun EventsWithOverlapHandling(
+internal fun EventsWithOverlapHandling(
     modifier: Modifier = Modifier,
     scalingFactor: Float = 1f,
     events: List<Event.Single>,

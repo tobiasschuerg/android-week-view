@@ -3,7 +3,7 @@ package de.tobiasschuerg.weekview.util
 import androidx.compose.ui.unit.Dp
 
 /** Which optional fields of an event entry fit into its box, see [EventFieldLayout.resolve]. */
-data class EventFieldVisibility(
+internal data class EventFieldVisibility(
     val timeLabelMode: TimeLabelMode,
     val showStartTime: Boolean,
     val showEndTime: Boolean,

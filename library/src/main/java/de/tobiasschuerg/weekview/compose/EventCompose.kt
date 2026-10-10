@@ -27,7 +27,7 @@ import java.util.Locale
  * Handles positioning, sizing, clicks and accessibility; what the entry looks like is drawn by [eventContent].
  */
 @Composable
-fun EventCompose(
+internal fun EventCompose(
     modifier: Modifier = Modifier,
     event: Event.Single,
     scalingFactor: Float,

@@ -1,7 +1,7 @@
 package de.tobiasschuerg.weekview.util
 
 /** How the start/end time labels of an entry are laid out, see [EventFieldLayout.resolve]. */
-enum class TimeLabelMode {
+internal enum class TimeLabelMode {
     /** Start on its own line above the title, end pinned below the rest of the fields. */
     STACKED,
 

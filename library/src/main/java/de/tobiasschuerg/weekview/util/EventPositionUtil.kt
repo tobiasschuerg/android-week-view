@@ -12,7 +12,7 @@ import java.time.LocalTime
  * Note: startTime must always be the configured column start (e.g. 8:00), not the first event start.
  * If you see events at the top that should not be there, check the startTime passed to this function.
  */
-object EventPositionUtil {
+internal object EventPositionUtil {
     /**
      * Calculates the vertical offset and height of an event.
      *
