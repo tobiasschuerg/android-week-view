@@ -42,7 +42,6 @@ fun WeekView(
     colors: WeekViewColors = WeekViewDefaults.colors(),
     eventContent: EventContent = { FilledEventContent(it) },
 ) {
-    weekData.changeVersion
     LaunchedEffect(weekViewConfig.scalingFactor) {
         state.syncConfiguredScalingFactor(weekViewConfig.scalingFactor)
     }
@@ -82,13 +81,13 @@ fun WeekView(
             modifier = Modifier.fillMaxSize(),
             dateRange = weekData.dateRange,
             timeRange =
-                weekData.getTimeSpan() ?: TimeSpan.of(
+                weekData.timeSpan ?: TimeSpan.of(
                     LocalTime.of(6, 0),
                     Duration.ofHours(12),
                 ),
-            events = weekData.getSingleEvents(),
-            allDayEvents = weekData.getAllDayEvents(),
-            multiDayEvents = weekData.getMultiDayEvents(),
+            events = weekData.singleEvents,
+            allDayEvents = weekData.allDayEvents,
+            multiDayEvents = weekData.multiDayEvents,
             eventConfig = eventConfig,
             onEventClick = actions.onEventClick,
             onEventLongPress = actions.onEventLongPress,

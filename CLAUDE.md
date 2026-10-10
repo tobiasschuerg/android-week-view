@@ -34,7 +34,7 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. 
 
 ### Public API
 - **Root package** — **WeekView** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, `WeekViewColors` and an optional `eventContent` slot), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
-- **`model/`** — **Event** (sealed: `Event.Single` timed, `Event.AllDay`, `Event.MultiDay`), **WeekData** (event container that auto-expands its visible time span as events are added; validates events fall within its `LocalDateRange`), **TimeSpan** (start/end `LocalTime`; factory `TimeSpan.of(startTime, duration)`), **LocalDateRange**
+- **`model/`** — **Event** (sealed: `Event.Single` timed, `Event.AllDay`, `Event.MultiDay`), **WeekData** (immutable event container; its visible time span widens to fit the timed events; validates that events fall within its `LocalDateRange` and IDs are unique), **TimeSpan** (start/end `LocalTime`; factory `TimeSpan.of(startTime, duration)`), **LocalDateRange**
 - **`content/`** — the `EventContent` slot that draws a timed entry, its `EventContentScope`, and the built-in styles **FilledEventContent** (default), **TintedEventContent**, **OutlinedEventContent**; they differ only in container and colors and share the internal `EventFields` for the auto-fitting text
 - **`style/`** — `WeekViewColors`, with defaults from the Material theme via `WeekViewDefaults.colors()`
 
@@ -48,7 +48,7 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. 
 
 - `java.time` API everywhere (LocalDate, LocalTime, Duration) — available natively with minSdk 26
 - Sealed class hierarchy for type-safe event variants
-- Stateless composables rendered from `WeekData` state
+- Stateless composables rendered from an immutable `WeekData`
 - `WeekViewActions` data class for loosely-coupled event callbacks (all nullable lambdas)
 
 ## CI/CD and Releases
@@ -63,7 +63,7 @@ Library version is defined in `gradle.properties` (`libVersion`) and read by the
 ## Testing
 
 Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
-- `WeekDataTest` — event addition, time span expansion, date range validation
+- `WeekDataTest` — splitting events by type, time span widening, date range and unique ID validation
 - `TimeSpanTest` — duration calculation, hourly time generation
 - `EventPositionUtilTest` — vertical offset/height calculations
 - `EventFieldLayoutTest` — field visibility, time label mode and title height per available height

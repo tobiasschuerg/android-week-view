@@ -10,7 +10,7 @@ import java.time.LocalTime
 object SampleTimetableSchool {
     fun create(dateRange: LocalDateRange): WeekData {
         val days = dateRange.toList()
-        val weekData = WeekData(dateRange, LocalTime.of(7, 30), LocalTime.of(15, 30))
+        val events = mutableListOf<Event>()
 
         val mon = days[0]
         val tue = days.getOrNull(1)
@@ -30,52 +30,52 @@ object SampleTimetableSchool {
         val germanColor = Color(0xFF283593)
 
         // Monday: 4 lessons + lunch
-        weekData.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, mathColor))
-        weekData.add(lesson(nextId++, mon, "English", "Eng", "Room 7", 8, 50, 9, 35, englishColor))
-        weekData.add(lesson(nextId++, mon, "History", "Hist", "Room 21", 9, 50, 10, 35, historyColor))
-        weekData.add(lesson(nextId++, mon, "Science", "Sci", "Lab 2", 10, 40, 11, 25, scienceColor))
-        weekData.add(lesson(nextId++, mon, "Art", "Art", "Art Room", 12, 0, 12, 45, artColor))
-        weekData.add(lesson(nextId++, mon, "PE", "PE", "Gym", 12, 50, 13, 35, peColor))
+        events.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, mathColor))
+        events.add(lesson(nextId++, mon, "English", "Eng", "Room 7", 8, 50, 9, 35, englishColor))
+        events.add(lesson(nextId++, mon, "History", "Hist", "Room 21", 9, 50, 10, 35, historyColor))
+        events.add(lesson(nextId++, mon, "Science", "Sci", "Lab 2", 10, 40, 11, 25, scienceColor))
+        events.add(lesson(nextId++, mon, "Art", "Art", "Art Room", 12, 0, 12, 45, artColor))
+        events.add(lesson(nextId++, mon, "PE", "PE", "Gym", 12, 50, 13, 35, peColor))
 
         // Tuesday
         tue?.let { d ->
-            weekData.add(lesson(nextId++, d, "German", "Ger", "Room 5", 8, 0, 8, 45, germanColor))
-            weekData.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 8, 50, 9, 35, mathColor))
-            weekData.add(lesson(nextId++, d, "Science", "Sci", "Lab 2", 9, 50, 10, 35, scienceColor))
-            weekData.add(lesson(nextId++, d, "Music", "Mus", "Music Room", 10, 40, 11, 25, musicColor))
-            weekData.add(lesson(nextId++, d, "English", "Eng", "Room 7", 12, 0, 12, 45, englishColor))
+            events.add(lesson(nextId++, d, "German", "Ger", "Room 5", 8, 0, 8, 45, germanColor))
+            events.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 8, 50, 9, 35, mathColor))
+            events.add(lesson(nextId++, d, "Science", "Sci", "Lab 2", 9, 50, 10, 35, scienceColor))
+            events.add(lesson(nextId++, d, "Music", "Mus", "Music Room", 10, 40, 11, 25, musicColor))
+            events.add(lesson(nextId++, d, "English", "Eng", "Room 7", 12, 0, 12, 45, englishColor))
         }
 
         // Wednesday
         wed?.let { d ->
-            weekData.add(lesson(nextId++, d, "English", "Eng", "Room 7", 8, 0, 8, 45, englishColor))
-            weekData.add(lesson(nextId++, d, "History", "Hist", "Room 21", 8, 50, 9, 35, historyColor))
-            weekData.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 9, 50, 10, 35, mathColor))
-            weekData.add(lesson(nextId++, d, "German", "Ger", "Room 5", 10, 40, 11, 25, germanColor))
-            weekData.add(lesson(nextId++, d, "PE", "PE", "Gym", 12, 0, 13, 30, peColor))
+            events.add(lesson(nextId++, d, "English", "Eng", "Room 7", 8, 0, 8, 45, englishColor))
+            events.add(lesson(nextId++, d, "History", "Hist", "Room 21", 8, 50, 9, 35, historyColor))
+            events.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 9, 50, 10, 35, mathColor))
+            events.add(lesson(nextId++, d, "German", "Ger", "Room 5", 10, 40, 11, 25, germanColor))
+            events.add(lesson(nextId++, d, "PE", "PE", "Gym", 12, 0, 13, 30, peColor))
         }
 
         // Thursday
         thu?.let { d ->
-            weekData.add(lesson(nextId++, d, "Science", "Sci", "Lab 2", 8, 0, 8, 45, scienceColor))
-            weekData.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 8, 50, 9, 35, mathColor))
-            weekData.add(lesson(nextId++, d, "Art", "Art", "Art Room", 9, 50, 10, 35, artColor))
-            weekData.add(lesson(nextId++, d, "German", "Ger", "Room 5", 10, 40, 11, 25, germanColor))
-            weekData.add(lesson(nextId++, d, "History", "Hist", "Room 21", 12, 0, 12, 45, historyColor))
-            weekData.add(lesson(nextId++, d, "Music", "Mus", "Music Room", 12, 50, 13, 35, musicColor))
+            events.add(lesson(nextId++, d, "Science", "Sci", "Lab 2", 8, 0, 8, 45, scienceColor))
+            events.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 8, 50, 9, 35, mathColor))
+            events.add(lesson(nextId++, d, "Art", "Art", "Art Room", 9, 50, 10, 35, artColor))
+            events.add(lesson(nextId++, d, "German", "Ger", "Room 5", 10, 40, 11, 25, germanColor))
+            events.add(lesson(nextId++, d, "History", "Hist", "Room 21", 12, 0, 12, 45, historyColor))
+            events.add(lesson(nextId++, d, "Music", "Mus", "Music Room", 12, 50, 13, 35, musicColor))
         }
 
         // Friday (short day)
         fri?.let { d ->
-            weekData.add(lesson(nextId++, d, "German", "Ger", "Room 5", 8, 0, 8, 45, germanColor))
-            weekData.add(lesson(nextId++, d, "English", "Eng", "Room 7", 8, 50, 9, 35, englishColor))
-            weekData.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 9, 50, 10, 35, mathColor))
-            weekData.add(lesson(nextId++, d, "Science", "Sci", "Lab 2", 10, 40, 11, 25, scienceColor))
+            events.add(lesson(nextId++, d, "German", "Ger", "Room 5", 8, 0, 8, 45, germanColor))
+            events.add(lesson(nextId++, d, "English", "Eng", "Room 7", 8, 50, 9, 35, englishColor))
+            events.add(lesson(nextId++, d, "Mathematics", "Math", "Room 12", 9, 50, 10, 35, mathColor))
+            events.add(lesson(nextId++, d, "Science", "Sci", "Lab 2", 10, 40, 11, 25, scienceColor))
         }
 
         // All-day: school trip
         thu?.let { d ->
-            weekData.add(
+            events.add(
                 Event.AllDay(
                     id = nextId.toString(),
                     date = d,
@@ -87,6 +87,6 @@ object SampleTimetableSchool {
             )
         }
 
-        return weekData
+        return WeekData(dateRange, LocalTime.of(7, 30), LocalTime.of(15, 30), events)
     }
 }

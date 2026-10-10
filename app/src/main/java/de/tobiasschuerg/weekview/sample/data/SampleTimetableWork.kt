@@ -11,7 +11,7 @@ import java.time.LocalTime
 object SampleTimetableWork {
     fun create(dateRange: LocalDateRange): WeekData {
         val days = dateRange.toList()
-        val weekData = WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0))
+        val events = mutableListOf<Event>()
 
         val mon = days[0]
         val tue = days.getOrNull(1)
@@ -22,7 +22,7 @@ object SampleTimetableWork {
         var nextId = 100L
 
         // Monday
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = mon,
@@ -34,7 +34,7 @@ object SampleTimetableWork {
                 backgroundColor = Color(0xFF0277BD),
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = mon,
@@ -47,7 +47,7 @@ object SampleTimetableWork {
                 upperText = "Sprint 24",
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = mon,
@@ -62,7 +62,7 @@ object SampleTimetableWork {
 
         // Tuesday
         tue?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -74,7 +74,7 @@ object SampleTimetableWork {
                     backgroundColor = Color(0xFF0277BD),
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -86,7 +86,7 @@ object SampleTimetableWork {
                     backgroundColor = Color(0xFF00695C),
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -103,7 +103,7 @@ object SampleTimetableWork {
 
         // Wednesday — includes double-booked meetings
         wed?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -116,7 +116,7 @@ object SampleTimetableWork {
                 ),
             )
             // Two meetings at the same time (overlap)
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -128,7 +128,7 @@ object SampleTimetableWork {
                     backgroundColor = Color(0xFFE65100),
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -140,7 +140,7 @@ object SampleTimetableWork {
                     backgroundColor = Color(0xFF1B5E20),
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -153,7 +153,7 @@ object SampleTimetableWork {
                     upperText = "Kotlin Coroutines",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -169,7 +169,7 @@ object SampleTimetableWork {
 
         // Thursday
         thu?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -181,7 +181,7 @@ object SampleTimetableWork {
                     backgroundColor = Color(0xFF0277BD),
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -194,7 +194,7 @@ object SampleTimetableWork {
                     upperText = "Stakeholders",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -211,7 +211,7 @@ object SampleTimetableWork {
 
         // Friday
         fri?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -223,7 +223,7 @@ object SampleTimetableWork {
                     backgroundColor = Color(0xFF0277BD),
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -239,7 +239,7 @@ object SampleTimetableWork {
 
         // Multi-day: team offsite
         if (days.size >= 2) {
-            weekData.add(
+            events.add(
                 Event.MultiDay(
                     id = (nextId++).toString(),
                     date = days[0],
@@ -254,7 +254,7 @@ object SampleTimetableWork {
 
         // All-day
         fri?.let { d ->
-            weekData.add(
+            events.add(
                 Event.AllDay(
                     id = nextId.toString(),
                     date = d,
@@ -266,6 +266,6 @@ object SampleTimetableWork {
             )
         }
 
-        return weekData
+        return WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0), events)
     }
 }

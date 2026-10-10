@@ -24,7 +24,7 @@ import java.time.LocalTime
 object SampleTimetableSpecialCases {
     fun create(dateRange: LocalDateRange): WeekData {
         val days = dateRange.toList()
-        val weekData = WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(11, 0))
+        val events = mutableListOf<Event>()
 
         val mon = days[0]
         val tue = days.getOrNull(1)
@@ -35,13 +35,13 @@ object SampleTimetableSpecialCases {
         var nextId = 400L
 
         // Monday: a normal lesson, a passing period, a short lesson, a break, then a normal lesson.
-        weekData.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, Color(0xFF1565C0)))
-        weekData.add(lesson(nextId++, mon, "Passing Period", "Pass", "", 8, 45, 8, 55, Color(0xFF78909C)))
-        weekData.add(lesson(nextId++, mon, "Quick Quiz", "Quiz", "Room 7", 8, 55, 9, 10, Color(0xFF2E7D32)))
-        weekData.add(lesson(nextId++, mon, "Short Break", "Break", "", 9, 10, 9, 20, Color(0xFF78909C)))
-        weekData.add(lesson(nextId++, mon, "History", "Hist", "Room 21", 9, 20, 10, 5, Color(0xFFBF360C)))
-        weekData.add(lesson(nextId++, mon, "10-min Break", "Break", "", 10, 5, 10, 15, Color(0xFF78909C)))
-        weekData.add(lesson(nextId++, mon, "Science", "Sci", "Lab 2", 10, 15, 11, 0, Color(0xFF6A1B9A)))
+        events.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, Color(0xFF1565C0)))
+        events.add(lesson(nextId++, mon, "Passing Period", "Pass", "", 8, 45, 8, 55, Color(0xFF78909C)))
+        events.add(lesson(nextId++, mon, "Quick Quiz", "Quiz", "Room 7", 8, 55, 9, 10, Color(0xFF2E7D32)))
+        events.add(lesson(nextId++, mon, "Short Break", "Break", "", 9, 10, 9, 20, Color(0xFF78909C)))
+        events.add(lesson(nextId++, mon, "History", "Hist", "Room 21", 9, 20, 10, 5, Color(0xFFBF360C)))
+        events.add(lesson(nextId++, mon, "10-min Break", "Break", "", 10, 5, 10, 15, Color(0xFF78909C)))
+        events.add(lesson(nextId++, mon, "Science", "Sci", "Lab 2", 10, 15, 11, 0, Color(0xFF6A1B9A)))
 
         // Tuesday: back-to-back short (10 min) entries only, to stress-test small entry heights.
         tue?.let { d ->
@@ -51,14 +51,14 @@ object SampleTimetableSpecialCases {
                 val endMinTotal = h * 60 + m + 10
                 val endH = endMinTotal / 60
                 val endM = endMinTotal % 60
-                weekData.add(lesson(nextId++, d, "Slot ${index + 1}", "S${index + 1}", "", h, m, endH, endM, Color(0xFFE65100)))
+                events.add(lesson(nextId++, d, "Slot ${index + 1}", "S${index + 1}", "", h, m, endH, endM, Color(0xFFE65100)))
                 start = endH to endM
             }
         }
 
         // Wednesday: same long title on a tall entry (wraps to 2 lines) and a short one (ellipsized).
         wed?.let { d ->
-            weekData.add(
+            events.add(
                 lesson(
                     nextId++,
                     d,
@@ -72,7 +72,7 @@ object SampleTimetableSpecialCases {
                     Color(0xFF6A1B9A),
                 ),
             )
-            weekData.add(
+            events.add(
                 lesson(
                     nextId++,
                     d,
@@ -88,7 +88,7 @@ object SampleTimetableSpecialCases {
             )
 
             // Tall entry with every field so the lowest-priority tiers (teacher, lower text) show.
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -119,7 +119,7 @@ object SampleTimetableSpecialCases {
             var startMinutes = 8 * 60
             (30..60 step 5).forEachIndexed { index, duration ->
                 val endMinutes = startMinutes + duration
-                weekData.add(
+                events.add(
                     lesson(
                         nextId++,
                         d,
@@ -141,17 +141,17 @@ object SampleTimetableSpecialCases {
         // Friday: overlapping entries share the column width.
         fri?.let { d ->
             // Two 40-min lessons offset by 20 min -> both at half width.
-            weekData.add(lesson(nextId++, d, "Overlap A", "Ovl A", "Room 1", 8, 0, 8, 40, Color(0xFF1565C0)))
-            weekData.add(lesson(nextId++, d, "Overlap B", "Ovl B", "Room 2", 8, 20, 9, 0, Color(0xFF2E7D32)))
+            events.add(lesson(nextId++, d, "Overlap A", "Ovl A", "Room 1", 8, 0, 8, 40, Color(0xFF1565C0)))
+            events.add(lesson(nextId++, d, "Overlap B", "Ovl B", "Room 2", 8, 20, 9, 0, Color(0xFF2E7D32)))
             // A 10-min duty on top of a 55-min lesson (e.g. a teacher supervising during their own class).
-            weekData.add(lesson(nextId++, d, "Geography", "Geo", "Room 9", 9, 15, 10, 10, Color(0xFFBF360C)))
-            weekData.add(lesson(nextId++, d, "Hall Duty", "Duty", "", 9, 15, 9, 25, Color(0xFFD50000)))
+            events.add(lesson(nextId++, d, "Geography", "Geo", "Room 9", 9, 15, 10, 10, Color(0xFFBF360C)))
+            events.add(lesson(nextId++, d, "Hall Duty", "Duty", "", 9, 15, 9, 25, Color(0xFFD50000)))
             // Three-way overlap of short entries -> third-width columns with corner labels.
-            weekData.add(lesson(nextId++, d, "Tutoring", "Tut", "Room 4", 10, 30, 11, 10, Color(0xFF6A1B9A)))
-            weekData.add(lesson(nextId++, d, "Office Hours", "Office", "Room 5", 10, 40, 11, 20, Color(0xFFE65100)))
-            weekData.add(lesson(nextId++, d, "Meeting", "Meet", "", 10, 50, 11, 30, Color(0xFF78909C)))
+            events.add(lesson(nextId++, d, "Tutoring", "Tut", "Room 4", 10, 30, 11, 10, Color(0xFF6A1B9A)))
+            events.add(lesson(nextId++, d, "Office Hours", "Office", "Room 5", 10, 40, 11, 20, Color(0xFFE65100)))
+            events.add(lesson(nextId++, d, "Meeting", "Meet", "", 10, 50, 11, 30, Color(0xFF78909C)))
         }
 
-        return weekData
+        return WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(11, 0), events)
     }
 }

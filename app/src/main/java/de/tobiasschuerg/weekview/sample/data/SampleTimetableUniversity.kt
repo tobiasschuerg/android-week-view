@@ -11,7 +11,7 @@ import java.time.LocalTime
 object SampleTimetableUniversity {
     fun create(dateRange: LocalDateRange): WeekData {
         val days = dateRange.toList()
-        val weekData = WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0))
+        val events = mutableListOf<Event>()
 
         val mon = days[0]
         val tue = days.getOrNull(1)
@@ -22,7 +22,7 @@ object SampleTimetableUniversity {
         var nextId = 1L
 
         // Monday
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = mon,
@@ -35,7 +35,7 @@ object SampleTimetableUniversity {
                 upperText = "Prof. Schmidt",
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = mon,
@@ -48,7 +48,7 @@ object SampleTimetableUniversity {
                 upperText = "Prof. Weber",
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = mon,
@@ -63,7 +63,7 @@ object SampleTimetableUniversity {
 
         // Tuesday
         tue?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -76,7 +76,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Müller",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -89,7 +89,7 @@ object SampleTimetableUniversity {
                     upperText = "Dr. Braun",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -106,7 +106,7 @@ object SampleTimetableUniversity {
         // Wednesday — includes overlapping electives
         wed?.let { d ->
             // Two electives at the same time (overlap)
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -119,7 +119,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Richter",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -132,7 +132,7 @@ object SampleTimetableUniversity {
                     upperText = "Dr. Fischer",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -145,7 +145,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Weber",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -158,7 +158,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Koch",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -174,7 +174,7 @@ object SampleTimetableUniversity {
 
         // Thursday
         thu?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -187,7 +187,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Schmidt",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -200,7 +200,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Müller",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -216,7 +216,7 @@ object SampleTimetableUniversity {
 
         // Friday
         fri?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -229,7 +229,7 @@ object SampleTimetableUniversity {
                     upperText = "Prof. Koch",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -245,7 +245,7 @@ object SampleTimetableUniversity {
 
         // Exam period all-day event
         wed?.let { d ->
-            weekData.add(
+            events.add(
                 Event.AllDay(
                     id = (nextId++).toString(),
                     date = d,
@@ -257,6 +257,6 @@ object SampleTimetableUniversity {
             )
         }
 
-        return weekData
+        return WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0), events)
     }
 }

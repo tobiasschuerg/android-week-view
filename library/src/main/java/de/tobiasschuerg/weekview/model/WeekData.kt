@@ -1,103 +1,48 @@
 package de.tobiasschuerg.weekview.model
 
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.Immutable
 import java.time.LocalTime
 
 /**
- * Container for events of a week or any date range.
- * Only events within the dateRange are accepted.
+ * The events of a week (or any date range) to show, plus the time range that is visible at least.
+ *
+ * Immutable: to change what the week view shows, pass a new instance. Timed events outside
+ * [start]..[end] widen the visible [timeSpan]. Every event must fall within [dateRange] (multi-day
+ * events must overlap it), and event IDs must be unique across all event types.
  */
-class WeekData(
+@Immutable
+data class WeekData(
     val dateRange: LocalDateRange,
     val start: LocalTime,
     val end: LocalTime,
+    val events: List<Event> = emptyList(),
 ) {
-    private val singleEvents: MutableList<Event.Single> = mutableListOf()
-    private val allDays: MutableList<Event.AllDay> = mutableListOf()
-    private val multiDayEvents: MutableList<Event.MultiDay> = mutableListOf()
-    private val eventIds: MutableSet<String> = mutableSetOf()
-    private val changeVersionState = mutableIntStateOf(0)
-    private var earliestStart: LocalTime = start
-    private var latestEnd: LocalTime = end
+    val singleEvents: List<Event.Single> = events.filterIsInstance<Event.Single>()
+    val allDayEvents: List<Event.AllDay> = events.filterIsInstance<Event.AllDay>()
+    val multiDayEvents: List<Event.MultiDay> = events.filterIsInstance<Event.MultiDay>()
 
-    internal val changeVersion: Int
-        get() = changeVersionState.intValue
+    /** [start]..[end], widened to fit all timed events; null if that range is empty. */
+    val timeSpan: TimeSpan?
 
-    fun getTimeSpan(): TimeSpan? {
-        val start = earliestStart
-        val end = latestEnd
-        if (!start.isBefore(end)) return null
-        return TimeSpan(start, end)
+    init {
+        events.forEach(::requireWithinDateRange)
+        val duplicateIds = events.groupingBy { it.id }.eachCount().filterValues { it > 1 }.keys
+        require(duplicateIds.isEmpty()) { "Event IDs must be unique, but $duplicateIds are used more than once" }
+
+        val earliestStart = singleEvents.minOfOrNull { it.timeSpan.start }?.let { minOf(it, start) } ?: start
+        val latestEnd = singleEvents.maxOfOrNull { it.timeSpan.endExclusive }?.let { maxOf(it, end) } ?: end
+        timeSpan = if (earliestStart.isBefore(latestEnd)) TimeSpan(earliestStart, latestEnd) else null
     }
 
-    fun add(item: Event.AllDay) {
-        require(dateRange.contains(item.date)) { "Event date is outside the allowed range: ${item.date}" }
-        requireUniqueId(item)
-        allDays.add(item)
-        markChanged()
-    }
+    fun isEmpty(): Boolean = events.isEmpty()
 
-    fun add(item: Event.MultiDay) {
-        val overlaps = item.date <= dateRange.endInclusive && item.lastDate >= dateRange.start
-        require(overlaps) { "MultiDay event (${item.date}..${item.lastDate}) does not overlap with the allowed range: $dateRange" }
-        requireUniqueId(item)
-        multiDayEvents.add(item)
-        markChanged()
-    }
-
-    fun add(item: Event.Single) {
-        require(dateRange.contains(item.date)) { "Event date ${item.date} is outside the allowed range: $dateRange" }
-        requireUniqueId(item)
-        singleEvents.add(item)
-
-        // Automatically adjust TimeSpan to accommodate the new event
-        updateTimeSpanForEvent(item)
-        markChanged()
-    }
-
-    private fun requireUniqueId(event: Event) {
-        require(eventIds.add(event.id)) { "Event ID must be unique, but ${event.id} is already in use" }
-    }
-
-    private fun markChanged() {
-        changeVersionState.intValue++
-    }
-
-    /**
-     * Updates the earliest start and latest end times to accommodate the given event.
-     * This ensures that the TimeSpan automatically expands when events are added
-     * that fall outside the current time range.
-     */
-    private fun updateTimeSpanForEvent(event: Event.Single) {
-        val eventStart = event.timeSpan.start
-        val eventEnd = event.timeSpan.endExclusive
-
-        // Update earliest start if this event starts earlier
-        if (eventStart.isBefore(earliestStart)) {
-            earliestStart = eventStart
+    private fun requireWithinDateRange(event: Event) {
+        when (event) {
+            is Event.MultiDay ->
+                require(event.date <= dateRange.endInclusive && event.lastDate >= dateRange.start) {
+                    "MultiDay event (${event.date}..${event.lastDate}) does not overlap with the allowed range: $dateRange"
+                }
+            else -> require(event.date in dateRange) { "Event date ${event.date} is outside the allowed range: $dateRange" }
         }
-
-        // Update latest end if this event ends later
-        if (eventEnd.isAfter(latestEnd)) {
-            latestEnd = eventEnd
-        }
-    }
-
-    fun getSingleEvents(): List<Event.Single> = singleEvents.toList()
-
-    fun getAllDayEvents(): List<Event.AllDay> = allDays.toList()
-
-    fun getMultiDayEvents(): List<Event.MultiDay> = multiDayEvents.toList()
-
-    fun isEmpty() = singleEvents.isEmpty() && allDays.isEmpty() && multiDayEvents.isEmpty()
-
-    fun clear() {
-        singleEvents.clear()
-        allDays.clear()
-        multiDayEvents.clear()
-        eventIds.clear()
-        earliestStart = start
-        latestEnd = end
-        markChanged()
     }
 }

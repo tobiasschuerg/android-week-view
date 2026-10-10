@@ -30,13 +30,13 @@ Initially created for [Schedule Deluxe](https://play.google.com/store/apps/detai
 
 ```kotlin
 @Composable
-fun MyWeekView() {
+fun MyWeekView(events: List<Event>) {
     val dateRange = LocalDateRange(
         LocalDate.now().with(DayOfWeek.MONDAY),
         LocalDate.now().with(DayOfWeek.FRIDAY),
     )
-    val weekData = remember {
-        WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0))
+    val weekData = remember(events) {
+        WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0), events)
     }
 
     WeekView(
@@ -86,10 +86,10 @@ val conference = Event.MultiDay(
     textColor = Color.White,
 )
 
-weekData.add(meeting)
-weekData.add(holiday)
-weekData.add(conference)
+val weekData = WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0), listOf(meeting, holiday, conference))
 ```
+
+`WeekData` is immutable: to change what the week view shows, pass a new instance. Timed events outside the given time range widen the visible hours.
 
 Event IDs must be unique across all event types in a `WeekData`. If your events come from several sources (for example two database tables with their own auto-increment keys), prefix the IDs, e.g. `"lesson-12"` and `"holiday-12"`.
 

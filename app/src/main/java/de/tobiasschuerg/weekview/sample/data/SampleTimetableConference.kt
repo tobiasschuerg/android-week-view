@@ -11,7 +11,7 @@ import java.time.LocalTime
 object SampleTimetableConference {
     fun create(dateRange: LocalDateRange): WeekData {
         val days = dateRange.toList()
-        val weekData = WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(19, 0))
+        val events = mutableListOf<Event>()
 
         val day1 = days[0]
         val day2 = days.getOrNull(1)
@@ -27,7 +27,7 @@ object SampleTimetableConference {
         val breakColor = Color(0xFF78909C)
 
         // Day 1 — Opening & Keynotes
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -39,7 +39,7 @@ object SampleTimetableConference {
                 backgroundColor = breakColor,
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -52,7 +52,7 @@ object SampleTimetableConference {
                 upperText = "Dr. Sarah Chen",
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -65,7 +65,7 @@ object SampleTimetableConference {
                 upperText = "Track: Android",
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -77,7 +77,7 @@ object SampleTimetableConference {
                 backgroundColor = breakColor,
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -89,7 +89,7 @@ object SampleTimetableConference {
                 backgroundColor = workshopColor,
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -101,7 +101,7 @@ object SampleTimetableConference {
                 backgroundColor = panelColor,
             ),
         )
-        weekData.add(
+        events.add(
             Event.Single(
                 id = (nextId++).toString(),
                 date = day1,
@@ -116,7 +116,7 @@ object SampleTimetableConference {
 
         // Day 2 — Deep Dives
         day2?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -129,7 +129,7 @@ object SampleTimetableConference {
                     upperText = "James Park",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -142,7 +142,7 @@ object SampleTimetableConference {
                     upperText = "Track: Android",
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -154,7 +154,7 @@ object SampleTimetableConference {
                     backgroundColor = breakColor,
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -166,7 +166,7 @@ object SampleTimetableConference {
                     backgroundColor = workshopColor,
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -178,7 +178,7 @@ object SampleTimetableConference {
                     backgroundColor = talkColor,
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -194,7 +194,7 @@ object SampleTimetableConference {
 
         // Day 3 — Closing
         day3?.let { d ->
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -206,7 +206,7 @@ object SampleTimetableConference {
                     backgroundColor = workshopColor,
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -218,7 +218,7 @@ object SampleTimetableConference {
                     backgroundColor = panelColor,
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -230,7 +230,7 @@ object SampleTimetableConference {
                     backgroundColor = breakColor,
                 ),
             )
-            weekData.add(
+            events.add(
                 Event.Single(
                     id = (nextId++).toString(),
                     date = d,
@@ -247,7 +247,7 @@ object SampleTimetableConference {
 
         // Multi-day event spanning the conference
         if (days.size >= 3) {
-            weekData.add(
+            events.add(
                 Event.MultiDay(
                     id = (nextId++).toString(),
                     date = days[0],
@@ -260,6 +260,6 @@ object SampleTimetableConference {
             )
         }
 
-        return weekData
+        return WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(19, 0), events)
     }
 }

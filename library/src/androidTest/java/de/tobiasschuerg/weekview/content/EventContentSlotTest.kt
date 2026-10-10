@@ -51,7 +51,7 @@ class EventContentSlotTest {
         )
 
     private fun weekData(): WeekData =
-        WeekData(LocalDateRange(testDate, testDate.plusDays(2)), LocalTime.of(8, 0), LocalTime.of(12, 0)).apply { add(event) }
+        WeekData(LocalDateRange(testDate, testDate.plusDays(2)), LocalTime.of(8, 0), LocalTime.of(12, 0), listOf(event))
 
     @Test
     fun shouldRenderCustomContentInsteadOfDefaultWhenEventContentIsGiven() {

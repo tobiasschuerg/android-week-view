@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview.sample.data
 
 import androidx.compose.ui.graphics.Color
+import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.WeekData
 import java.time.LocalTime
@@ -13,17 +14,17 @@ import java.time.LocalTime
 object SampleTimetableShortDay {
     fun create(dateRange: LocalDateRange): WeekData {
         val days = dateRange.toList()
-        val weekData = WeekData(dateRange, LocalTime.of(9, 0), LocalTime.of(12, 0))
+        val events = mutableListOf<Event>()
 
         var nextId = 600L
         days.forEachIndexed { index, day ->
-            weekData.add(lesson(nextId++, day, "Morning Class", "Class", "Room 1", 9, 0, 10, 0, Color(0xFF00695C)))
+            events.add(lesson(nextId++, day, "Morning Class", "Class", "Room 1", 9, 0, 10, 0, Color(0xFF00695C)))
             if (index % 2 == 0) {
-                weekData.add(lesson(nextId++, day, "Workshop", "Shop", "Lab", 10, 15, 11, 45, Color(0xFFEF6C00)))
+                events.add(lesson(nextId++, day, "Workshop", "Shop", "Lab", 10, 15, 11, 45, Color(0xFFEF6C00)))
             } else {
-                weekData.add(lesson(nextId++, day, "Tutorial", "Tut", "Room 4", 10, 30, 12, 0, Color(0xFF283593)))
+                events.add(lesson(nextId++, day, "Tutorial", "Tut", "Room 4", 10, 30, 12, 0, Color(0xFF283593)))
             }
         }
-        return weekData
+        return WeekData(dateRange, LocalTime.of(9, 0), LocalTime.of(12, 0), events)
     }
 }

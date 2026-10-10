@@ -3,9 +3,8 @@ package de.tobiasschuerg.weekview.model
 import androidx.compose.ui.graphics.Color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.Duration
@@ -13,276 +12,143 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 class WeekDataTest {
-    private lateinit var weekData: WeekData
     private val dateRange = LocalDateRange(LocalDate.of(2024, 9, 1), LocalDate.of(2024, 9, 7))
 
-    @BeforeEach
-    fun setUp() {
-        weekData = WeekData(dateRange, start = LocalTime.of(9, 0), end = LocalTime.of(9, 0))
+    private fun weekData(
+        vararg events: Event,
+        start: LocalTime = LocalTime.of(9, 0),
+        end: LocalTime = LocalTime.of(17, 0),
+    ) = WeekData(dateRange, start, end, events.toList())
+
+    private fun single(
+        id: String = "s",
+        date: LocalDate = LocalDate.of(2024, 9, 2),
+        start: LocalTime = LocalTime.of(10, 0),
+        duration: Duration = Duration.ofHours(1),
+    ) = Event.Single(
+        id = id,
+        date = date,
+        title = "Timed",
+        shortTitle = "T",
+        timeSpan = TimeSpan.of(start, duration),
+        textColor = Color.White,
+        backgroundColor = Color.Blue,
+    )
+
+    private fun allDay(
+        id: String = "a",
+        date: LocalDate = LocalDate.of(2024, 9, 3),
+    ) = Event.AllDay(id = id, date = date, title = "All day", shortTitle = "AD", textColor = Color.White, backgroundColor = Color.Blue)
+
+    private fun multiDay(
+        id: String = "m",
+        date: LocalDate,
+        lastDate: LocalDate,
+    ) = Event.MultiDay(
+        id = id,
+        date = date,
+        lastDate = lastDate,
+        title = "Multi day",
+        shortTitle = "MD",
+        textColor = Color.White,
+        backgroundColor = Color.Blue,
+    )
+
+    @Test
+    fun `should keep the configured time span when all timed events fit into it`() {
+        val data = weekData(single(start = LocalTime.of(10, 0)))
+
+        assertEquals(TimeSpan(LocalTime.of(9, 0), LocalTime.of(17, 0)), data.timeSpan)
     }
 
     @Test
-    fun `add single event updates time span`() {
-        val event =
-            Event.Single(
-                id = "1",
-                date = LocalDate.of(2024, 9, 2),
-                title = "Test",
-                shortTitle = "T",
-                timeSpan = TimeSpan.of(LocalTime.of(8, 0), Duration.ofHours(2)),
-                backgroundColor = Color.Transparent,
-                textColor = Color.Transparent,
+    fun `should widen the time span when timed events start earlier or end later`() {
+        val data =
+            weekData(
+                single(id = "early", start = LocalTime.of(7, 30)),
+                single(id = "late", start = LocalTime.of(18, 0), duration = Duration.ofMinutes(90)),
             )
-        weekData.add(event)
-        val timeSpan = weekData.getTimeSpan()
-        assertNotNull(timeSpan)
-        assertEquals(LocalTime.of(8, 0), timeSpan?.start)
-        assertEquals(LocalTime.of(10, 0), timeSpan?.endExclusive)
+
+        assertEquals(TimeSpan(LocalTime.of(7, 30), LocalTime.of(19, 30)), data.timeSpan)
     }
 
     @Test
-    fun `add all day event is stored correctly`() {
-        val event =
-            Event.AllDay(
-                id = "2",
-                date = LocalDate.of(2024, 9, 3),
-                title = "AllDay",
-                shortTitle = "AD",
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            )
-        weekData.add(event)
-        assertEquals(1, weekData.getAllDayEvents().size)
+    fun `should have no time span when start equals end and there are no timed events`() {
+        val data = weekData(allDay(), start = LocalTime.of(9, 0), end = LocalTime.of(9, 0))
+
+        assertNull(data.timeSpan)
     }
 
     @Test
-    fun `adding and clearing events increments the change version`() {
-        val initialVersion = weekData.changeVersion
-        weekData.add(
-            Event.AllDay(
-                id = "20",
-                date = LocalDate.of(2024, 9, 3),
-                title = "Changed",
-                shortTitle = "C",
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            ),
-        )
+    fun `should split the events by type when created from a mixed list`() {
+        val timed = single()
+        val holiday = allDay()
+        val trip = multiDay(date = LocalDate.of(2024, 9, 4), lastDate = LocalDate.of(2024, 9, 6))
 
-        assertEquals(initialVersion + 1, weekData.changeVersion)
+        val data = weekData(trip, holiday, timed)
 
-        weekData.clear()
-
-        assertEquals(initialVersion + 2, weekData.changeVersion)
+        assertEquals(listOf(timed), data.singleEvents)
+        assertEquals(listOf(holiday), data.allDayEvents)
+        assertEquals(listOf(trip), data.multiDayEvents)
     }
 
     @Test
-    fun `duplicate event ids are rejected across event types`() {
-        assertThrows<IllegalArgumentException> {
-            weekData.add(
-                Event.Single(
-                    id = "21",
-                    date = LocalDate.of(2024, 9, 2),
-                    title = "Timed",
-                    shortTitle = "T",
-                    timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Transparent,
-                ),
-            )
+    fun `should be equal when created from the same events`() {
+        assertEquals(weekData(single(), allDay()), weekData(single(), allDay()))
+    }
 
-            weekData.add(
-                Event.AllDay(
-                    id = "21",
-                    date = LocalDate.of(2024, 9, 3),
-                    title = "All day",
-                    shortTitle = "AD",
-                    textColor = Color.Transparent,
-                    backgroundColor = Color.Transparent,
-                ),
-            )
-        }
+    @Test
+    fun `should be empty when created without events`() {
+        assertTrue(weekData().isEmpty())
+        assertFalse(weekData(allDay()).isEmpty())
+    }
+
+    @Test
+    fun `should reject events when the same id is used across event types`() {
+        assertThrows<IllegalArgumentException> { weekData(single(id = "21"), allDay(id = "21")) }
     }
 
     @Test
     fun `should accept events from different sources when their ids are namespaced`() {
-        weekData.add(
-            Event.Single(
-                id = "lesson-12",
-                date = LocalDate.of(2024, 9, 2),
-                title = "Lesson",
-                shortTitle = "L",
-                timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
-                backgroundColor = Color.Transparent,
-                textColor = Color.Transparent,
-            ),
-        )
-        weekData.add(
-            Event.AllDay(
-                id = "holiday-12",
-                date = LocalDate.of(2024, 9, 2),
-                title = "Holiday",
-                shortTitle = "H",
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            ),
-        )
+        val data = weekData(single(id = "lesson-12"), allDay(id = "holiday-12"))
 
-        assertEquals(1, weekData.getSingleEvents().size)
-        assertEquals(1, weekData.getAllDayEvents().size)
+        assertEquals(1, data.singleEvents.size)
+        assertEquals(1, data.allDayEvents.size)
     }
 
     @Test
-    fun `clear removes all events`() {
-        val event =
-            Event.Single(
-                id = "3",
-                date = LocalDate.of(2024, 9, 4),
-                title = "ClearTest",
-                shortTitle = "CT",
-                timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
-                backgroundColor = Color.Transparent,
-                textColor = Color.Transparent,
-            )
-        weekData.add(event)
-        weekData.clear()
-        assertTrue(weekData.isEmpty())
+    fun `should reject a timed event when its date is outside the date range`() {
+        assertThrows<IllegalArgumentException> { weekData(single(date = LocalDate.of(2024, 9, 8))) }
     }
 
     @Test
-    fun `add multi-day event is stored correctly`() {
-        val event =
-            Event.MultiDay(
-                id = "10",
-                date = LocalDate.of(2024, 9, 2),
-                title = "Conference",
-                shortTitle = "Conf",
-                lastDate = LocalDate.of(2024, 9, 4),
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            )
-        weekData.add(event)
-        assertEquals(1, weekData.getMultiDayEvents().size)
-        assertEquals("Conference", weekData.getMultiDayEvents()[0].title)
+    fun `should reject an all-day event when its date is outside the date range`() {
+        assertThrows<IllegalArgumentException> { weekData(allDay(date = LocalDate.of(2024, 8, 31))) }
     }
 
     @Test
-    fun `multi-day event partially overlapping start is accepted`() {
-        val event =
-            Event.MultiDay(
-                id = "11",
-                date = LocalDate.of(2024, 8, 30),
-                title = "Overlap Start",
-                shortTitle = "OS",
-                lastDate = LocalDate.of(2024, 9, 2),
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            )
-        weekData.add(event)
-        assertEquals(1, weekData.getMultiDayEvents().size)
+    fun `should accept a multi-day event when it only overlaps the start of the date range`() {
+        val data = weekData(multiDay(date = LocalDate.of(2024, 8, 30), lastDate = LocalDate.of(2024, 9, 2)))
+
+        assertEquals(1, data.multiDayEvents.size)
     }
 
     @Test
-    fun `multi-day event partially overlapping end is accepted`() {
-        val event =
-            Event.MultiDay(
-                id = "12",
-                date = LocalDate.of(2024, 9, 5),
-                title = "Overlap End",
-                shortTitle = "OE",
-                lastDate = LocalDate.of(2024, 9, 10),
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            )
-        weekData.add(event)
-        assertEquals(1, weekData.getMultiDayEvents().size)
+    fun `should accept a multi-day event when it only overlaps the end of the date range`() {
+        val data = weekData(multiDay(date = LocalDate.of(2024, 9, 6), lastDate = LocalDate.of(2024, 9, 10)))
+
+        assertEquals(1, data.multiDayEvents.size)
     }
 
     @Test
-    fun `multi-day event fully outside date range throws exception`() {
+    fun `should reject a multi-day event when it lies fully outside the date range`() {
         assertThrows<IllegalArgumentException> {
-            weekData.add(
-                Event.MultiDay(
-                    id = "13",
-                    date = LocalDate.of(2024, 8, 1),
-                    title = "Outside",
-                    shortTitle = "Out",
-                    lastDate = LocalDate.of(2024, 8, 3),
-                    textColor = Color.Transparent,
-                    backgroundColor = Color.Transparent,
-                ),
-            )
+            weekData(multiDay(date = LocalDate.of(2024, 9, 10), lastDate = LocalDate.of(2024, 9, 12)))
         }
     }
 
     @Test
-    fun `multi-day event with lastDate before date throws exception`() {
-        assertThrows<IllegalArgumentException> {
-            weekData.add(
-                Event.MultiDay(
-                    id = "14",
-                    date = LocalDate.of(2024, 9, 4),
-                    title = "Invalid",
-                    shortTitle = "Inv",
-                    lastDate = LocalDate.of(2024, 9, 2),
-                    textColor = Color.Transparent,
-                    backgroundColor = Color.Transparent,
-                ),
-            )
-        }
-    }
-
-    @Test
-    fun `isEmpty returns false when only multi-day events exist`() {
-        weekData.add(
-            Event.MultiDay(
-                id = "15",
-                date = LocalDate.of(2024, 9, 1),
-                title = "Test",
-                shortTitle = "T",
-                lastDate = LocalDate.of(2024, 9, 3),
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            ),
-        )
-        assertFalse(weekData.isEmpty())
-    }
-
-    @Test
-    fun `clear removes multi-day events`() {
-        weekData.add(
-            Event.MultiDay(
-                id = "16",
-                date = LocalDate.of(2024, 9, 1),
-                title = "Test",
-                shortTitle = "T",
-                lastDate = LocalDate.of(2024, 9, 3),
-                textColor = Color.Transparent,
-                backgroundColor = Color.Transparent,
-            ),
-        )
-        weekData.clear()
-        assertTrue(weekData.isEmpty())
-        assertTrue(weekData.getMultiDayEvents().isEmpty())
-    }
-
-    @Test
-    fun `add event outside date range throws exception`() {
-        val event =
-            Event.Single(
-                id = "4",
-                // outside range
-                date = LocalDate.of(2024, 8, 31),
-                title = "Outside",
-                shortTitle = "O",
-                timeSpan = TimeSpan.of(LocalTime.of(12, 0), Duration.ofHours(1)),
-                backgroundColor = Color.Transparent,
-                textColor = Color.Transparent,
-            )
-        val exception =
-            assertThrows<IllegalArgumentException> {
-                weekData.add(event)
-            }
-        assertTrue(exception.message!!.contains("outside the allowed range"))
+    fun `should reject a multi-day event when its last date is before its first date`() {
+        assertThrows<IllegalArgumentException> { multiDay(date = LocalDate.of(2024, 9, 5), lastDate = LocalDate.of(2024, 9, 4)) }
     }
 }
