@@ -26,11 +26,11 @@ data class WeekViewColors(
 fun defaultWeekViewColors(
     todayHighlight: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
     nowIndicator: Color = MaterialTheme.colorScheme.error,
-    dayHeaderText: Color = Color.Gray,
-    timeLabelTextColor: Color = Color.Gray,
-    gridLineColor: Color = Color.LightGray,
+    dayHeaderText: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    timeLabelTextColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    gridLineColor: Color = MaterialTheme.colorScheme.outlineVariant,
     currentDayBackground: Color = MaterialTheme.colorScheme.primary,
-    currentDayText: Color = Color(0xFF000000),
+    currentDayText: Color = MaterialTheme.colorScheme.onSurface,
     nowIndicatorLabelText: Color = MaterialTheme.colorScheme.onError,
     nowIndicatorHalo: Color = MaterialTheme.colorScheme.surface,
 ): WeekViewColors =
