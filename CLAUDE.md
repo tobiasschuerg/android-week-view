@@ -42,7 +42,6 @@ All library source is under `library/src/main/java/de/tobiasschuerg/weekview/` i
 - **EventOverlapCalculator** — BFS graph algorithm to find connected components of overlapping events, returns layout fractions (widthFraction, offsetFraction)
 - **EventPositionUtil** — vertical offset and height from scaling factor and visible time range
 - **EventFieldLayout** — decides which entry fields (time labels, location, teacher) fit the entry height, using real line heights; result types `EventFieldVisibility`, `TimeLabelMode`, `EventLineHeights` live in their own files
-- **DayOfWeekUtil** — locale-aware day-of-week to column index mapping
 
 ### Compose Layer (`compose/`)
 - **WeekViewCompose** — main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks and an optional `eventContent` slot
@@ -75,7 +74,6 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `TimeSpanTest` — duration calculation, hourly time generation
 - `EventPositionUtilTest` — vertical offset/height calculations
 - `EventFieldLayoutTest` — field visibility, time label mode and title height per available height
-- `DayOfWeekUtilTest` — day-to-column mapping
 - `LocalDateExtTest` — date formatting/pattern helpers
 - `LocalTimeExtTest` — time formatting/locale defaults, splitting axis labels into clock time and AM/PM
 - `WeekViewConfigTest` — scaling factor validation
