@@ -1,13 +1,11 @@
 package de.tobiasschuerg.weekview.internal
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,11 +15,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.EventConfig
 import de.tobiasschuerg.weekview.WeekViewConfig
+import de.tobiasschuerg.weekview.WeekViewState
 import de.tobiasschuerg.weekview.content.EventContent
 import de.tobiasschuerg.weekview.content.FilledEventContent
 import de.tobiasschuerg.weekview.internal.components.AllDayEventsRow
@@ -33,6 +34,7 @@ import de.tobiasschuerg.weekview.internal.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.internal.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.internal.components.TimeAxisDefaults
 import de.tobiasschuerg.weekview.internal.components.TimeAxisLabelMetrics
+import de.tobiasschuerg.weekview.internal.layout.GridGeometry
 import de.tobiasschuerg.weekview.internal.layout.WeekViewMetrics
 import de.tobiasschuerg.weekview.internal.layout.gridHeightDp
 import de.tobiasschuerg.weekview.internal.layout.rememberWeekViewMetrics
@@ -40,6 +42,7 @@ import de.tobiasschuerg.weekview.internal.layout.totalHours
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
+import de.tobiasschuerg.weekview.rememberWeekViewState
 import de.tobiasschuerg.weekview.style.WeekViewColors
 import de.tobiasschuerg.weekview.style.WeekViewDefaults
 import kotlinx.coroutines.delay
@@ -65,7 +68,7 @@ internal fun WeekBackgroundCompose(
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
     colors: WeekViewColors = WeekViewDefaults.colors(),
-    scrollState: ScrollState = rememberScrollState(),
+    state: WeekViewState = rememberWeekViewState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
     eventContent: EventContent = { FilledEventContent(it) },
 ) {
@@ -156,7 +159,7 @@ internal fun WeekBackgroundCompose(
                     columnWidth = dynamicColumnWidthDp,
                     today = today,
                     now = now,
-                    scrollState = scrollState,
+                    state = state,
                     onEventClick = onEventClick,
                     onEventLongPress = onEventLongPress,
                     colors = colors,
@@ -179,7 +182,7 @@ private fun WeekGridRow(
     columnWidth: Dp,
     today: LocalDate,
     now: LocalTime,
-    scrollState: ScrollState,
+    state: WeekViewState,
     onEventClick: ((event: Event) -> Unit)?,
     onEventLongPress: ((event: Event) -> Unit)?,
     colors: WeekViewColors,
@@ -190,7 +193,9 @@ private fun WeekGridRow(
         modifier =
             Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState),
+                .onPlaced { state.viewportCoordinates = it }
+                .reportGridGeometry(state, metrics)
+                .verticalScroll(state.scrollState),
     ) {
         TimeAxisColumn(
             timeLabels = metrics.timeLabels,
@@ -257,3 +262,20 @@ private fun WeekGridRow(
         }
     }
 }
+
+/**
+ * Hands the grid's geometry to [state] while the grid is placed. Placement runs after the scroll
+ * container measured the new content height and before it scrolls the content into position,
+ * so a scroll set from here (e.g. to keep a pinch anchored) shows in the same frame.
+ */
+private fun Modifier.reportGridGeometry(
+    state: WeekViewState,
+    metrics: WeekViewMetrics,
+): Modifier =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        layout(placeable.width, placeable.height) {
+            state.onGridLaidOut(GridGeometry(metrics.gridStartTime.toSecondOfDay() / 60f, metrics.rowHeightDp.toPx()))
+            placeable.place(0, 0)
+        }
+    }

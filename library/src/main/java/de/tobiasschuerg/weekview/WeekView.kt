@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onPlaced
 import de.tobiasschuerg.weekview.content.EventContent
 import de.tobiasschuerg.weekview.content.FilledEventContent
 import de.tobiasschuerg.weekview.internal.WeekBackgroundCompose
@@ -29,7 +31,8 @@ import java.time.LocalTime
  * Colors come from [colors], which default to the current Material theme.
  *
  * Pinch-to-zoom only activates on multi-touch (2+ fingers) so that single-finger
- * horizontal swipes pass through to a parent HorizontalPager or similar container.
+ * horizontal swipes pass through to a parent HorizontalPager or similar container. The time under
+ * the fingers stays in place while zooming.
  */
 @Composable
 public fun WeekView(
@@ -54,6 +57,7 @@ public fun WeekView(
     Box(
         modifier =
             modifier
+                .onPlaced { state.gestureCoordinates = it }
                 .pointerInput(state, weekViewConfig.minScalingFactor, weekViewConfig.maxScalingFactor) {
                     awaitEachGesture {
                         awaitFirstDown(requireUnconsumed = false)
@@ -66,6 +70,7 @@ public fun WeekView(
                                         zoom = zoom,
                                         minScalingFactor = weekViewConfig.minScalingFactor,
                                         maxScalingFactor = weekViewConfig.maxScalingFactor,
+                                        focus = event.calculateCentroid(),
                                     )?.let { newScalingFactor ->
                                         onScalingFactorChange?.invoke(newScalingFactor)
                                     }
@@ -73,6 +78,7 @@ public fun WeekView(
                                 }
                             }
                         } while (event.changes.any { it.pressed })
+                        state.endZoom()
                     }
                 },
     ) {
@@ -94,7 +100,7 @@ public fun WeekView(
             onDayClick = actions.onDayClick,
             weekViewConfig = activeWeekConfig,
             colors = colors,
-            scrollState = state.scrollState,
+            state = state,
             eventContent = eventContent,
         )
     }
