@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.sample.data
 
-import android.graphics.Color
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.graphics.Color
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
@@ -36,13 +35,13 @@ object SampleTimetableSpecialCases {
         var nextId = 400L
 
         // Monday: a normal lesson, a passing period, a short lesson, a break, then a normal lesson.
-        weekData.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, "#1565C0".toColorInt()))
-        weekData.add(lesson(nextId++, mon, "Passing Period", "Pass", "", 8, 45, 8, 55, "#78909C".toColorInt()))
-        weekData.add(lesson(nextId++, mon, "Quick Quiz", "Quiz", "Room 7", 8, 55, 9, 10, "#2E7D32".toColorInt()))
-        weekData.add(lesson(nextId++, mon, "Short Break", "Break", "", 9, 10, 9, 20, "#78909C".toColorInt()))
-        weekData.add(lesson(nextId++, mon, "History", "Hist", "Room 21", 9, 20, 10, 5, "#BF360C".toColorInt()))
-        weekData.add(lesson(nextId++, mon, "10-min Break", "Break", "", 10, 5, 10, 15, "#78909C".toColorInt()))
-        weekData.add(lesson(nextId++, mon, "Science", "Sci", "Lab 2", 10, 15, 11, 0, "#6A1B9A".toColorInt()))
+        weekData.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, Color(0xFF1565C0)))
+        weekData.add(lesson(nextId++, mon, "Passing Period", "Pass", "", 8, 45, 8, 55, Color(0xFF78909C)))
+        weekData.add(lesson(nextId++, mon, "Quick Quiz", "Quiz", "Room 7", 8, 55, 9, 10, Color(0xFF2E7D32)))
+        weekData.add(lesson(nextId++, mon, "Short Break", "Break", "", 9, 10, 9, 20, Color(0xFF78909C)))
+        weekData.add(lesson(nextId++, mon, "History", "Hist", "Room 21", 9, 20, 10, 5, Color(0xFFBF360C)))
+        weekData.add(lesson(nextId++, mon, "10-min Break", "Break", "", 10, 5, 10, 15, Color(0xFF78909C)))
+        weekData.add(lesson(nextId++, mon, "Science", "Sci", "Lab 2", 10, 15, 11, 0, Color(0xFF6A1B9A)))
 
         // Tuesday: back-to-back short (10 min) entries only, to stress-test small entry heights.
         tue?.let { d ->
@@ -52,7 +51,7 @@ object SampleTimetableSpecialCases {
                 val endMinTotal = h * 60 + m + 10
                 val endH = endMinTotal / 60
                 val endM = endMinTotal % 60
-                weekData.add(lesson(nextId++, d, "Slot ${index + 1}", "S${index + 1}", "", h, m, endH, endM, "#E65100".toColorInt()))
+                weekData.add(lesson(nextId++, d, "Slot ${index + 1}", "S${index + 1}", "", h, m, endH, endM, Color(0xFFE65100)))
                 start = endH to endM
             }
         }
@@ -70,7 +69,7 @@ object SampleTimetableSpecialCases {
                     0,
                     10,
                     0,
-                    "#6A1B9A".toColorInt(),
+                    Color(0xFF6A1B9A),
                 ),
             )
             weekData.add(
@@ -84,7 +83,7 @@ object SampleTimetableSpecialCases {
                     15,
                     10,
                     45,
-                    "#6A1B9A".toColorInt(),
+                    Color(0xFF6A1B9A),
                 ),
             )
 
@@ -99,15 +98,24 @@ object SampleTimetableSpecialCases {
                     upperText = "Dr. Braun",
                     lowerText = "Bring goggles",
                     timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#00838F".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF00838F),
                 ),
             )
         }
 
         // Thursday: duration ladder 30 -> 60 min in 5-min steps with 5-min gaps, dark text on bright fills.
         thu?.let { d ->
-            val fills = listOf("#FFE000", "#00AEFF", "#2FFF2F", "#FFE000", "#00AEFF", "#2FFF2F", "#FFE000")
+            val fills =
+                listOf(
+                    Color(0xFFFFE000),
+                    Color(0xFF00AEFF),
+                    Color(0xFF2FFF2F),
+                    Color(0xFFFFE000),
+                    Color(0xFF00AEFF),
+                    Color(0xFF2FFF2F),
+                    Color(0xFFFFE000),
+                )
             var startMinutes = 8 * 60
             (30..60 step 5).forEachIndexed { index, duration ->
                 val endMinutes = startMinutes + duration
@@ -122,8 +130,8 @@ object SampleTimetableSpecialCases {
                         startMinutes % 60,
                         endMinutes / 60,
                         endMinutes % 60,
-                        fills[index].toColorInt(),
-                        Color.BLACK,
+                        fills[index],
+                        Color.Black,
                     ),
                 )
                 startMinutes = endMinutes + 5
@@ -133,15 +141,15 @@ object SampleTimetableSpecialCases {
         // Friday: overlapping entries share the column width.
         fri?.let { d ->
             // Two 40-min lessons offset by 20 min -> both at half width.
-            weekData.add(lesson(nextId++, d, "Overlap A", "Ovl A", "Room 1", 8, 0, 8, 40, "#1565C0".toColorInt()))
-            weekData.add(lesson(nextId++, d, "Overlap B", "Ovl B", "Room 2", 8, 20, 9, 0, "#2E7D32".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Overlap A", "Ovl A", "Room 1", 8, 0, 8, 40, Color(0xFF1565C0)))
+            weekData.add(lesson(nextId++, d, "Overlap B", "Ovl B", "Room 2", 8, 20, 9, 0, Color(0xFF2E7D32)))
             // A 10-min duty on top of a 55-min lesson (e.g. a teacher supervising during their own class).
-            weekData.add(lesson(nextId++, d, "Geography", "Geo", "Room 9", 9, 15, 10, 10, "#BF360C".toColorInt()))
-            weekData.add(lesson(nextId++, d, "Hall Duty", "Duty", "", 9, 15, 9, 25, "#D50000".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Geography", "Geo", "Room 9", 9, 15, 10, 10, Color(0xFFBF360C)))
+            weekData.add(lesson(nextId++, d, "Hall Duty", "Duty", "", 9, 15, 9, 25, Color(0xFFD50000)))
             // Three-way overlap of short entries -> third-width columns with corner labels.
-            weekData.add(lesson(nextId++, d, "Tutoring", "Tut", "Room 4", 10, 30, 11, 10, "#6A1B9A".toColorInt()))
-            weekData.add(lesson(nextId++, d, "Office Hours", "Office", "Room 5", 10, 40, 11, 20, "#E65100".toColorInt()))
-            weekData.add(lesson(nextId++, d, "Meeting", "Meet", "", 10, 50, 11, 30, "#78909C".toColorInt()))
+            weekData.add(lesson(nextId++, d, "Tutoring", "Tut", "Room 4", 10, 30, 11, 10, Color(0xFF6A1B9A)))
+            weekData.add(lesson(nextId++, d, "Office Hours", "Office", "Room 5", 10, 40, 11, 20, Color(0xFFE65100)))
+            weekData.add(lesson(nextId++, d, "Meeting", "Meet", "", 10, 50, 11, 30, Color(0xFF78909C)))
         }
 
         return weekData

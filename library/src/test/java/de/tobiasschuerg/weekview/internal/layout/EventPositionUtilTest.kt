@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.internal.layout
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.TimeSpan
@@ -19,8 +20,8 @@ class EventPositionUtilTest {
                 title = "Test Event",
                 shortTitle = "Test",
                 timeSpan = TimeSpan.of(LocalTime.of(8, 0), Duration.ofMinutes(60)),
-                backgroundColor = 0,
-                textColor = 0,
+                backgroundColor = Color.Transparent,
+                textColor = Color.Transparent,
             )
         val startTime = LocalTime.of(8, 0)
         val scalingFactor = 1f

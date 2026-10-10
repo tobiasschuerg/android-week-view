@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -86,7 +85,7 @@ internal fun MultiDayEventsRow(
                                         .height(24.dp)
                                         .padding(horizontal = 1.dp, vertical = 1.dp)
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(Color(event.backgroundColor))
+                                        .background(event.backgroundColor)
                                         .combinedClickable(
                                             enabled = onEventClick != null || onEventLongPress != null,
                                             role = Role.Button,
@@ -101,7 +100,7 @@ internal fun MultiDayEventsRow(
                             ) {
                                 Text(
                                     text = event.title,
-                                    color = Color(event.textColor),
+                                    color = event.textColor,
                                     fontSize = 11.sp,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,

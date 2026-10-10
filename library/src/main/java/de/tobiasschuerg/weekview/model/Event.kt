@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.model
 
+import androidx.compose.ui.graphics.Color
 import java.time.Duration
 import java.time.LocalDate
 
@@ -18,8 +19,8 @@ sealed class Event {
         val timeSpan: TimeSpan,
         val upperText: String? = null,
         val lowerText: String? = null,
-        val textColor: Int,
-        val backgroundColor: Int,
+        val textColor: Color,
+        val backgroundColor: Color,
     ) : Event() {
         val duration: Duration = timeSpan.duration
     }
@@ -29,8 +30,8 @@ sealed class Event {
         override val date: LocalDate,
         override val title: String,
         override val shortTitle: String,
-        val textColor: Int,
-        val backgroundColor: Int,
+        val textColor: Color,
+        val backgroundColor: Color,
     ) : Event()
 
     data class MultiDay(
@@ -39,8 +40,8 @@ sealed class Event {
         override val title: String,
         override val shortTitle: String,
         val lastDate: LocalDate,
-        val textColor: Int,
-        val backgroundColor: Int,
+        val textColor: Color,
+        val backgroundColor: Color,
     ) : Event() {
         init {
             require(date <= lastDate) { "date ($date) must be <= lastDate ($lastDate)" }

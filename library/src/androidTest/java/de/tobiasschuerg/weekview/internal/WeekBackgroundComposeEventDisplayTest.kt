@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.internal
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
@@ -73,8 +74,8 @@ class WeekBackgroundComposeEventDisplayTest {
                 shortTitle = "Test",
                 subTitle = "Subtitle",
                 timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(18, 0)),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF00FF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF00FF00),
             )
 
         // Act
@@ -115,8 +116,8 @@ class WeekBackgroundComposeEventDisplayTest {
                 shortTitle = "Simple",
                 subTitle = null,
                 timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF0000FF.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF0000FF),
             )
 
         // Act
@@ -157,8 +158,8 @@ class WeekBackgroundComposeEventDisplayTest {
                     shortTitle = "Morning",
                     subTitle = null,
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                    textColor = 0xFF000000.toInt(),
-                    backgroundColor = 0xFF0000FF.toInt(),
+                    textColor = Color(0xFF000000),
+                    backgroundColor = Color(0xFF0000FF),
                 ),
                 Event.Single(
                     id = "4",
@@ -167,8 +168,8 @@ class WeekBackgroundComposeEventDisplayTest {
                     shortTitle = "Afternoon",
                     subTitle = null,
                     timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 0)),
-                    textColor = 0xFF000000.toInt(),
-                    backgroundColor = 0xFFFF0000.toInt(),
+                    textColor = Color(0xFF000000),
+                    backgroundColor = Color(0xFFFF0000),
                 ),
             )
 
@@ -210,8 +211,8 @@ class WeekBackgroundComposeEventDisplayTest {
                 shortTitle = "Short",
                 subTitle = null,
                 timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(12, 0)),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFFFFFF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFFFFFF00),
             )
 
         // Act
@@ -251,8 +252,8 @@ class WeekBackgroundComposeEventDisplayTest {
                 shortTitle = "Meeting",
                 subTitle = null,
                 timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(12, 0)),
-                textColor = 0xFFFFFFFF.toInt(),
-                backgroundColor = 0xFF800080.toInt(),
+                textColor = Color(0xFFFFFFFF),
+                backgroundColor = Color(0xFF800080),
             )
 
         // Act

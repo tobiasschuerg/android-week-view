@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.sample.data
 
-import android.graphics.Color
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.graphics.Color
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
@@ -31,8 +30,8 @@ object SampleTimetableUniversity {
                 shortTitle = "LinAlg",
                 subTitle = "Room A101",
                 timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
-                textColor = Color.WHITE,
-                backgroundColor = "#1565C0".toColorInt(),
+                textColor = Color.White,
+                backgroundColor = Color(0xFF1565C0),
                 upperText = "Prof. Schmidt",
             ),
         )
@@ -44,8 +43,8 @@ object SampleTimetableUniversity {
                 shortTitle = "Phys",
                 subTitle = "Room B202",
                 timeSpan = TimeSpan(LocalTime.of(10, 15), LocalTime.of(11, 45)),
-                textColor = Color.WHITE,
-                backgroundColor = "#2E7D32".toColorInt(),
+                textColor = Color.White,
+                backgroundColor = Color(0xFF2E7D32),
                 upperText = "Prof. Weber",
             ),
         )
@@ -57,8 +56,8 @@ object SampleTimetableUniversity {
                 shortTitle = "ProgLab",
                 subTitle = "PC Pool 3",
                 timeSpan = TimeSpan(LocalTime.of(14, 0), LocalTime.of(15, 30)),
-                textColor = Color.WHITE,
-                backgroundColor = "#E65100".toColorInt(),
+                textColor = Color.White,
+                backgroundColor = Color(0xFFE65100),
             ),
         )
 
@@ -72,8 +71,8 @@ object SampleTimetableUniversity {
                     shortTitle = "Ana",
                     subTitle = "Auditorium",
                     timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#6A1B9A".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF6A1B9A),
                     upperText = "Prof. Müller",
                 ),
             )
@@ -85,8 +84,8 @@ object SampleTimetableUniversity {
                     shortTitle = "CompArch",
                     subTitle = "Room C305",
                     timeSpan = TimeSpan(LocalTime.of(10, 15), LocalTime.of(11, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#00838F".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF00838F),
                     upperText = "Dr. Braun",
                 ),
             )
@@ -98,8 +97,8 @@ object SampleTimetableUniversity {
                     shortTitle = "Tut LinAlg",
                     subTitle = "Room A103",
                     timeSpan = TimeSpan(LocalTime.of(14, 0), LocalTime.of(15, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#1565C0".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF1565C0),
                 ),
             )
         }
@@ -115,8 +114,8 @@ object SampleTimetableUniversity {
                     shortTitle = "ML",
                     subTitle = "Room E201",
                     timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#4E342E".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF4E342E),
                     upperText = "Prof. Richter",
                 ),
             )
@@ -128,8 +127,8 @@ object SampleTimetableUniversity {
                     shortTitle = "DB",
                     subTitle = "Room C102",
                     timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#33691E".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF33691E),
                     upperText = "Dr. Fischer",
                 ),
             )
@@ -141,8 +140,8 @@ object SampleTimetableUniversity {
                     shortTitle = "Phys",
                     subTitle = "Room B202",
                     timeSpan = TimeSpan(LocalTime.of(10, 15), LocalTime.of(11, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#2E7D32".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF2E7D32),
                     upperText = "Prof. Weber",
                 ),
             )
@@ -154,8 +153,8 @@ object SampleTimetableUniversity {
                     shortTitle = "ADS",
                     subTitle = "Room D110",
                     timeSpan = TimeSpan(LocalTime.of(12, 15), LocalTime.of(13, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#C62828".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFC62828),
                     upperText = "Prof. Koch",
                 ),
             )
@@ -167,8 +166,8 @@ object SampleTimetableUniversity {
                     shortTitle = "Tut Ana",
                     subTitle = "Room A205",
                     timeSpan = TimeSpan(LocalTime.of(16, 0), LocalTime.of(17, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#6A1B9A".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF6A1B9A),
                 ),
             )
         }
@@ -183,8 +182,8 @@ object SampleTimetableUniversity {
                     shortTitle = "LinAlg",
                     subTitle = "Room A101",
                     timeSpan = TimeSpan(LocalTime.of(8, 15), LocalTime.of(9, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#1565C0".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF1565C0),
                     upperText = "Prof. Schmidt",
                 ),
             )
@@ -196,8 +195,8 @@ object SampleTimetableUniversity {
                     shortTitle = "Ana",
                     subTitle = "Auditorium",
                     timeSpan = TimeSpan(LocalTime.of(10, 15), LocalTime.of(11, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#6A1B9A".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF6A1B9A),
                     upperText = "Prof. Müller",
                 ),
             )
@@ -209,8 +208,8 @@ object SampleTimetableUniversity {
                     shortTitle = "PhysLab",
                     subTitle = "Lab B01",
                     timeSpan = TimeSpan(LocalTime.of(14, 0), LocalTime.of(17, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#2E7D32".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF2E7D32),
                 ),
             )
         }
@@ -225,8 +224,8 @@ object SampleTimetableUniversity {
                     shortTitle = "ADS",
                     subTitle = "Room D110",
                     timeSpan = TimeSpan(LocalTime.of(10, 15), LocalTime.of(11, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#C62828".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFC62828),
                     upperText = "Prof. Koch",
                 ),
             )
@@ -238,8 +237,8 @@ object SampleTimetableUniversity {
                     shortTitle = "ProgLab",
                     subTitle = "PC Pool 3",
                     timeSpan = TimeSpan(LocalTime.of(12, 15), LocalTime.of(13, 45)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#E65100".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFE65100),
                 ),
             )
         }
@@ -252,8 +251,8 @@ object SampleTimetableUniversity {
                     date = d,
                     title = "Enrollment Deadline",
                     shortTitle = "Deadline",
-                    textColor = Color.WHITE,
-                    backgroundColor = "#FF6F00".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFFF6F00),
                 ),
             )
         }

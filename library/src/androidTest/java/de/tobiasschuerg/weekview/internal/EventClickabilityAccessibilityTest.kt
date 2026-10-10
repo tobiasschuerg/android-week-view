@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.internal
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -41,8 +42,8 @@ class EventClickabilityAccessibilityTest {
                 title = "Test Event",
                 shortTitle = "Test",
                 timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF00FF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF00FF00),
             )
 
         composeTestRule.setContent {
@@ -68,8 +69,8 @@ class EventClickabilityAccessibilityTest {
                 title = "Test Event",
                 shortTitle = "Test",
                 timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF00FF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF00FF00),
             )
 
         composeTestRule.setContent {
@@ -95,8 +96,8 @@ class EventClickabilityAccessibilityTest {
                 date = testDate,
                 title = "Holiday",
                 shortTitle = "Holiday",
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF00FF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF00FF00),
             )
 
         composeTestRule.setContent {
@@ -122,8 +123,8 @@ class EventClickabilityAccessibilityTest {
                 title = "Conference",
                 shortTitle = "Conference",
                 lastDate = testDate.plusDays(1),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF00FF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF00FF00),
             )
 
         composeTestRule.setContent {

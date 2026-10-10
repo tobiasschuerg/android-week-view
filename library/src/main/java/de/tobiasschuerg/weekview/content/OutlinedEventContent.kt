@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
@@ -29,7 +28,7 @@ fun OutlinedEventContent(
                 .fillMaxSize()
                 .clip(EventCornerShape)
                 .background(MaterialTheme.colorScheme.surface)
-                .border(BORDER_WIDTH, Color(scope.event.backgroundColor), EventCornerShape)
+                .border(BORDER_WIDTH, scope.event.backgroundColor, EventCornerShape)
                 .padding(BORDER_WIDTH),
     )
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
@@ -54,8 +55,8 @@ class WeekBackgroundComposeScrollSyncTest {
                 title = "Entry",
                 shortTitle = "E",
                 timeSpan = TimeSpan(entryStart, entryStart.plusHours(1)),
-                textColor = 0xFF000000.toInt(),
-                backgroundColor = 0xFF00FF00.toInt(),
+                textColor = Color(0xFF000000),
+                backgroundColor = Color(0xFF00FF00),
             )
         composeTestRule.setContent {
             MaterialTheme {

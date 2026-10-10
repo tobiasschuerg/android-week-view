@@ -1,5 +1,6 @@
 package de.tobiasschuerg.weekview.model
 
+import androidx.compose.ui.graphics.Color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -29,8 +30,8 @@ class WeekDataTest {
                 title = "Test",
                 shortTitle = "T",
                 timeSpan = TimeSpan.of(LocalTime.of(8, 0), Duration.ofHours(2)),
-                backgroundColor = 0,
-                textColor = 0,
+                backgroundColor = Color.Transparent,
+                textColor = Color.Transparent,
             )
         weekData.add(event)
         val timeSpan = weekData.getTimeSpan()
@@ -47,8 +48,8 @@ class WeekDataTest {
                 date = LocalDate.of(2024, 9, 3),
                 title = "AllDay",
                 shortTitle = "AD",
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             )
         weekData.add(event)
         assertEquals(1, weekData.getAllDayEvents().size)
@@ -63,8 +64,8 @@ class WeekDataTest {
                 date = LocalDate.of(2024, 9, 3),
                 title = "Changed",
                 shortTitle = "C",
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             ),
         )
 
@@ -85,8 +86,8 @@ class WeekDataTest {
                     title = "Timed",
                     shortTitle = "T",
                     timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
-                    backgroundColor = 0,
-                    textColor = 0,
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Transparent,
                 ),
             )
 
@@ -96,8 +97,8 @@ class WeekDataTest {
                     date = LocalDate.of(2024, 9, 3),
                     title = "All day",
                     shortTitle = "AD",
-                    textColor = 0,
-                    backgroundColor = 0,
+                    textColor = Color.Transparent,
+                    backgroundColor = Color.Transparent,
                 ),
             )
         }
@@ -112,8 +113,8 @@ class WeekDataTest {
                 title = "Lesson",
                 shortTitle = "L",
                 timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
-                backgroundColor = 0,
-                textColor = 0,
+                backgroundColor = Color.Transparent,
+                textColor = Color.Transparent,
             ),
         )
         weekData.add(
@@ -122,8 +123,8 @@ class WeekDataTest {
                 date = LocalDate.of(2024, 9, 2),
                 title = "Holiday",
                 shortTitle = "H",
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             ),
         )
 
@@ -140,8 +141,8 @@ class WeekDataTest {
                 title = "ClearTest",
                 shortTitle = "CT",
                 timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
-                backgroundColor = 0,
-                textColor = 0,
+                backgroundColor = Color.Transparent,
+                textColor = Color.Transparent,
             )
         weekData.add(event)
         weekData.clear()
@@ -157,8 +158,8 @@ class WeekDataTest {
                 title = "Conference",
                 shortTitle = "Conf",
                 lastDate = LocalDate.of(2024, 9, 4),
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             )
         weekData.add(event)
         assertEquals(1, weekData.getMultiDayEvents().size)
@@ -174,8 +175,8 @@ class WeekDataTest {
                 title = "Overlap Start",
                 shortTitle = "OS",
                 lastDate = LocalDate.of(2024, 9, 2),
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             )
         weekData.add(event)
         assertEquals(1, weekData.getMultiDayEvents().size)
@@ -190,8 +191,8 @@ class WeekDataTest {
                 title = "Overlap End",
                 shortTitle = "OE",
                 lastDate = LocalDate.of(2024, 9, 10),
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             )
         weekData.add(event)
         assertEquals(1, weekData.getMultiDayEvents().size)
@@ -207,8 +208,8 @@ class WeekDataTest {
                     title = "Outside",
                     shortTitle = "Out",
                     lastDate = LocalDate.of(2024, 8, 3),
-                    textColor = 0,
-                    backgroundColor = 0,
+                    textColor = Color.Transparent,
+                    backgroundColor = Color.Transparent,
                 ),
             )
         }
@@ -224,8 +225,8 @@ class WeekDataTest {
                     title = "Invalid",
                     shortTitle = "Inv",
                     lastDate = LocalDate.of(2024, 9, 2),
-                    textColor = 0,
-                    backgroundColor = 0,
+                    textColor = Color.Transparent,
+                    backgroundColor = Color.Transparent,
                 ),
             )
         }
@@ -240,8 +241,8 @@ class WeekDataTest {
                 title = "Test",
                 shortTitle = "T",
                 lastDate = LocalDate.of(2024, 9, 3),
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             ),
         )
         assertFalse(weekData.isEmpty())
@@ -256,8 +257,8 @@ class WeekDataTest {
                 title = "Test",
                 shortTitle = "T",
                 lastDate = LocalDate.of(2024, 9, 3),
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             ),
         )
         weekData.clear()
@@ -275,8 +276,8 @@ class WeekDataTest {
                 title = "Outside",
                 shortTitle = "O",
                 timeSpan = TimeSpan.of(LocalTime.of(12, 0), Duration.ofHours(1)),
-                backgroundColor = 0,
-                textColor = 0,
+                backgroundColor = Color.Transparent,
+                textColor = Color.Transparent,
             )
         val exception =
             assertThrows<IllegalArgumentException> {

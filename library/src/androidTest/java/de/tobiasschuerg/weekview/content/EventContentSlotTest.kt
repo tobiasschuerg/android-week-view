@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
@@ -45,8 +46,8 @@ class EventContentSlotTest {
             title = "Math",
             shortTitle = "M",
             timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-            textColor = 0xFF000000.toInt(),
-            backgroundColor = 0xFF00FF00.toInt(),
+            textColor = Color(0xFF000000),
+            backgroundColor = Color(0xFF00FF00),
         )
 
     private fun weekData(): WeekData =

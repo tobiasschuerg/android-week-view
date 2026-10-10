@@ -3,6 +3,7 @@ package de.tobiasschuerg.weekview.internal
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.EventConfig
@@ -47,8 +48,8 @@ private fun sampleEvent(
         shortTitle = shortTitle,
         subTitle = subTitle,
         timeSpan = TimeSpan.of(startTime, duration),
-        backgroundColor = 0xFF90323D.toInt(),
-        textColor = 0xFFDDDDDD.toInt(),
+        backgroundColor = Color(0xFF90323D),
+        textColor = Color(0xFFDDDDDD),
         upperText = upperText,
         lowerText = lowerText,
     )

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 
 /**
  * Default entry style: a rounded box filled with the event's background color, text in its text color.
@@ -18,11 +17,11 @@ fun FilledEventContent(
 ) {
     EventFields(
         scope = scope,
-        textColor = Color(scope.event.textColor),
+        textColor = scope.event.textColor,
         modifier =
             modifier
                 .fillMaxSize()
                 .clip(EventCornerShape)
-                .background(Color(scope.event.backgroundColor)),
+                .background(scope.event.backgroundColor),
     )
 }

@@ -46,7 +46,6 @@ android {
 
 dependencies {
     implementation(project(":library"))
-    implementation(libs.androidx.core.ktx)
 
     // Compose BOM
     implementation(platform(libs.compose.bom))

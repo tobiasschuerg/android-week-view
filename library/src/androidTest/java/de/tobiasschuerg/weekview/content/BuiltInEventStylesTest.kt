@@ -52,8 +52,8 @@ class BuiltInEventStylesTest {
             shortTitle = "M",
             subTitle = subTitle,
             timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(11, 0)),
-            textColor = 0xFFFFFFFF.toInt(),
-            backgroundColor = 0xFF0000FF.toInt(),
+            textColor = Color(0xFFFFFFFF),
+            backgroundColor = Color(0xFF0000FF),
         )
 
     private fun setEntry(

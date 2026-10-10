@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -25,7 +24,7 @@ import de.tobiasschuerg.weekview.content.EventContentScope
 /** Example of a custom entry design: a light card with a colored bar on the left, title and room. */
 @Composable
 fun CustomEventContent(scope: EventContentScope) {
-    val accent = Color(scope.event.backgroundColor)
+    val accent = scope.event.backgroundColor
     val shape = RoundedCornerShape(6.dp)
     Row(
         modifier =

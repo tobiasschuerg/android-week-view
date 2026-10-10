@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.sample.data
 
-import android.graphics.Color
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.graphics.Color
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
@@ -20,12 +19,12 @@ object SampleTimetableConference {
 
         var nextId = 300L
 
-        val keynoteColor = "#1565C0".toColorInt()
-        val workshopColor = "#E65100".toColorInt()
-        val talkColor = "#2E7D32".toColorInt()
-        val panelColor = "#6A1B9A".toColorInt()
-        val networkColor = "#00838F".toColorInt()
-        val breakColor = "#78909C".toColorInt()
+        val keynoteColor = Color(0xFF1565C0)
+        val workshopColor = Color(0xFFE65100)
+        val talkColor = Color(0xFF2E7D32)
+        val panelColor = Color(0xFF6A1B9A)
+        val networkColor = Color(0xFF00838F)
+        val breakColor = Color(0xFF78909C)
 
         // Day 1 — Opening & Keynotes
         weekData.add(
@@ -36,7 +35,7 @@ object SampleTimetableConference {
                 shortTitle = "Reg",
                 subTitle = "Lobby",
                 timeSpan = TimeSpan(LocalTime.of(8, 0), LocalTime.of(9, 0)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = breakColor,
             ),
         )
@@ -48,7 +47,7 @@ object SampleTimetableConference {
                 shortTitle = "Keynote",
                 subTitle = "Main Stage",
                 timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 30)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = keynoteColor,
                 upperText = "Dr. Sarah Chen",
             ),
@@ -61,7 +60,7 @@ object SampleTimetableConference {
                 shortTitle = "Compose",
                 subTitle = "Room A",
                 timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 0)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = talkColor,
                 upperText = "Track: Android",
             ),
@@ -74,7 +73,7 @@ object SampleTimetableConference {
                 shortTitle = "Lunch",
                 subTitle = "Hall B",
                 timeSpan = TimeSpan(LocalTime.of(12, 0), LocalTime.of(13, 0)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = breakColor,
             ),
         )
@@ -86,7 +85,7 @@ object SampleTimetableConference {
                 shortTitle = "KMP",
                 subTitle = "Lab 1",
                 timeSpan = TimeSpan(LocalTime.of(13, 0), LocalTime.of(15, 0)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = workshopColor,
             ),
         )
@@ -98,7 +97,7 @@ object SampleTimetableConference {
                 shortTitle = "Panel",
                 subTitle = "Main Stage",
                 timeSpan = TimeSpan(LocalTime.of(15, 30), LocalTime.of(16, 30)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = panelColor,
             ),
         )
@@ -110,7 +109,7 @@ object SampleTimetableConference {
                 shortTitle = "Network",
                 subTitle = "Rooftop",
                 timeSpan = TimeSpan(LocalTime.of(17, 0), LocalTime.of(19, 0)),
-                textColor = Color.WHITE,
+                textColor = Color.White,
                 backgroundColor = networkColor,
             ),
         )
@@ -125,7 +124,7 @@ object SampleTimetableConference {
                     shortTitle = "AI Talk",
                     subTitle = "Main Stage",
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = keynoteColor,
                     upperText = "James Park",
                 ),
@@ -138,7 +137,7 @@ object SampleTimetableConference {
                     shortTitle = "Perf",
                     subTitle = "Room A",
                     timeSpan = TimeSpan(LocalTime.of(10, 30), LocalTime.of(11, 30)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = talkColor,
                     upperText = "Track: Android",
                 ),
@@ -151,7 +150,7 @@ object SampleTimetableConference {
                     shortTitle = "Lunch",
                     subTitle = "Hall B",
                     timeSpan = TimeSpan(LocalTime.of(12, 0), LocalTime.of(13, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = breakColor,
                 ),
             )
@@ -163,7 +162,7 @@ object SampleTimetableConference {
                     shortTitle = "Testing",
                     subTitle = "Lab 1",
                     timeSpan = TimeSpan(LocalTime.of(13, 0), LocalTime.of(15, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = workshopColor,
                 ),
             )
@@ -175,7 +174,7 @@ object SampleTimetableConference {
                     shortTitle = "Lightning",
                     subTitle = "Main Stage",
                     timeSpan = TimeSpan(LocalTime.of(15, 30), LocalTime.of(17, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = talkColor,
                 ),
             )
@@ -187,7 +186,7 @@ object SampleTimetableConference {
                     shortTitle = "Dinner",
                     subTitle = "Restaurant",
                     timeSpan = TimeSpan(LocalTime.of(18, 0), LocalTime.of(19, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = networkColor,
                 ),
             )
@@ -203,7 +202,7 @@ object SampleTimetableConference {
                     shortTitle = "Unconf",
                     subTitle = "Rooms A-D",
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(10, 30)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = workshopColor,
                 ),
             )
@@ -215,7 +214,7 @@ object SampleTimetableConference {
                     shortTitle = "OSS Panel",
                     subTitle = "Main Stage",
                     timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = panelColor,
                 ),
             )
@@ -227,7 +226,7 @@ object SampleTimetableConference {
                     shortTitle = "Lunch",
                     subTitle = "Hall B",
                     timeSpan = TimeSpan(LocalTime.of(12, 0), LocalTime.of(13, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = breakColor,
                 ),
             )
@@ -239,7 +238,7 @@ object SampleTimetableConference {
                     shortTitle = "Closing",
                     subTitle = "Main Stage",
                     timeSpan = TimeSpan(LocalTime.of(13, 30), LocalTime.of(15, 0)),
-                    textColor = Color.WHITE,
+                    textColor = Color.White,
                     backgroundColor = keynoteColor,
                     upperText = "Community Awards",
                 ),
@@ -255,8 +254,8 @@ object SampleTimetableConference {
                     title = "DroidCon 2026",
                     shortTitle = "DroidCon",
                     lastDate = days[2],
-                    textColor = Color.WHITE,
-                    backgroundColor = "#3F51B5".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF3F51B5),
                 ),
             )
         }

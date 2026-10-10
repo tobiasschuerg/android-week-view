@@ -1,6 +1,6 @@
 package de.tobiasschuerg.weekview.sample.data
 
-import android.graphics.Color
+import androidx.compose.ui.graphics.Color
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
@@ -51,8 +51,8 @@ internal fun lesson(
     startMin: Int,
     endHour: Int,
     endMin: Int,
-    color: Int,
-    textColor: Int = Color.WHITE,
+    color: Color,
+    textColor: Color = Color.White,
 ): Event.Single =
     Event.Single(
         id = id.toString(),

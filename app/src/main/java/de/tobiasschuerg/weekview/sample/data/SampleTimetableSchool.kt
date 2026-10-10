@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.sample.data
 
-import android.graphics.Color
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.graphics.Color
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.WeekData
@@ -21,14 +20,14 @@ object SampleTimetableSchool {
 
         var nextId = 200L
 
-        val mathColor = "#1565C0".toColorInt()
-        val englishColor = "#2E7D32".toColorInt()
-        val historyColor = "#BF360C".toColorInt()
-        val scienceColor = "#6A1B9A".toColorInt()
-        val artColor = "#E65100".toColorInt()
-        val peColor = "#00838F".toColorInt()
-        val musicColor = "#AD1457".toColorInt()
-        val germanColor = "#283593".toColorInt()
+        val mathColor = Color(0xFF1565C0)
+        val englishColor = Color(0xFF2E7D32)
+        val historyColor = Color(0xFFBF360C)
+        val scienceColor = Color(0xFF6A1B9A)
+        val artColor = Color(0xFFE65100)
+        val peColor = Color(0xFF00838F)
+        val musicColor = Color(0xFFAD1457)
+        val germanColor = Color(0xFF283593)
 
         // Monday: 4 lessons + lunch
         weekData.add(lesson(nextId++, mon, "Mathematics", "Math", "Room 12", 8, 0, 8, 45, mathColor))
@@ -82,8 +81,8 @@ object SampleTimetableSchool {
                     date = d,
                     title = "Parent-Teacher Day",
                     shortTitle = "PT Day",
-                    textColor = Color.WHITE,
-                    backgroundColor = "#FF6F00".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFFF6F00),
                 ),
             )
         }

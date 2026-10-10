@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
@@ -13,7 +14,6 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.tobiasschuerg.weekview.EventConfig
 import de.tobiasschuerg.weekview.internal.layout.EventOverlapCalculator
@@ -68,8 +68,8 @@ class EventComposeTimeLabelTest {
             shortTitle = title,
             subTitle = null,
             timeSpan = TimeSpan.of(start, duration),
-            textColor = 0xFF000000.toInt(),
-            backgroundColor = "#00FF00".toColorInt(),
+            textColor = Color(0xFF000000),
+            backgroundColor = Color(0xFF00FF00),
         )
 
     private fun setEventContent(

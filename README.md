@@ -61,8 +61,8 @@ val meeting = Event.Single(
     title = "Team Meeting",
     shortTitle = "Meeting",
     timeSpan = TimeSpan.of(LocalTime.of(10, 0), Duration.ofHours(1)),
-    backgroundColor = Color.BLUE,
-    textColor = Color.WHITE,
+    backgroundColor = Color.Blue,
+    textColor = Color.White,
 )
 
 // All-day event
@@ -71,8 +71,8 @@ val holiday = Event.AllDay(
     date = LocalDate.of(2026, 1, 16),
     title = "National Holiday",
     shortTitle = "Holiday",
-    backgroundColor = Color.GREEN,
-    textColor = Color.WHITE,
+    backgroundColor = Color.Green,
+    textColor = Color.White,
 )
 
 // Multi-day event (renders as a spanning bar)
@@ -82,8 +82,8 @@ val conference = Event.MultiDay(
     title = "Tech Conference",
     shortTitle = "Conf",
     lastDate = LocalDate.of(2026, 1, 22),
-    backgroundColor = Color.MAGENTA,
-    textColor = Color.WHITE,
+    backgroundColor = Color.Magenta,
+    textColor = Color.White,
 )
 
 weekData.add(meeting)
@@ -159,7 +159,7 @@ WeekView(
         Box(
             Modifier
                 .fillMaxSize()
-                .background(Color(scope.event.backgroundColor), RoundedCornerShape(8.dp))
+                .background(scope.event.backgroundColor, RoundedCornerShape(8.dp))
                 .padding(4.dp),
         ) {
             Text(scope.event.title)

@@ -1,7 +1,6 @@
 package de.tobiasschuerg.weekview.sample.data
 
-import android.graphics.Color
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.graphics.Color
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
@@ -31,8 +30,8 @@ object SampleTimetableWork {
                 shortTitle = "Standup",
                 subTitle = "Meeting Room A",
                 timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(9, 30)),
-                textColor = Color.WHITE,
-                backgroundColor = "#0277BD".toColorInt(),
+                textColor = Color.White,
+                backgroundColor = Color(0xFF0277BD),
             ),
         )
         weekData.add(
@@ -43,8 +42,8 @@ object SampleTimetableWork {
                 shortTitle = "Planning",
                 subTitle = "Conference Room",
                 timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(12, 0)),
-                textColor = Color.WHITE,
-                backgroundColor = "#AD1457".toColorInt(),
+                textColor = Color.White,
+                backgroundColor = Color(0xFFAD1457),
                 upperText = "Sprint 24",
             ),
         )
@@ -56,8 +55,8 @@ object SampleTimetableWork {
                 shortTitle = "1:1",
                 subTitle = "Office",
                 timeSpan = TimeSpan(LocalTime.of(14, 0), LocalTime.of(14, 30)),
-                textColor = Color.WHITE,
-                backgroundColor = "#4527A0".toColorInt(),
+                textColor = Color.White,
+                backgroundColor = Color(0xFF4527A0),
             ),
         )
 
@@ -71,8 +70,8 @@ object SampleTimetableWork {
                     shortTitle = "Standup",
                     subTitle = "Meeting Room A",
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(9, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#0277BD".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF0277BD),
                 ),
             )
             weekData.add(
@@ -83,8 +82,8 @@ object SampleTimetableWork {
                     shortTitle = "Review",
                     subTitle = "Virtual",
                     timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#00695C".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF00695C),
                 ),
             )
             weekData.add(
@@ -95,8 +94,8 @@ object SampleTimetableWork {
                     shortTitle = "Design",
                     subTitle = "Whiteboard Room",
                     timeSpan = TimeSpan(LocalTime.of(14, 0), LocalTime.of(16, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#BF360C".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFBF360C),
                     upperText = "Q2 Features",
                 ),
             )
@@ -112,8 +111,8 @@ object SampleTimetableWork {
                     shortTitle = "Standup",
                     subTitle = "Meeting Room A",
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(9, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#0277BD".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF0277BD),
                 ),
             )
             // Two meetings at the same time (overlap)
@@ -125,8 +124,8 @@ object SampleTimetableWork {
                     shortTitle = "Hiring",
                     subTitle = "Meeting Room C",
                     timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#E65100".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFE65100),
                 ),
             )
             weekData.add(
@@ -137,8 +136,8 @@ object SampleTimetableWork {
                     shortTitle = "Tech",
                     subTitle = "Virtual",
                     timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(11, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#1B5E20".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF1B5E20),
                 ),
             )
             weekData.add(
@@ -149,8 +148,8 @@ object SampleTimetableWork {
                     shortTitle = "L&L",
                     subTitle = "Cafeteria",
                     timeSpan = TimeSpan(LocalTime.of(12, 0), LocalTime.of(13, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#558B2F".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF558B2F),
                     upperText = "Kotlin Coroutines",
                 ),
             )
@@ -162,8 +161,8 @@ object SampleTimetableWork {
                     shortTitle = "ArchReview",
                     subTitle = "Conference Room",
                     timeSpan = TimeSpan(LocalTime.of(15, 0), LocalTime.of(16, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#283593".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF283593),
                 ),
             )
         }
@@ -178,8 +177,8 @@ object SampleTimetableWork {
                     shortTitle = "Standup",
                     subTitle = "Meeting Room A",
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(9, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#0277BD".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF0277BD),
                 ),
             )
             weekData.add(
@@ -190,8 +189,8 @@ object SampleTimetableWork {
                     shortTitle = "Demo",
                     subTitle = "Main Hall",
                     timeSpan = TimeSpan(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#6A1B9A".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF6A1B9A),
                     upperText = "Stakeholders",
                 ),
             )
@@ -203,8 +202,8 @@ object SampleTimetableWork {
                     shortTitle = "Retro",
                     subTitle = "Meeting Room B",
                     timeSpan = TimeSpan(LocalTime.of(15, 0), LocalTime.of(16, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#AD1457".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFFAD1457),
                     upperText = "Sprint 23",
                 ),
             )
@@ -220,8 +219,8 @@ object SampleTimetableWork {
                     shortTitle = "Standup",
                     subTitle = "Meeting Room A",
                     timeSpan = TimeSpan(LocalTime.of(9, 0), LocalTime.of(9, 30)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#0277BD".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF0277BD),
                 ),
             )
             weekData.add(
@@ -232,8 +231,8 @@ object SampleTimetableWork {
                     shortTitle = "KnowShare",
                     subTitle = "Virtual",
                     timeSpan = TimeSpan(LocalTime.of(11, 0), LocalTime.of(12, 0)),
-                    textColor = Color.WHITE,
-                    backgroundColor = "#00695C".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF00695C),
                 ),
             )
         }
@@ -247,8 +246,8 @@ object SampleTimetableWork {
                     title = "Team Offsite",
                     shortTitle = "Offsite",
                     lastDate = days[1],
-                    textColor = Color.WHITE,
-                    backgroundColor = "#00838F".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF00838F),
                 ),
             )
         }
@@ -261,8 +260,8 @@ object SampleTimetableWork {
                     date = d,
                     title = "Casual Friday",
                     shortTitle = "Casual",
-                    textColor = Color.WHITE,
-                    backgroundColor = "#7B1FA2".toColorInt(),
+                    textColor = Color.White,
+                    backgroundColor = Color(0xFF7B1FA2),
                 ),
             )
         }

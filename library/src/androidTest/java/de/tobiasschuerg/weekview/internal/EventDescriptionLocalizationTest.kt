@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
@@ -37,7 +38,15 @@ class EventDescriptionLocalizationTest {
 
     @Test
     fun shouldDescribeAllDayAndMultiDayEventsInGermanWhenTheAppRunsInGerman() {
-        val holiday = Event.AllDay(id = "a", date = monday, title = "Feiertag", shortTitle = "F", textColor = 0, backgroundColor = 0)
+        val holiday =
+            Event.AllDay(
+                id = "a",
+                date = monday,
+                title = "Feiertag",
+                shortTitle = "F",
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
+            )
         val conference =
             Event.MultiDay(
                 id = "m",
@@ -45,8 +54,8 @@ class EventDescriptionLocalizationTest {
                 lastDate = monday.plusDays(2),
                 title = "Konferenz",
                 shortTitle = "K",
-                textColor = 0,
-                backgroundColor = 0,
+                textColor = Color.Transparent,
+                backgroundColor = Color.Transparent,
             )
 
         composeTestRule.setContent {
