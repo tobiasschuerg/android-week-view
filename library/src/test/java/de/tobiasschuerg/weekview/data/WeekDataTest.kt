@@ -105,6 +105,34 @@ class WeekDataTest {
     }
 
     @Test
+    fun `should accept events from different sources when their ids are namespaced`() {
+        weekData.add(
+            Event.Single(
+                id = "lesson-12",
+                date = LocalDate.of(2024, 9, 2),
+                title = "Lesson",
+                shortTitle = "L",
+                timeSpan = TimeSpan.of(LocalTime.of(9, 0), Duration.ofHours(1)),
+                backgroundColor = 0,
+                textColor = 0,
+            ),
+        )
+        weekData.add(
+            Event.AllDay(
+                id = "holiday-12",
+                date = LocalDate.of(2024, 9, 2),
+                title = "Holiday",
+                shortTitle = "H",
+                textColor = 0,
+                backgroundColor = 0,
+            ),
+        )
+
+        assertEquals(1, weekData.getSingleEvents().size)
+        assertEquals(1, weekData.getAllDayEvents().size)
+    }
+
+    @Test
     fun `clear removes all events`() {
         val event =
             Event.Single(
