@@ -94,6 +94,7 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 var weekData by remember(selectedTimetable) { mutableStateOf(SampleTimetables.create(selectedTimetable, dateRange)) }
                 var fillViewport by remember { mutableStateOf(weekViewConfig.fillViewport) }
                 var eventStyle by remember { mutableStateOf(SampleEventStyle.FILLED) }
+                var layout by remember { mutableStateOf(SampleLayout.TIMELINE) }
                 val weekViewState = rememberWeekViewState(initialTime = LocalTime.now())
                 val scope = rememberCoroutineScope()
 
@@ -132,6 +133,19 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                         },
                                     )
                                 }
+                                TopBarMenu(label = "Layout") { dismiss ->
+                                    // Pick "School" data to see its lessons snap into the periods.
+                                    SampleLayout.entries.forEach { entry ->
+                                        DropdownMenuItem(
+                                            text = { Text(entry.label) },
+                                            trailingIcon = { RadioButton(selected = layout == entry, onClick = null) },
+                                            onClick = {
+                                                layout = entry
+                                                dismiss()
+                                            },
+                                        )
+                                    }
+                                }
                                 TopBarMenu(label = "Style") { dismiss ->
                                     SampleEventStyle.entries.forEach { style ->
                                         DropdownMenuItem(
@@ -150,7 +164,13 @@ class ComposeWeekViewActivity : ComponentActivity() {
                 ) { paddingValues ->
                     WeekView(
                         weekData = weekData,
-                        eventConfig = eventConfig,
+                        // In the period grid the axis already shows each period's times, so the lessons leave them out.
+                        eventConfig =
+                            if (layout == SampleLayout.PERIODS) {
+                                eventConfig.copy(showTimeStart = false, showTimeEnd = false)
+                            } else {
+                                eventConfig
+                            },
                         weekViewConfig = weekViewConfig.copy(fillViewport = fillViewport),
                         modifier =
                             Modifier
@@ -171,7 +191,15 @@ class ComposeWeekViewActivity : ComponentActivity() {
                                 onDayClick = { date ->
                                     Toast.makeText(this@ComposeWeekViewActivity, "Clicked day: $date", Toast.LENGTH_SHORT).show()
                                 },
+                                onEmptyPeriodClick = { date, period ->
+                                    Toast.makeText(
+                                        this@ComposeWeekViewActivity,
+                                        "Empty period ${period.label} on $date",
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
+                                },
                             ),
+                        layout = layout.layout,
                         eventContent = { scope -> eventStyle.Content(scope) },
                     )
                 }

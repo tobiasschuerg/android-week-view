@@ -1,6 +1,7 @@
 package de.tobiasschuerg.weekview
 
 import de.tobiasschuerg.weekview.model.Event
+import de.tobiasschuerg.weekview.model.Period
 import java.time.LocalDate
 
 /**
@@ -12,4 +13,6 @@ public data class WeekViewActions(
     val onEventLongPress: ((event: Event) -> Unit)? = null,
     val onScalingFactorChange: ((Float) -> Unit)? = null,
     val onDayClick: ((date: LocalDate) -> Unit)? = null,
+    /** A lesson row without an entry on that day was clicked; only with [WeekLayout.Periods]. */
+    val onEmptyPeriodClick: ((date: LocalDate, period: Period) -> Unit)? = null,
 )

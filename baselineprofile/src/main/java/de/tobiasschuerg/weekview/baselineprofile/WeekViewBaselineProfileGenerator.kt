@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 
 /**
  * Records the code paths of typical week view use in the sample app: first layout, scrolling,
- * pinch-zooming, switching timetables and event styles. Run on an API 33+ emulator or device:
+ * pinch-zooming, switching timetables, event styles and the period layout. Run on an API 33+ emulator or device:
  * `./gradlew :library:generateBaselineProfile`.
  */
 @RunWith(AndroidJUnit4::class)
@@ -36,6 +36,9 @@ class WeekViewBaselineProfileGenerator {
                 device.pickFromMenu(menu = "Style", item = style)
                 device.scrollAndZoomGrid()
             }
+            device.pickFromMenu(menu = "Data", item = "School")
+            device.pickFromMenu(menu = "Layout", item = "School periods")
+            device.scrollAndZoomGrid()
         }
 
     private fun UiDevice.waitForGrid() {

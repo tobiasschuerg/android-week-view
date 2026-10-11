@@ -29,6 +29,8 @@ import java.time.LocalTime
  * Displays the background grid and renders events from the provided weekData.
  * Timed entries are drawn by [eventContent], which defaults to [FilledEventContent].
  * Colors come from [colors], which default to the current Material theme.
+ * [layout] picks a continuous time axis ([WeekLayout.Timeline], the default) or a grid of fixed
+ * school periods ([WeekLayout.Periods]).
  *
  * Pinch-to-zoom only activates on multi-touch (2+ fingers) so that single-finger
  * horizontal swipes pass through to a parent HorizontalPager or similar container. The time under
@@ -43,6 +45,7 @@ public fun WeekView(
     actions: WeekViewActions = WeekViewActions(),
     state: WeekViewState = rememberWeekViewState(weekViewConfig.scalingFactor),
     colors: WeekViewColors = WeekViewDefaults.colors(),
+    layout: WeekLayout = WeekLayout.Timeline,
     eventContent: EventContent = { FilledEventContent(it) },
 ) {
     LaunchedEffect(weekViewConfig.scalingFactor) {
@@ -101,6 +104,8 @@ public fun WeekView(
             weekViewConfig = activeWeekConfig,
             colors = colors,
             state = state,
+            layout = layout,
+            onEmptyPeriodClick = actions.onEmptyPeriodClick,
             eventContent = eventContent,
         )
     }

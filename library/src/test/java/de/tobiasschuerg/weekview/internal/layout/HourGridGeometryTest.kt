@@ -3,9 +3,9 @@ package de.tobiasschuerg.weekview.internal.layout
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class GridGeometryTest {
+class HourGridGeometryTest {
     // Grid starting at 08:00 with 100 px per hour.
-    private val geometry = GridGeometry(startMinute = 8 * 60f, rowHeightPx = 100f)
+    private val geometry = HourGridGeometry(startMinute = 8 * 60f, rowHeightPx = 100f)
 
     @Test
     fun `should map a content offset to the time of day when inside the grid`() {

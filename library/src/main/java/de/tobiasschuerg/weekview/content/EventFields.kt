@@ -269,5 +269,8 @@ private val TITLE_LINE_HEIGHT = 14.sp
 private val LOCATION_LINE_HEIGHT = 12.sp
 private val TEACHER_LINE_HEIGHT = 10.sp
 
-/** Corner radius shared by the built-in entry styles. */
-internal val EventCornerShape = RoundedCornerShape(4.dp)
+/** Corner radius shared by the built-in entry styles and the empty period placeholders. */
+internal val EventCornerRadius = 4.dp
+
+/** Shape shared by the built-in entry styles. */
+internal val EventCornerShape = RoundedCornerShape(EventCornerRadius)

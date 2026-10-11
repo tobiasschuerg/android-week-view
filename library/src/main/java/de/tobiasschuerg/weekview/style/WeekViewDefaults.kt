@@ -19,6 +19,7 @@ public object WeekViewDefaults {
         currentDayText: Color = MaterialTheme.colorScheme.onSurface,
         nowIndicatorLabelText: Color = MaterialTheme.colorScheme.onError,
         nowIndicatorHalo: Color = MaterialTheme.colorScheme.surface,
+        breakBackground: Color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
     ): WeekViewColors =
         remember(
             todayHighlight,
@@ -30,6 +31,7 @@ public object WeekViewDefaults {
             currentDayText,
             nowIndicatorLabelText,
             nowIndicatorHalo,
+            breakBackground,
         ) {
             WeekViewColors(
                 todayHighlight = todayHighlight,
@@ -41,6 +43,7 @@ public object WeekViewDefaults {
                 currentDayText = currentDayText,
                 nowIndicatorLabelText = nowIndicatorLabelText,
                 nowIndicatorHalo = nowIndicatorHalo,
+                breakBackground = breakBackground,
             )
         }
 }

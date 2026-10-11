@@ -16,6 +16,7 @@ Initially created for [Schedule Deluxe](https://play.google.com/store/apps/detai
 ## Features
 
 - Jetpack Compose implementation (Compose-only since 3.0)
+- Two layouts: a calendar timeline, or a school timetable of fixed periods
 - Three event types: timed, all-day, and multi-day (spanning bars)
 - Automatic overlap handling for concurrent events
 - Pinch-to-zoom that keeps the time under your fingers in place
@@ -93,6 +94,44 @@ val weekData = WeekData(dateRange, LocalTime.of(8, 0), LocalTime.of(18, 0), list
 `WeekData` is immutable: to change what the week view shows, pass a new instance. Timed events outside the given time range widen the visible hours.
 
 Event IDs must be unique across all event types in a `WeekData`. If your events come from several sources (for example two database tables with their own auto-increment keys), prefix the IDs, e.g. `"lesson-12"` and `"holiday-12"`.
+
+### School periods
+
+By default the week view is a calendar: rows are hours and every entry is as tall as it lasts.
+Pass `WeekLayout.Periods` to show a school timetable instead, with one row per period and
+all lessons equally tall:
+
+```kotlin
+val periods = listOf(
+    Period("1", TimeSpan(LocalTime.of(8, 0), LocalTime.of(8, 45))),
+    Period("2", TimeSpan(LocalTime.of(8, 50), LocalTime.of(9, 35))),
+    Period("Break", TimeSpan(LocalTime.of(9, 35), LocalTime.of(9, 55)), isBreak = true),
+    Period("3", TimeSpan(LocalTime.of(9, 55), LocalTime.of(10, 40))),
+)
+
+WeekView(
+    weekData = weekData,
+    weekViewConfig = WeekViewConfig(),
+    layout = WeekLayout.Periods(periods),
+    actions = WeekViewActions(
+        onEmptyPeriodClick = { date, period -> /* e.g. add a lesson here */ },
+    ),
+)
+```
+
+- Events stay ordinary `Event.Single`s with their real times. Each one fills every period it
+  overlaps, so a double lesson covers two rows and a lesson starting a few minutes late still
+  fills its row. An event that overlaps no period goes to the nearest one rather than disappearing.
+- Breaks (`isBreak = true`) are optional thin rows with their label across the week. Gaps between
+  periods without a break row are simply left out.
+- The axis shows each period's label, plus its start and end time (`showTimes = false` hides them).
+- Lessons grow to fill the viewport and zoom with a pinch; `periodHeight` and `breakHeight` set
+  their base size. `scrollToTime` and the current-time line work as on the timeline.
+- There are no grid lines: every empty lesson cell shows a dashed placeholder in `gridLineColor`
+  instead, and `onEmptyPeriodClick` makes the placeholders clickable.
+- Since the axis already shows each period's times, consider `EventConfig(showTimeStart = false,
+  showTimeEnd = false)`: the lessons then show their name and room centred in the cell.
+- Break rows are tinted with `breakBackground` from `WeekViewDefaults.colors()`.
 
 ## Customization
 
@@ -212,6 +251,8 @@ val actions = WeekViewActions(
     onEventClick = { event -> /* Handle event tap */ },
     onEventLongPress = { event -> /* Handle long press */ },
     onScalingFactorChange = { factor -> /* Persist zoom level */ },
+    onDayClick = { date -> /* Handle day header tap */ },
+    onEmptyPeriodClick = { date, period -> /* Empty lesson cell tapped (WeekLayout.Periods only) */ },
 )
 ```
 

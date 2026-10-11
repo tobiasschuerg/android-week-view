@@ -35,6 +35,7 @@ class WeekViewColorsTest {
                 onSurface = Color(0xFFEEEEEE),
                 onSurfaceVariant = Color(0xFFCCCCCC),
                 outlineVariant = Color(0xFF444444),
+                surfaceVariant = Color(0xFF333333),
             )
         lateinit var colors: WeekViewColors
 
@@ -49,6 +50,7 @@ class WeekViewColorsTest {
         assertEquals(scheme.onSurfaceVariant, colors.timeLabelTextColor)
         assertEquals(scheme.outlineVariant, colors.gridLineColor)
         assertEquals(scheme.onSurface, colors.currentDayText)
+        assertEquals(scheme.surfaceVariant.copy(alpha = 0.6f), colors.breakBackground)
     }
 
     @Test

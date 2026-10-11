@@ -17,4 +17,6 @@ public data class WeekViewColors(
     val nowIndicatorLabelText: Color = Color.White,
     /** Outline behind the current-time line, keeping it readable where it crosses an event. */
     val nowIndicatorHalo: Color = Color.White,
+    /** Background of the break rows of [de.tobiasschuerg.weekview.WeekLayout.Periods]; their label uses [timeLabelTextColor]. */
+    val breakBackground: Color = Color(0x0F000000),
 )

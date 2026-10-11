@@ -15,12 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.EventConfig
+import de.tobiasschuerg.weekview.WeekLayout
 import de.tobiasschuerg.weekview.WeekViewConfig
 import de.tobiasschuerg.weekview.WeekViewState
 import de.tobiasschuerg.weekview.content.EventContent
@@ -34,13 +34,14 @@ import de.tobiasschuerg.weekview.internal.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.internal.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.internal.components.TimeAxisDefaults
 import de.tobiasschuerg.weekview.internal.components.TimeAxisLabelMetrics
-import de.tobiasschuerg.weekview.internal.layout.GridGeometry
+import de.tobiasschuerg.weekview.internal.layout.HourGridGeometry
 import de.tobiasschuerg.weekview.internal.layout.WeekViewMetrics
 import de.tobiasschuerg.weekview.internal.layout.gridHeightDp
 import de.tobiasschuerg.weekview.internal.layout.rememberWeekViewMetrics
 import de.tobiasschuerg.weekview.internal.layout.totalHours
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
+import de.tobiasschuerg.weekview.model.Period
 import de.tobiasschuerg.weekview.model.TimeSpan
 import de.tobiasschuerg.weekview.rememberWeekViewState
 import de.tobiasschuerg.weekview.style.WeekViewColors
@@ -53,7 +54,8 @@ import java.util.Locale
 /**
  * Composable that renders the background grid for the week view.
  * This includes the day columns, hour rows, day labels, time labels,
- * today highlight, optional now indicator, and events.
+ * today highlight, optional now indicator, and events. With [WeekLayout.Periods] the rows are
+ * periods instead of hours.
  */
 @Composable
 internal fun WeekBackgroundCompose(
@@ -70,6 +72,8 @@ internal fun WeekBackgroundCompose(
     colors: WeekViewColors = WeekViewDefaults.colors(),
     state: WeekViewState = rememberWeekViewState(),
     onDayClick: ((date: LocalDate) -> Unit)? = null,
+    layout: WeekLayout = WeekLayout.Timeline,
+    onEmptyPeriodClick: ((date: LocalDate, period: Period) -> Unit)? = null,
     eventContent: EventContent = { FilledEventContent(it) },
 ) {
     val days = remember(dateRange) { dateRange.toList() }
@@ -140,31 +144,56 @@ internal fun WeekBackgroundCompose(
             // The grid is measured against the space left below the header rows so that a short
             // schedule is padded with extra hour rows instead of leaving that space blank.
             BoxWithConstraints(modifier = Modifier.weight(1f)) {
-                val metrics =
-                    rememberWeekViewMetrics(
-                        dateRange = dateRange,
-                        timeRange = timeRange,
-                        events = events,
-                        scalingFactor = weekViewConfig.scalingFactor,
-                        leftOffsetDp = leftOffsetDp,
-                        minGridHeightDp = if (weekViewConfig.fillViewport) maxHeight else 0.dp,
-                    )
-                WeekGridRow(
-                    metrics = metrics,
-                    labelMetrics = labelMetrics,
-                    events = events,
-                    eventConfig = eventConfig,
-                    weekViewConfig = weekViewConfig,
-                    locale = locale,
-                    columnWidth = dynamicColumnWidthDp,
-                    today = today,
-                    now = now,
-                    state = state,
-                    onEventClick = onEventClick,
-                    onEventLongPress = onEventLongPress,
-                    colors = colors,
-                    eventContent = eventContent,
-                )
+                val minGridHeightDp = if (weekViewConfig.fillViewport) maxHeight else 0.dp
+                when (layout) {
+                    WeekLayout.Timeline -> {
+                        val metrics =
+                            rememberWeekViewMetrics(
+                                dateRange = dateRange,
+                                timeRange = timeRange,
+                                events = events,
+                                scalingFactor = weekViewConfig.scalingFactor,
+                                leftOffsetDp = leftOffsetDp,
+                                minGridHeightDp = minGridHeightDp,
+                            )
+                        WeekGridRow(
+                            metrics = metrics,
+                            labelMetrics = labelMetrics,
+                            events = events,
+                            eventConfig = eventConfig,
+                            weekViewConfig = weekViewConfig,
+                            locale = locale,
+                            columnWidth = dynamicColumnWidthDp,
+                            today = today,
+                            now = now,
+                            state = state,
+                            onEventClick = onEventClick,
+                            onEventLongPress = onEventLongPress,
+                            colors = colors,
+                            eventContent = eventContent,
+                        )
+                    }
+                    is WeekLayout.Periods ->
+                        PeriodGridRow(
+                            periods = layout,
+                            days = days,
+                            events = events,
+                            minHeight = minGridHeightDp,
+                            axisWidth = leftOffsetDp,
+                            columnWidth = dynamicColumnWidthDp,
+                            eventConfig = eventConfig,
+                            weekViewConfig = weekViewConfig,
+                            locale = locale,
+                            today = today,
+                            now = now,
+                            state = state,
+                            onEventClick = onEventClick,
+                            onEventLongPress = onEventLongPress,
+                            onEmptyPeriodClick = onEmptyPeriodClick,
+                            colors = colors,
+                            eventContent = eventContent,
+                        )
+                }
             }
         }
     }
@@ -194,7 +223,9 @@ private fun WeekGridRow(
             Modifier
                 .fillMaxSize()
                 .onPlaced { state.viewportCoordinates = it }
-                .reportGridGeometry(state, metrics)
+                .reportGridGeometry(state) {
+                    HourGridGeometry(metrics.gridStartTime.toSecondOfDay() / 60f, metrics.rowHeightDp.toPx())
+                }
                 .verticalScroll(state.scrollState),
     ) {
         TimeAxisColumn(
@@ -262,20 +293,3 @@ private fun WeekGridRow(
         }
     }
 }
-
-/**
- * Hands the grid's geometry to [state] while the grid is placed. Placement runs after the scroll
- * container measured the new content height and before it scrolls the content into position,
- * so a scroll set from here (e.g. to keep a pinch anchored) shows in the same frame.
- */
-private fun Modifier.reportGridGeometry(
-    state: WeekViewState,
-    metrics: WeekViewMetrics,
-): Modifier =
-    layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
-        layout(placeable.width, placeable.height) {
-            state.onGridLaidOut(GridGeometry(metrics.gridStartTime.toSecondOfDay() / 60f, metrics.rowHeightDp.toPx()))
-            placeable.place(0, 0)
-        }
-    }

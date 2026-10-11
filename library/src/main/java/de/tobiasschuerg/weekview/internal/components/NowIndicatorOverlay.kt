@@ -53,8 +53,30 @@ internal fun NowIndicatorOverlay(
     // Same bounds as the pill in the time axis, so the line never shows without it.
     if (!now.isStrictlyBetween(gridStartTime, effectiveEndTime)) return
 
+    NowIndicatorLine(
+        modifier = modifier,
+        columnCount = columnCount,
+        days = days,
+        today = today,
+        lineY = rowHeightDp * (ChronoUnit.MINUTES.between(gridStartTime, now) / 60f),
+        onlyToday = onlyToday,
+        colors = colors,
+    )
+}
+
+/** The current-time line at [lineY] from the top of the grid; see [NowIndicatorOverlay]. */
+@Composable
+internal fun NowIndicatorLine(
+    modifier: Modifier = Modifier,
+    columnCount: Int,
+    days: List<LocalDate>,
+    today: LocalDate,
+    lineY: Dp,
+    onlyToday: Boolean,
+    colors: WeekViewColors = WeekViewDefaults.colors(),
+) {
     Canvas(modifier = modifier) {
-        val nowY = ChronoUnit.MINUTES.between(gridStartTime, now) / 60f * rowHeightDp.toPx()
+        val nowY = lineY.toPx()
         if (nowY < 0f || nowY > size.height) return@Canvas
 
         val todayColumnIndex = days.indexOf(today)

@@ -34,15 +34,15 @@ Always run `./gradlew ktlintFormat` before committing. One top-level class/objec
 All library source is under `library/src/main/java/de/tobiasschuerg/weekview/`. The package tells public API from implementation: everything under `internal/` has Kotlin `internal` visibility. The library builds in Kotlin explicit API mode, so every public declaration needs an explicit `public` modifier.
 
 ### Public API
-- **Root package** — **WeekView** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, `WeekViewColors` and an optional `eventContent` slot; pinch-zoom keeps the time under the fingers in place), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable; `initialTime`, `scrollToTime`, `animateScrollToTime`), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
-- **`model/`** — **Event** (sealed: `Event.Single` timed, `Event.AllDay`, `Event.MultiDay`), **WeekData** (immutable event container; its visible time span widens to fit the timed events; validates that events fall within its `LocalDateRange` and IDs are unique), **TimeSpan** (start/end `LocalTime`; factory `TimeSpan.of(startTime, duration)`), **LocalDateRange**
+- **Root package** — **WeekView** (main entry composable; takes `WeekData`, config objects, `WeekViewActions` callbacks, `WeekViewColors`, a `WeekLayout` and an optional `eventContent` slot; pinch-zoom keeps the time under the fingers in place), **WeekLayout** (`Timeline`, the default calendar, or `Periods`: a school timetable with one equally tall row per `Period`, events snapping to the periods they overlap), **WeekViewState** / `rememberWeekViewState` (zoom level and scroll position, saveable; `initialTime`, `scrollToTime`, `animateScrollToTime`), **WeekViewActions**, **WeekViewConfig**, **EventConfig**
+- **`model/`** — **Event** (sealed: `Event.Single` timed, `Event.AllDay`, `Event.MultiDay`), **WeekData** (immutable event container; its visible time span widens to fit the timed events; validates that events fall within its `LocalDateRange` and IDs are unique), **TimeSpan** (start/end `LocalTime`; factory `TimeSpan.of(startTime, duration)`), **LocalDateRange**, **Period** (a lesson or break row of `WeekLayout.Periods`)
 - **`content/`** — the `EventContent` slot that draws a timed entry, its `EventContentScope`, and the built-in styles **FilledEventContent** (default), **TintedEventContent**, **OutlinedEventContent**; they differ only in container and colors and share the internal `EventFields` for the auto-fitting text
 - **`style/`** — `WeekViewColors`, with defaults from the Material theme via `WeekViewDefaults.colors()`
 
 ### Implementation (`internal/`)
-- **WeekBackgroundCompose** — lays out headers, all-day/multi-day rows, time axis, grid, events and current-time overlay; **EventCompose** places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot
+- **WeekBackgroundCompose** — lays out headers, all-day/multi-day rows, time axis, grid, events and current-time overlay; with `WeekLayout.Periods` the scrollable part is **PeriodGridRow** instead (period axis, break rows, today highlight, dashed placeholders for empty lesson cells instead of grid lines, snapped events); **EventCompose** places a timed entry (offset, size, clicks, semantics) and delegates drawing to the `EventContent` slot
 - **`components/`** — grid canvas, day headers, time axis (stacked `7:00`/`AM` labels and the current-time pill, sized from `TimeAxisDefaults`), current-time overlay drawn above the events, events pane, all-day/multi-day rows
-- **`layout/`** — **EventOverlapCalculator** (BFS over overlapping events, returns width/offset fractions), **EventPositionUtil** (vertical offset and height), **EventFieldLayout** (which entry fields fit the entry height, using real line heights), `WeekViewMetrics` / `rememberWeekViewMetrics` and `GridTimeSpanFill`
+- **`layout/`** — **GridGeometry** (time ↔ scroll offset, used by `WeekViewState` for `scrollToTime` and the zoom anchor; `HourGridGeometry` for the timeline, `PeriodGridGeometry` for periods), **PeriodGridLayout** (row offsets/heights, snapping events to rows, piecewise time ↔ offset), **EventOverlapCalculator** (BFS over overlapping events, returns width/offset fractions), **EventPositionUtil** (vertical offset and height), **EventFieldLayout** (which entry fields fit the entry height, using real line heights), `WeekViewMetrics` / `rememberWeekViewMetrics` and `GridTimeSpanFill`
 - **`time/`** — locale-aware date and time formatting helpers
 
 ## Key Patterns
@@ -72,6 +72,8 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `LocalTimeExtTest` — time formatting/locale defaults, splitting axis labels into clock time and AM/PM
 - `WeekViewConfigTest` — scaling factor validation
 - `GridTimeSpanFillTest` — extending the visible time span in whole hours so the grid fills the viewport
+- `PeriodGridLayoutTest` — period row heights, viewport filling, snapping events to rows, time ↔ offset mapping
+- `WeekLayoutTest` — period list validation
 
 Instrumented Compose UI tests in `library/src/androidTest/` (e.g. `EventContentSlotTest` for the custom event content slot) stay on JUnit 4 (`androidx.test`/`ui-test-junit4` have no JUnit 5 equivalent for on-device tests).
 
