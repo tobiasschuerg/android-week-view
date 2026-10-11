@@ -183,6 +183,8 @@ under any system font scale:
   a narrow overlap column even at their smallest size are hidden rather than clipped.
 - Location and teacher are added back in as the entry gets taller.
 - The title wraps onto a second line instead of eliding once there's room to spare.
+- Without a start time above the title (e.g. `showTimeStart = false`) the fields are centred
+  vertically in the entry instead of starting at the top.
 
 ### Custom Event Design
 

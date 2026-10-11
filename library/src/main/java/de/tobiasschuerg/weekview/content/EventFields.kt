@@ -105,8 +105,10 @@ internal fun EventFields(
                             },
                     ).testTag("EventViewInner_${event.id}"),
             horizontalAlignment = Alignment.CenterHorizontally,
-            // Corner mode and entries too low for a full title line centre the (shrunk) title.
-            verticalArrangement = if (fitsTitleLine && !cornerLabels) Arrangement.Top else Arrangement.Center,
+            // A start time above the title anchors the fields to the top; without it (hidden, in a
+            // corner, or no room) they are centred in whatever room the entry has.
+            verticalArrangement =
+                if (fitsTitleLine && fields.showStartTime && !cornerLabels) Arrangement.Top else Arrangement.Center,
         ) {
             // Start time on its own line above the title (stacked mode).
             if (fields.showStartTime && !cornerLabels) {
