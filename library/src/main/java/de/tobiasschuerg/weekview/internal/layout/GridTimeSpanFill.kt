@@ -39,11 +39,3 @@ internal fun gridHeightDp(
 ): Dp = rowHeightDp * totalHours(TimeSpan(start, end))
 
 internal fun totalHours(span: TimeSpan): Float = span.duration.toHours().toFloat() + (span.duration.toMinutes() % 60 / 60f)
-
-/** Rounds up to the next full hour; anything past 23:00 becomes midnight, represented as [LocalTime.MAX]. */
-private fun LocalTime.ceilToHour(): LocalTime =
-    when {
-        minute == 0 && second == 0 && nano == 0 -> this
-        hour == 23 -> LocalTime.MAX
-        else -> LocalTime.of(hour + 1, 0)
-    }

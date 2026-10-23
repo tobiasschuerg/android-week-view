@@ -7,7 +7,6 @@ import androidx.compose.ui.unit.dp
 import de.tobiasschuerg.weekview.model.Event
 import de.tobiasschuerg.weekview.model.LocalDateRange
 import de.tobiasschuerg.weekview.model.TimeSpan
-import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 /**
@@ -46,12 +45,7 @@ internal fun rememberWeekViewMetrics(
 
         val rowHeightDp = 60.dp * scalingFactor
 
-        val gridEndTime =
-            if (latestEventEnd.hour < 23) {
-                LocalTime.of(latestEventEnd.hour + 1, 0)
-            } else {
-                LocalTime.MAX
-            }
+        val gridEndTime = gridEndFor(latestEventEnd)
         val eventEndTime = if (gridEndTime.isAfter(timeRange.endExclusive)) gridEndTime else timeRange.endExclusive
 
         val visibleTimeSpan =
