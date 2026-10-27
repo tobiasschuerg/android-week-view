@@ -74,6 +74,7 @@ Unit tests in `library/src/test/` using JUnit 5 (Jupiter):
 - `GridTimeSpanFillTest` — extending the visible time span in whole hours so the grid fills the viewport
 - `PeriodGridLayoutTest` — period row heights, viewport filling, snapping events to rows, time ↔ offset mapping
 - `WeekLayoutTest` — period list validation
+- `AllDayLanesTest` — packing all-day and multi-day events into shared lanes
 
 Instrumented Compose UI tests in `library/src/androidTest/` (e.g. `EventContentSlotTest` for the custom event content slot) stay on JUnit 4 (`androidx.test`/`ui-test-junit4` have no JUnit 5 equivalent for on-device tests).
 
