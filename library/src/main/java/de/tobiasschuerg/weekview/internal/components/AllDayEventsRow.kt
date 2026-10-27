@@ -17,6 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -48,6 +51,7 @@ internal fun AllDayEventsRow(
     leftOffsetDp: Dp,
     columnWidth: Dp,
     locale: Locale,
+    todayHighlight: TodayHighlight? = null,
     onEventClick: ((event: Event) -> Unit)? = null,
     onEventLongPress: ((event: Event) -> Unit)? = null,
 ) {
@@ -60,7 +64,20 @@ internal fun AllDayEventsRow(
     if (lanes.isEmpty()) return
     val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    val todayIndex = todayHighlight?.let { days.indexOf(it.date) } ?: -1
+    Column(
+        modifier =
+            Modifier.fillMaxWidth().drawBehind {
+                // Continues the grid's today column through this row, so the highlight has no gap.
+                if (todayHighlight != null && todayIndex >= 0) {
+                    drawRect(
+                        color = todayHighlight.color,
+                        topLeft = Offset((leftOffsetDp + columnWidth * todayIndex).toPx(), 0f),
+                        size = Size(columnWidth.toPx(), size.height),
+                    )
+                }
+            },
+    ) {
         lanes.forEachIndexed { laneIndex, lane ->
             key(laneIndex) {
                 Box(modifier = Modifier.fillMaxWidth().height(24.dp)) {

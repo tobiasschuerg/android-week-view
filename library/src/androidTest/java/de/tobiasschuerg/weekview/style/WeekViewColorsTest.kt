@@ -71,7 +71,7 @@ class WeekViewColorsTest {
         }
 
         val pixels = composeTestRule.onNodeWithTag("DayHeader_$today").captureToImage().toPixelMap()
-        // Top-left corner: background only, clear of the centered day name.
-        assertEquals(todayHeader, pixels[1, 1])
+        // Bottom-left corner: background only, clear of the centered day name and of the rounded top corners.
+        assertEquals(todayHeader, pixels[1, pixels.height - 2])
     }
 }

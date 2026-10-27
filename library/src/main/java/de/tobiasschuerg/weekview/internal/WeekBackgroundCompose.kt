@@ -33,6 +33,7 @@ import de.tobiasschuerg.weekview.internal.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.internal.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.internal.components.TimeAxisDefaults
 import de.tobiasschuerg.weekview.internal.components.TimeAxisLabelMetrics
+import de.tobiasschuerg.weekview.internal.components.TodayHighlight
 import de.tobiasschuerg.weekview.internal.layout.HourGridGeometry
 import de.tobiasschuerg.weekview.internal.layout.WeekViewMetrics
 import de.tobiasschuerg.weekview.internal.layout.gridHeightDp
@@ -124,6 +125,7 @@ internal fun WeekBackgroundCompose(
                 leftOffsetDp = leftOffsetDp,
                 columnWidth = dynamicColumnWidthDp,
                 locale = locale,
+                todayHighlight = if (weekViewConfig.highlightCurrentDay) TodayHighlight(today, colors.todayHighlight) else null,
                 onEventClick = onEventClick,
                 onEventLongPress = onEventLongPress,
             )

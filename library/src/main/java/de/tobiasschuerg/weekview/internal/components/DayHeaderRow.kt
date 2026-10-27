@@ -2,6 +2,7 @@ package de.tobiasschuerg.weekview.internal.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -10,13 +11,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -25,6 +27,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -60,19 +63,8 @@ internal fun DayHeaderRow(
         Box(modifier = Modifier.width(leftOffsetDp).fillMaxHeight())
         days.forEach { date ->
             val isToday = date == today
-            val boxModifier =
-                if (highlightCurrentDay && isToday) {
-                    Modifier
-                        .width(columnWidth)
-                        .heightIn(min = topOffsetDp)
-                        .fillMaxHeight()
-                        .background(colors.currentDayBackground)
-                } else {
-                    Modifier
-                        .width(columnWidth)
-                        .heightIn(min = topOffsetDp)
-                        .fillMaxHeight()
-                }
+            val highlight =
+                if (highlightCurrentDay && isToday) Modifier.background(colors.currentDayBackground) else Modifier
             val textStyle =
                 if (highlightCurrentDay && isToday) {
                     HEADER_TODAY_STYLE.copy(color = colors.currentDayText)
@@ -83,8 +75,13 @@ internal fun DayHeaderRow(
             val shortDate = date.toShortDateStringWithoutYear(locale)
             Column(
                 modifier =
-                    boxModifier
+                    Modifier
+                        .width(columnWidth)
+                        .heightIn(min = topOffsetDp)
+                        .fillMaxHeight()
+                        .clip(HEADER_SHAPE)
                         .testTag("DayHeader_$date")
+                        .then(highlight)
                         .semantics {
                             contentDescription = "$dayName, $shortDate"
                         }
@@ -92,7 +89,8 @@ internal fun DayHeaderRow(
                             enabled = onDayClick != null,
                             role = Role.Button,
                             onClick = { onDayClick?.invoke(date) },
-                        ).padding(vertical = 2.dp),
+                        ),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -143,8 +141,14 @@ private val HEADER_STYLE =
         lineHeight = 16.sp,
         fontWeight = FontWeight.Medium,
         textAlign = TextAlign.Center,
+        // Without trimming, the leading below the date line adds to its missing descenders and
+        // the text sits visibly higher than the centre of the header.
+        lineHeightStyle = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.Both),
     )
 private val HEADER_TODAY_STYLE = HEADER_STYLE.copy(fontWeight = FontWeight.Bold)
+
+/** Rounded on top only: the today highlight continues as a column strip below the header. */
+private val HEADER_SHAPE = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
 
 /** Breathing room kept on each side of the day name when deciding whether the full name fits. */
 private val HEADER_HORIZONTAL_PADDING = 2.dp
