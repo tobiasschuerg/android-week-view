@@ -29,7 +29,6 @@ import de.tobiasschuerg.weekview.internal.components.AllDayEventsRow
 import de.tobiasschuerg.weekview.internal.components.DayHeaderRow
 import de.tobiasschuerg.weekview.internal.components.EventsPane
 import de.tobiasschuerg.weekview.internal.components.GridCanvas
-import de.tobiasschuerg.weekview.internal.components.MultiDayEventsRow
 import de.tobiasschuerg.weekview.internal.components.NowIndicatorOverlay
 import de.tobiasschuerg.weekview.internal.components.TimeAxisColumn
 import de.tobiasschuerg.weekview.internal.components.TimeAxisDefaults
@@ -118,28 +117,16 @@ internal fun WeekBackgroundCompose(
                 onDayClick = onDayClick,
             )
 
-            if (multiDayEvents.isNotEmpty()) {
-                MultiDayEventsRow(
-                    days = days,
-                    multiDayEvents = multiDayEvents,
-                    leftOffsetDp = leftOffsetDp,
-                    columnWidth = dynamicColumnWidthDp,
-                    locale = locale,
-                    onEventClick = onEventClick,
-                    onEventLongPress = onEventLongPress,
-                )
-            }
-
-            if (allDayEvents.isNotEmpty()) {
-                AllDayEventsRow(
-                    days = days,
-                    allDayEvents = allDayEvents,
-                    leftOffsetDp = leftOffsetDp,
-                    columnWidth = dynamicColumnWidthDp,
-                    onEventClick = onEventClick,
-                    onEventLongPress = onEventLongPress,
-                )
-            }
+            AllDayEventsRow(
+                days = days,
+                allDayEvents = allDayEvents,
+                multiDayEvents = multiDayEvents,
+                leftOffsetDp = leftOffsetDp,
+                columnWidth = dynamicColumnWidthDp,
+                locale = locale,
+                onEventClick = onEventClick,
+                onEventLongPress = onEventLongPress,
+            )
 
             // The grid is measured against the space left below the header rows so that a short
             // schedule is padded with extra hour rows instead of leaving that space blank.
