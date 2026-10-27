@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -20,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalTime
 import java.util.Locale
+import kotlin.math.abs
 
 @RunWith(AndroidJUnit4::class)
 class TimeAxisColumnLabelTest {
@@ -31,9 +33,13 @@ class TimeAxisColumnLabelTest {
     /** A late minute of a two-digit hour, one of the widest times the current-time pill shows. */
     private val now = LocalTime.of(10, 58)
 
+    private var axisWidth = 0.dp
+
     private fun setAxis(locale: Locale) {
         composeTestRule.setContent {
             MaterialTheme {
+                val labelMetrics = TimeAxisDefaults.rememberLabelMetrics(locale)
+                axisWidth = labelMetrics.axisWidth
                 TimeAxisColumn(
                     timeLabels = hours,
                     now = now,
@@ -41,7 +47,7 @@ class TimeAxisColumnLabelTest {
                     gridEndTime = LocalTime.MAX,
                     rowHeightDp = 60.dp,
                     gridHeightDp = 60.dp * hours.size,
-                    labelMetrics = TimeAxisDefaults.rememberLabelMetrics(locale),
+                    labelMetrics = labelMetrics,
                     showNowIndicator = true,
                     locale = locale,
                 )
@@ -76,6 +82,12 @@ class TimeAxisColumnLabelTest {
                 nodes[index].assertTextFitsItsWidth("Hour label $time in $locale")
             }
         }
+        hours.mapNotNull { it.toAxisLabel(locale).dayPeriod }.distinct().forEach { dayPeriod ->
+            val nodes = composeTestRule.onAllNodesWithText(dayPeriod)
+            repeat(nodes.fetchSemanticsNodes().size) { index ->
+                nodes[index].assertTextFitsItsWidth("Day period $dayPeriod in $locale")
+            }
+        }
         composeTestRule
             .onNodeWithText(now.toAxisLabel(locale).time)
             .assertTextFitsItsWidth("Current-time pill in $locale")
@@ -91,6 +103,26 @@ class TimeAxisColumnLabelTest {
     @Test
     fun shouldFitEveryLabelAndTheCurrentTimePillWhenTheLocaleUses24HourTime() {
         assertAllLabelsFit(Locale.GERMANY)
+    }
+
+    @Test
+    fun shouldCenterTheHourLabelsInTheAxisWhenTheyAreNarrowerThanIt() {
+        setAxis(Locale.GERMANY)
+
+        val label = composeTestRule.onAllNodesWithText("10:00")[0].getUnclippedBoundsInRoot()
+        val labelCenter = (label.left + label.right) / 2
+        assertTrue("label centre $labelCenter should be the axis centre ${axisWidth / 2}", abs((labelCenter - axisWidth / 2).value) <= 1f)
+    }
+
+    @Test
+    fun shouldSizeTheAxisToTheCurrentTimePillWhenTheLocaleUses24HourTime() {
+        setAxis(Locale.GERMANY)
+
+        // All digits share one width, so the pill's time is as wide as any hour label.
+        val pillText = composeTestRule.onNodeWithText(now.toAxisLabel(Locale.GERMANY).time).getUnclippedBoundsInRoot()
+        val tightWidth =
+            (pillText.right - pillText.left) + TimeAxisDefaults.pillHorizontalPadding * 2 + TimeAxisDefaults.horizontalPadding / 2
+        assertTrue("axis is $axisWidth, the pill only needs $tightWidth", abs((axisWidth - tightWidth).value) <= 1f)
     }
 
     @Test

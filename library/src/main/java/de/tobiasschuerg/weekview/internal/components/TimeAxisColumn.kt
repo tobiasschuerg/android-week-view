@@ -67,7 +67,7 @@ internal fun TimeAxisColumn(
         // the labels are laid out unbounded instead of being squeezed into the grid height.
         Column(modifier = Modifier.wrapContentHeight(align = Alignment.Top, unbounded = true)) {
             hourLabels.forEach { hourLabel ->
-                Box(modifier = Modifier.size(labelMetrics.axisWidth, rowHeightDp)) {
+                Box(modifier = Modifier.size(labelMetrics.axisWidth, rowHeightDp), contentAlignment = Alignment.TopCenter) {
                     HourLabel(
                         label = hourLabel,
                         color = colors.timeLabelTextColor,
@@ -164,9 +164,8 @@ private fun StackedLabel(
     timeStyle: TextStyle,
     dayPeriodStyle: TextStyle,
     modifier: Modifier = Modifier,
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
-    Column(modifier = modifier, horizontalAlignment = horizontalAlignment) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = label.time, style = timeStyle, maxLines = 1, softWrap = false)
         if (label.dayPeriod != null) {
             Text(text = label.dayPeriod, style = dayPeriodStyle, maxLines = 1, softWrap = false)

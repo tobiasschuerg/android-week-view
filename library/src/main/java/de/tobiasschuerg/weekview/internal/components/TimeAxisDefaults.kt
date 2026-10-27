@@ -10,9 +10,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
-import de.tobiasschuerg.weekview.internal.layout.WeekViewMetrics
 import de.tobiasschuerg.weekview.internal.time.toAxisLabel
 import java.time.LocalTime
 import java.util.Locale
@@ -20,8 +18,8 @@ import kotlin.math.ceil
 
 /** Typography and spacing shared by the time axis labels, the current-time pill and their measurements. */
 internal object TimeAxisDefaults {
-    /** The clock time, the first line of a label. */
-    val timeTextStyle: TextStyle = TextStyle(fontSize = 12.sp, lineHeight = 14.sp)
+    /** The clock time, the first line of a label. Bold like the current-time pill. */
+    val timeTextStyle: TextStyle = TextStyle(fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
 
     /** The AM/PM marker stacked below the clock time. */
     val dayPeriodTextStyle: TextStyle = TextStyle(fontSize = 10.sp, lineHeight = 11.sp, fontWeight = FontWeight.Medium)
@@ -30,7 +28,7 @@ internal object TimeAxisDefaults {
     val horizontalPadding: Dp = 6.dp
 
     /** Padding the current-time pill draws around its text. */
-    val pillHorizontalPadding: Dp = 8.dp
+    val pillHorizontalPadding: Dp = 6.dp
     val pillVerticalPadding: Dp = 4.dp
 
     /** Every hour the axis can show, plus a wide minute for the current-time pill. */
@@ -38,23 +36,26 @@ internal object TimeAxisDefaults {
         (0..23).flatMap { hour -> listOf(LocalTime.of(hour, 0), LocalTime.of(hour, 58)) }
 
     /**
-     * Measures the clock times [locale] can produce. 12-hour locales stack their AM/PM marker below
-     * the time instead of next to it, which keeps the gutter as narrow as a 24-hour one.
+     * Measures the labels [locale] can produce and sizes the axis to the widest of them, so it is as
+     * narrow as the locale allows and no label ever has to wrap or be cut off. 12-hour locales stack
+     * their AM/PM marker below the time instead of next to it, which keeps the gutter as narrow as a
+     * 24-hour one.
      */
     @Composable
     fun rememberLabelMetrics(locale: Locale): TimeAxisLabelMetrics {
         val textMeasurer = rememberTextMeasurer()
         val density = LocalDensity.current
         return remember(locale, density, textMeasurer) {
-            // The pill text is bold, so measure everything in the wider of the two weights.
-            val timeSize = textMeasurer.widestSize(sampleTimes.map { it.toAxisLabel(locale).time }, timeTextStyle)
+            val labels = sampleTimes.map { it.toAxisLabel(locale) }
+            val timeSize = textMeasurer.widestSize(labels.map { it.time }, timeTextStyle)
+            val dayPeriodSize = textMeasurer.widestSize(labels.mapNotNull { it.dayPeriod }.distinct(), dayPeriodTextStyle)
             with(density) {
+                // Summed in whole pixels, as layout rounds each padding, so the text never ends up a pixel short.
+                val labelWidth = maxOf(timeSize.width, dayPeriodSize.width) + horizontalPadding.roundToPx() * 2
+                // The pill keeps half the label padding on its start side and ends where the indicator line begins.
+                val pillWidth = timeSize.width + pillHorizontalPadding.roundToPx() * 2 + (horizontalPadding / 2).roundToPx()
                 TimeAxisLabelMetrics(
-                    axisWidth =
-                        max(
-                            WeekViewMetrics.LEFT_OFFSET,
-                            timeSize.width.toDp() + (pillHorizontalPadding + horizontalPadding) * 2,
-                        ),
+                    axisWidth = maxOf(labelWidth, pillWidth).toDp(),
                     // The pill shows the clock time only, so it stays a single line in every locale.
                     pillHeight = timeSize.height.toDp() + pillVerticalPadding * 2,
                 )
